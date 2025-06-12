@@ -9,23 +9,7 @@ export function LibraryHeader() {
             <BookOpen className="h-6 w-6 text-slate-800" />
             <span className="text-xl font-semibold text-slate-800">BYU-Idaho McKay Library</span>
           </div>
-          <nav className="hidden md:flex space-x-6">
-            <a href="#" className="text-slate-600 hover:text-slate-900">
-              Home
-            </a>
-            <a href="#" className="text-slate-600 hover:text-slate-900">
-              Databases
-            </a>
-            <a href="#" className="text-slate-600 hover:text-slate-900">
-              Research Guides
-            </a>
-            <a href="#" className="text-slate-600 hover:text-slate-900">
-              Hours & Locations
-            </a>
-            <a href="#" className="text-slate-600 hover:text-slate-900">
-              Help
-            </a>
-          </nav>
+          <div className="hidden md:block">{/* Navigation links removed */}</div>
           <div className="md:hidden">
             <button className="text-slate-600 hover:text-slate-900">
               <svg
