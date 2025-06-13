@@ -1,14 +1,10 @@
 "use client";
-
-import { useState } from "react";
 import { ResourceFinder } from "@/components/resource-finder";
 import { LibraryHeader } from "@/components/library-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResourceIndexer } from "@/components/resource-indexer";
 
 export default function Home() {
-    const [apiKey, setApiKey] = useState<string | null>(null);
-
     return (
         <div className="min-h-screen bg-slate-50">
             <LibraryHeader />

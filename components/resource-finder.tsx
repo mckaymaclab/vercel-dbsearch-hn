@@ -1,7 +1,5 @@
 "use client";
-
 import type React from "react";
-
 import { useState } from "react";
 import {
     Search,
@@ -146,30 +144,6 @@ export function ResourceFinder() {
 
     return (
         <div className="space-y-6">
-            {/* API Status Check */}
-            {!apiStatus.tested && (
-                <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription className="flex items-center justify-between">
-                        <span>
-                            Test your Google API connection (optional - smart
-                            fallback search available)
-                        </span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={testConnection}
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            ) : null}
-                            Test API
-                        </Button>
-                    </AlertDescription>
-                </Alert>
-            )}
-
             {apiStatus.tested && (
                 <Alert variant={apiStatus.working ? "default" : "destructive"}>
                     <AlertCircle className="h-4 w-4" />
