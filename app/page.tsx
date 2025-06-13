@@ -22,7 +22,7 @@ export default function Home() {
                     <Tabs defaultValue="search" className="w-full">
                         <TabsList className="grid w-full grid-cols-2 mb-8">
                             <TabsTrigger value="search">
-                                Search Resources
+                                Search All Resources
                             </TabsTrigger>
                             <TabsTrigger value="index">
                                 Index New Resources
