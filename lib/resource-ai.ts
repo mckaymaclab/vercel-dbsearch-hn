@@ -215,7 +215,7 @@ Return ONLY a JSON array with exactly these fields for each resource:
 - relevanceScore (number 1-100)
 - matchReason (string explaining why this resource fits the query)
 
-Return exactly 3 resources as a JSON array.`;
+Return exactly 5 resources as a JSON array.`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
