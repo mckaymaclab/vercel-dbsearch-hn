@@ -13,7 +13,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "A to Z Maps Online",
         description:
-            "Thousands of current, proprietary, royalty-free maps of the world, continents, countries, and states.\u00a0",
+            "Thousands of current, proprietary, royalty-free maps of the world, continents, countries, and states. ",
         subjects: [
             "Family History",
             "Geography",
@@ -55,7 +55,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "AcademicPowerSearch",
         description:
-            "Gale's multi-disciplinary search through millions of pages in peer-reviewed articles, eBooks, primary sources, and more.\u00a0",
+            "Gale's multi-disciplinary search through millions of pages in peer-reviewed articles, eBooks, primary sources, and more. ",
         subjects: ["General"],
         contentTypes: ["Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=GPS&sw=w&u=byuidaho&v=2.1&pg=BasicSearch&it=static&sid=bookmark-GPS",
@@ -85,7 +85,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Access U.S. Newswires & Transcripts",
         description:
-            "Fully searchable database of current and archived articles from key newswires and broadcast transcripts from top U.S. TV and radio news shows.\u00a0",
+            "Fully searchable database of current and archived articles from key newswires and broadcast transcripts from top U.S. TV and radio news shows. ",
         subjects: [
             "Business Management",
             "Economics",
@@ -99,7 +99,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "ACLS Humanities E-Book Project",
         description:
-            "Now Open Access Content Only. Books in the humanities: culture, society, history, rhetoric, language arts, visual & performing arts, etc.\u00a0\u00a0THIS ONLY HAD 4 USES IN LAST YEART - HIDING TO SEE IF ANY ISSUES COME UP as we don't list OA materials, unless we had paid for them in the past and they continue to have high usage (6/2025)\u00a0",
+            "Now Open Access Content Only. Books in the humanities: culture, society, history, rhetoric, language arts, visual & performing arts, etc. THIS ONLY HAD 4 USES IN LAST YEART - HIDING TO SEE IF ANY ISSUES COME UP as we don't list OA materials, unless we had paid for them in the past and they continue to have high usage (6/2025) ",
         subjects: [
             "English",
             "History",
@@ -131,7 +131,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "ACSESS Digital Library",
         description:
-            "Search for articles published by ACSESS on crop breeding and genetics, soil physics, agro-climatology, ecology, and more.\u00a0",
+            "Search for articles published by ACSESS on crop breeding and genetics, soil physics, agro-climatology, ecology, and more. ",
         subjects: ["Animal and Food Science", "Applied Plant Science"],
         contentTypes: ["eBooks;Full-Text Articles;Journals"],
         url: "https://acsess.onlinelibrary.wiley.com/",
@@ -155,7 +155,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "African American Newspapers",
         description:
-            "An collection of African American newspapers with a wealth of information about cultural life and history during the 1800s. Learn\u00a0",
+            "An collection of African American newspapers with a wealth of information about cultural life and history during the 1800s. Learn ",
         subjects: ["Family History", "History", "Special Collections"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://history-commons.net/modules/anco/",
@@ -171,7 +171,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Agricola",
         description:
-            "Database of citations for the literature created by the National Agricultural Library from its early days; full coverage from 1970.\u00a0",
+            "Database of citations for the literature created by the National Agricultural Library from its early days; full coverage from 1970. ",
         subjects: ["Animal and Food Science", "Applied Plant Science"],
         contentTypes: ["Abstract / Citation / Index"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=agr&authtype=sso&custid=s8406107",
@@ -187,7 +187,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "AIP Publishing",
         description:
-            "Current and influential news, analysis, and research in these Physical Science journals: American Journal of Physics, Physics Today, and Physics Teacher.\u00a0",
+            "Current and influential news, analysis, and research in these Physical Science journals: American Journal of Physics, Physics Today, and Physics Teacher. ",
         subjects: ["Physics"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://pubs-aip-org.byui.idm.oclc.org/",
@@ -195,7 +195,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Alexander Street Video & Image Collection",
         description:
-            "Audio tracks, music scores, video performances, and reference materials for the humanities and social sciences.\u00a0",
+            "Audio tracks, music scores, video performances, and reference materials for the humanities and social sciences. ",
         subjects: [
             "Dance",
             "General",
@@ -222,7 +222,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "AM Explorer",
         description:
-            "A collection of curated historical databases with primary source products for the social sciences and humanities.\u00a0",
+            "A collection of curated historical databases with primary source products for the social sciences and humanities. ",
         subjects: [
             "Geography",
             "History",
@@ -236,7 +236,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "America: History & Life",
         description:
-            "A bibliographic database focusing on the history of and life in the United States and Canada.\u00a0",
+            "A bibliographic database focusing on the history of and life in the United States and Canada. ",
         subjects: ["Geography", "History", "Political Science"],
         contentTypes: ["Abstract / Citation / Index;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=ahl&authtype=sso&custid=s8406107",
@@ -260,7 +260,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "American Antiquarian Society Historical Periodicals (Gale Primary Sources)",
         description:
-            "Digitized images of thousands of American newspapers, magazines, and journals published between 1684 and 1912.\u00a0",
+            "Digitized images of thousands of American newspapers, magazines, and journals published between 1684 and 1912. ",
         subjects: ["Family History", "History", "Special Collections"],
         contentTypes: [
             "Newspapers;Primary Resource;Full-Text Articles;Journals",
@@ -270,7 +270,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "American Antiquarian Society Historical Periodicals Collection (EBSCO)",
         description:
-            "Digitized images of thousands of American newspapers, magazines, and journals published between 1684 and 1912.\u00a0",
+            "Digitized images of thousands of American newspapers, magazines, and journals published between 1684 and 1912. ",
         subjects: ["Family History", "History", "Special Collections"],
         contentTypes: [
             "Newspapers;Primary Resource;Full-Text Articles;Journals",
@@ -349,7 +349,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "American Indians and the American West",
         description:
-            "Access several collections focusing on the interaction between American Indians and the U.S. government in the 19th and 20th Centuries.\u00a0Read More | Search | Browse\u00a0",
+            "Access several collections focusing on the interaction between American Indians and the U.S. government in the 19th and 20th Centuries. Read More | Search | Browse ",
         subjects: ["History", "Special Collections"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=browse\u2223=7410#7410",
@@ -385,7 +385,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "American Politics and Society",
         description:
-            "Covers the investigations made by the Immigration and Naturalization Service (INS) during the massive immigration wave of 1880-1930.\u00a0Read More | Search | Browse",
+            "Covers the investigations made by the Immigration and Naturalization Service (INS) during the massive immigration wave of 1880-1930. Read More | Search | Browse",
         subjects: ["History", "Political Science", "Special Collections"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=browse\u2223=48990#48990",
@@ -417,7 +417,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "ANSI Industry Standards",
         description:
-            "Request\u00a0 ISO and IEC standards from ANSI for academic use on an individual basis. After finding standard name & number, contact eResources@byui.edu or come to 259 McKay to initiate requests. \u00a0See also \u201cAdditional Information.\u201d\u00a0",
+            "Request  ISO and IEC standards from ANSI for academic use on an individual basis. After finding standard name & number, contact eResources@byui.edu or come to 259 McKay to initiate requests. See also Additional Information.",
         subjects: [
             "Automotive Engineering / Technology",
             "Chemistry",
@@ -431,7 +431,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "AP Stylebook",
         description:
-            "The definitive resource for journalists, the AP Stylebook online edition gives fundamental guidelines for spelling, language, punctuation, usage, and journalistic style.\u00a0",
+            "The definitive resource for journalists, the AP Stylebook online edition gives fundamental guidelines for spelling, language, punctuation, usage, and journalistic style. ",
         subjects: ["Business Management", "Communications", "English"],
         contentTypes: ["Reference;Interactive Learning"],
         url: "https://byui.idm.oclc.org/login?url=https://www.apstylebook.com/mckay-library-brigham-young-university-idaho",
@@ -439,7 +439,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "APA PsycInfo - EBSCOhost",
         description:
-            "Search this database of peer-reviewed literature in behavioral science and mental health; produced by the American Psychological Association (APA).\u00a0",
+            "Search this database of peer-reviewed literature in behavioral science and mental health; produced by the American Psychological Association (APA). ",
         subjects: ["Psychology"],
         contentTypes: [
             "Abstract / Citation / Index;Full-Text Articles;Journals",
@@ -449,7 +449,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "APA PsycInfo Discover & Personalized Research Services",
         description:
-            "Sign up with your BYU-I email to create an account for research discovery & individualized content within the APA PsycInfo site.\u00a0",
+            "Sign up with your BYU-I email to create an account for research discovery & individualized content within the APA PsycInfo site. ",
         subjects: ["Psychology"],
         contentTypes: ["Abstract / Citation / Index"],
         url: "https://psycinfo.apa.org/home",
@@ -457,7 +457,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "APM Music",
         description:
-            "Music for educational use; covers multiple genres and styles. Non-educational uses require additional licensing.\u00a0",
+            "Music for educational use; covers multiple genres and styles. Non-educational uses require additional licensing. ",
         subjects: ["General", "Humanities and Philosophy", "Music"],
         contentTypes: ["Audio"],
         url: "https://content.byui.edu/integ/gen/6b4c56a2-4b3d-4e02-a825-5cbf9b6c6216/1/",
@@ -539,7 +539,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "ASTM Compass",
         description:
-            "Access and manage thousands of industry and technology standards. Can create own account. For use only by BYU-I students and faculty.\u00a0",
+            "Access and manage thousands of industry and technology standards. Can create own account. For use only by BYU-I students and faculty. ",
         subjects: [
             "Automotive Engineering / Technology",
             "Computer Information Technology",
@@ -574,7 +574,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Atlantic",
         description:
-            "Website for the magazine covering news, politics, culture, technology, health, and more, through articles, podcasts, and videos.\u00a0App: iOS or Android.",
+            "Website for the magazine covering news, politics, culture, technology, health, and more, through articles, podcasts, and videos. App: iOS or Android.",
         subjects: ["Accounting", "Finance", "General", "Political Science"],
         contentTypes: ["Full-Text Articles"],
         url: "https://theatlantic.com/byuidaho-login/",
@@ -582,7 +582,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Audio Drama: The L.A. Theatre Works Collection",
         description:
-            "Audio files of over 300 historic dramatic works from the curated archive of the L.A. Theatre Works Collection.\u00a0",
+            "Audio files of over 300 historic dramatic works from the curated archive of the L.A. Theatre Works Collection. ",
         subjects: ["Theatre"],
         contentTypes: ["Audio"],
         url: "https://search.alexanderstreet.com/radr",
@@ -598,7 +598,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Auto Repair Source",
         description:
-            "Guides with repair information for thousands of domestic and imported vehicles.\u00a0Search by make, model, year, etc.",
+            "Guides with repair information for thousands of domestic and imported vehicles. Search by make, model, year, etc.",
         subjects: [
             "Automotive Engineering / Technology",
             "Mechanical & Civil Engineering",
@@ -644,7 +644,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Berliner Philharmoniker: Digital Concert Hall",
         description:
-            "Enjoy live and recorded concerts from one of the most acclaimed and well-respected orchestras in the world, the Berlin Philharmonic. As an App:\u00a0 Android\u00a0 \u00a0\u00a0Apple",
+            "Enjoy live and recorded concerts from one of the most acclaimed and well-respected orchestras in the world, the Berlin Philharmonic. As an App:  Android    Apple",
         subjects: ["General", "Music"],
         contentTypes: ["Video;Audio"],
         url: "https://www.digitalconcerthall.com/en/concerts",
@@ -664,7 +664,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Biblical Archaeology Society Online Archive",
         description:
-            "Thousands of articles and images with integrated Bible passages from Bible study journals.\u00a0If article does not open, go to magazine and locate by year and issue.",
+            "Thousands of articles and images with integrated Bible passages from Bible study journals. If article does not open, go to magazine and locate by year and issue.",
         subjects: ["Religious Education"],
         contentTypes: ["Video;Full-Text Articles;Journals"],
         url: "https://www.baslibrary.org/",
@@ -680,7 +680,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Biography in Context",
         description:
-            "Continuously updated biographies of international figures from all time periods and areas of study.\u00a0",
+            "Continuously updated biographies of international figures from all time periods and areas of study. ",
         subjects: [
             "Biographies",
             "English",
@@ -695,7 +695,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Biography Reference Source",
         description:
-            "Search biographies searchable by keyword,\u00a0subject (i.e.: occupation, nationality, gender) or genre (i.e.: artists, leaders, explorers, scientists, etc.).",
+            "Search biographies searchable by keyword, subject (i.e.: occupation, nationality, gender) or genre (i.e.: artists, leaders, explorers, scientists, etc.).",
         subjects: [
             "Biographies",
             "English",
@@ -725,7 +725,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Black Drama: Second Edition",
         description:
-            "Hundreds of plays written by black playwrights from North America, English-speaking Africa, the Caribbean, and other African diaspora countries.\u00a0",
+            "Hundreds of plays written by black playwrights from North America, English-speaking Africa, the Caribbean, and other African diaspora countries. ",
         subjects: ["Dance", "History", "Music", "Theatre"],
         contentTypes: ["Images;Full-Text Articles"],
         url: "https://search.alexanderstreet.com/theatre/browse/title?ff%5B0%5D=unitaccess%3ABLDR-2E",
@@ -733,7 +733,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Black Freedom Struggle in the United States",
         description:
-            "A primary source collection of over 3,000 documents related to people and events vital to African American history.\u00a0",
+            "A primary source collection of over 3,000 documents related to people and events vital to African American history.",
         subjects: ["History", "Political Science", "Special Collections"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://blackfreedom.proquest.com/",
@@ -749,7 +749,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Black Women Writers",
         description:
-            "Black Women Writers presents literature and essays on feminist issues, written by authors from Africa and the African diaspora.\u00a0",
+            "Black Women Writers presents literature and essays on feminist issues, written by authors from Africa and the African diaspora.",
         subjects: ["Biographies", "English", "History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.proquest.com/litcollectionblww/index",
@@ -781,7 +781,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Books and Authors",
         description:
-            "Find book recommendations and reads that are similar to your favorites. Search by genre, title, author, award winners, and more.\u00a0Note: the library does not own all titles recommended.",
+            "Find book recommendations and reads that are similar to your favorites. Search by genre, title, author, award winners, and more. Note: the library does not own all titles recommended.",
         subjects: ["English", "Humanities and Philosophy"],
         contentTypes: ["Primary Resource"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/BNA?u=byuidaho",
@@ -789,7 +789,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Books in Print",
         description:
-            "Books In Print is the leading bibliographic database for publishers, retailers and libraries around the world.\u00a0 Books In Print provides a valuable resource for anyone interested in learning what is happening in the world of books. Helps identify find the right title and explore all known format options.",
+            "Books In Print is the leading bibliographic database for publishers, retailers and libraries around the world. Books In Print provides a valuable resource for anyone interested in learning what is happening in the world of books. Helps identify find the right title and explore all known format options.",
         subjects: ["English", "General"],
         contentTypes: ["Reference"],
         url: "https://www.booksinprint.com/",
@@ -805,7 +805,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Brill's Online Reference",
         description:
-            "Search through scores of reference books for articles related to history, international studies, law, language, religion, and the classical world.\u00a0\u00a0\u00a0",
+            "Search through scores of reference books for articles related to history, international studies, law, language, religion, and the classical world.  ",
         subjects: ["History", "Humanities and Philosophy"],
         contentTypes: ["Reference"],
         url: "https://brill-com.byui.idm.oclc.org/browse?access_0=free&access_1=user&access_2=open&level=parent&pageSize=10&pubschedule_3=published&sort=datedescending",
@@ -821,7 +821,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "British & Irish Women's Letters & Diaries",
         description:
-            "The largest collection of women's diaries and correspondence; providing researchers a view into life and experiences over a 300 year span.\u00a0",
+            "The largest collection of women's diaries and correspondence; providing researchers a view into life and experiences over a 300 year span. ",
         subjects: ["English", "History", "Special Collections"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://search.alexanderstreet.com/bwl2",
@@ -853,7 +853,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Business",
         description:
-            "Updated daily, find herein insights into the activities of companies and industries worldwide through business and trade publications.\u00a0\u00a0\u00a0",
+            "Updated daily, find herein insights into the activities of companies and industries worldwide through business and trade publications.  ",
         subjects: [
             "Accounting",
             "Business Management",
@@ -874,7 +874,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Business Expert Press eBooks",
         description:
-            "A library of born-digital eBooks covering business disciplines and topics, representing current business theory & practice. Available as an app: Android\u00a0 \u00a0\u00a0Ios",
+            "A library of born-digital eBooks covering business disciplines and topics, representing current business theory & practice. Available as an app: Android    Ios",
         subjects: [
             "Accounting",
             "Business Management",
@@ -924,7 +924,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Business: Insights",
         description:
-            "Explore the world's companies through expert analysis such as SWOT analyses, financial statements, case studies, and articles.\u00a0",
+            "Explore the world's companies through expert analysis such as SWOT analyses, financial statements, case studies, and articles. ",
         subjects: [
             "Accounting",
             "Business Management",
@@ -955,7 +955,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "BYU-Idaho Special Collections & Archives",
         description:
-            "Special Collections & Archives houses items unique to University history and campus curriculum, the local area, & the history of writing.\u00a0",
+            "Special Collections & Archives houses items unique to University history and campus curriculum, the local area, & the history of writing. ",
         subjects: ["Special Collections"],
         contentTypes: ["Images;Primary Resource"],
         url: "https://spc.byui.edu/",
@@ -963,7 +963,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "C19: The Nineteenth Century Index (ProQuest)",
         description:
-            "An index of records covering the printed record of the English-speaking world in the 19th century. From newspapers, registers, books, etc.; some full-text.\u00a0",
+            "An index of records covering the printed record of the English-speaking world in the 19th century. From newspapers, registers, books, etc.; some full-text. ",
         subjects: ["History"],
         contentTypes: ["Abstract / Citation / Index;Full-Text Articles"],
         url: "https://www.proquest.com/c19index",
@@ -971,7 +971,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Canadian Newsstream",
         description:
-            "Access to Canadian news outlets and newspapers including The Globe and Mail, Toronto Star. Extensive backfiles plus daily updates.\u00a0",
+            "Access to Canadian news outlets and newspapers including The Globe and Mail, Toronto Star. Extensive backfiles plus daily updates. ",
         subjects: ["General", "History", "Languages and International Studies"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://search.proquest.com/canadiannews",
@@ -1003,7 +1003,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Chemical Educator Journal",
         description:
-            "Access this peer-reviewed chemistry journal, covering current topics, experiments, and teaching methodology.\u00a0",
+            "Access this peer-reviewed chemistry journal, covering current topics, experiments, and teaching methodology. ",
         subjects: ["Chemistry"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "http://chemeducator.org/",
@@ -1011,7 +1011,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Chicago Manual of Style Online",
         description:
-            "The Chicago Manual of Style Online\u00a0(17th Edition) is the venerable, time-tested guide to style, usage, and grammar in an online format.",
+            "The Chicago Manual of Style Online (17th Edition) is the venerable, time-tested guide to style, usage, and grammar in an online format.",
         subjects: ["English", "General", "History"],
         contentTypes: ["Reference;Full-Text Articles"],
         url: "https://www.chicagomanualofstyle.org/home.html",
@@ -1027,7 +1027,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Children's Literature Comprehensive Database",
         description:
-            "Basic descriptions, professional reviews, and curriculum tools for PreK-12th grade books and other media.\u00a0",
+            "Basic descriptions, professional reviews, and curriculum tools for PreK-12th grade books and other media. ",
         subjects: ["English", "Teacher Education"],
         contentTypes: ["Abstract / Citation / Index"],
         url: "https://enterprise.clcd.com",
@@ -1035,7 +1035,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Chilton Library [Automotive]",
         description:
-            "Detailed guides for step-by-step vehicle maintenance and repairs. Includes videos and ASE test prep materials and printable guides.\u00a0",
+            "Detailed guides for step-by-step vehicle maintenance and repairs. Includes videos and ASE test prep materials and printable guides. ",
         subjects: ["Automotive Engineering / Technology", "General"],
         contentTypes: ["Reference;Interactive Learning"],
         url: "https://infotrac.galegroup.com/itweb/byuidaho?db=CHLL",
@@ -1043,7 +1043,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "China, America and the Pacific",
         description:
-            "Explore the cultural and trading relationships that emerged between America, China and the Pacific region between the 18th-20th centuries.\u00a0",
+            "Explore the cultural and trading relationships that emerged between America, China and the Pacific region between the 18th-20th centuries. ",
         subjects: [
             "History",
             "Languages and International Studies",
@@ -1063,7 +1063,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Christian Science Monitor, The",
         description:
-            "Read the CSM, an interantional news organization that is known for its thoughtful global coverage of current events; coverage 1908-2009.\u00a0",
+            "Read the CSM, an interantional news organization that is known for its thoughtful global coverage of current events; coverage 1908-2009. ",
         subjects: ["History"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://search.proquest.com/hnpchristiansciencemonitor/news/fromDatabasesLayer?accountid=9817",
@@ -1071,7 +1071,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Chronicle of Higher Education",
         description:
-            "The nation\u2019s largest newsroom dedicated to covering colleges and universities. Use your BYU-I email for a free account with full access.",
+            "The nation's largest newsroom dedicated to covering colleges and universities. Use your BYU-I email for a free account with full access.",
         subjects: ["General", "Teacher Education"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://www.chronicle.com",
@@ -1089,7 +1089,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Civil Rights and the Black Freedom Struggle",
         description:
-            "This collection features records of the NAACP, SCLC, SNCC, CORE, and federal records of the Black Freedom Struggle. \u00a0Read More\u00a0| Browse the Collection\u00a0| Search |\u00a0",
+            "This collection features records of the NAACP, SCLC, SNCC, CORE, and federal records of the Black Freedom Struggle. Read More | Browse the Collection | Search | ",
         subjects: ["History", "Political Science", "Special Collections"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=whatsin&action=Civil%20Rights%20and%20the%20Black%20Freedom%20Struggle",
@@ -1097,7 +1097,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Civil War Collection",
         description:
-            "A collection of period newspapers that covered the American Civil War.\u00a0",
+            "A collection of period newspapers that covered the American Civil War. ",
         subjects: ["History", "Special Collections"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://history-commons.net/modules/cwco/",
@@ -1113,7 +1113,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Classical Music Reference Library",
         description:
-            "Brings together a variety of reference materials on music theory & technique, spanning the entire history of Western classical music.\u00a0",
+            "Brings together a variety of reference materials on music theory & technique, spanning the entire history of Western classical music. ",
         subjects: ["Biographies", "Dance", "Music", "Theatre"],
         contentTypes: ["Audio;Reference;Full-Text Articles"],
         url: "https://bakr.alexanderstreet.com",
@@ -1153,7 +1153,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Colonial Newspapers",
         description:
-            "Selected issues of historical newspapers, accessing eyewitness accounts of life in 18th & 19th century America.\u00a0",
+            "Selected issues of historical newspapers, accessing eyewitness accounts of life in 18th & 19th century America. ",
         subjects: ["History"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://history-commons.net/modules/coco/",
@@ -1185,7 +1185,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Company Profiles by Business Source Premier",
         description:
-            "Profiles and information including company overviews and business descriptions, key facts, history, products and services, and top competitors.\u00a0Listed by Country | \u00a0Listed by Industry",
+            "Profiles and information including company overviews and business descriptions, key facts, history, products and services, and top competitors. Listed by Country |  Listed by Industry",
         subjects: [
             "Accounting",
             "Business Management",
@@ -1224,7 +1224,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Computer Science",
         description:
-            "Access leading business and technical publications in the computer, telecommunications, and electronics industries.\u00a0",
+            "Access leading business and technical publications in the computer, telecommunications, and electronics industries. ",
         subjects: [
             "Business Management",
             "Communications",
@@ -1272,7 +1272,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Contemporary Women's Issues",
         description:
-            "Find comprehensive coverage of issues that influence women\u2019s lives across the globe.",
+            "Find comprehensive coverage of issues that influence women's lives across the globe.",
         subjects: [
             "Home and Family",
             "Political Science",
@@ -1284,7 +1284,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Contemporary World Music",
         description:
-            "Delivers the sounds from all regions of the world and from every continent.\u00a0\u00a0",
+            "Delivers the sounds from all regions of the world and from every continent. ",
         subjects: ["Dance", "Music", "Theatre"],
         contentTypes: ["Audio"],
         url: "https://search.alexanderstreet.com/womu",
@@ -1361,7 +1361,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "CQ Researcher Plus Archives",
         description:
-            "A database of in-depth, authoritative reports on a full range of political and social-policy issues, dating from 1923-present.\u00a0",
+            "A database of in-depth, authoritative reports on a full range of political and social-policy issues, dating from 1923-present. ",
         subjects: [
             "General",
             "History",
@@ -1374,7 +1374,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "CRC Handbook of Chemistry & Physics",
         description:
-            "The CRC Handbook of Chemistry and Physics is a reference book providing high-quality data for chemical compounds and physical particles.\u00a0",
+            "The CRC Handbook of Chemistry and Physics is a reference book providing high-quality data for chemical compounds and physical particles. ",
         subjects: ["Chemistry", "Physics"],
         contentTypes: ["eBooks;Reference"],
         url: "https://hbcp.chemnetbase.com/",
@@ -1418,7 +1418,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Dance in Video",
         description:
-            "Dance in Video\u00a0provides hundreds of hours of video content covering the full scope of 20th and 21st century dance.\u00a0",
+            "Dance in Video provides hundreds of hours of video content covering the full scope of 20th and 21st century dance. ",
         subjects: ["Dance", "Theatre"],
         contentTypes: ["Video"],
         url: "https://video.alexanderstreet.com/channel/dance-online-dance-in-video",
@@ -1510,7 +1510,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Directory Library",
         description:
-            "Directories give non-biased information on companies, publishers, associations, etc. Users have the ability to sort, filter, & export.\u00a0\u00a0",
+            "Directories give non-biased information on companies, publishers, associations, etc. Users have the ability to sort, filter, & export. ",
         subjects: ["Business Management", "Communications"],
         contentTypes: ["Reference"],
         url: "https://link-gale-com.byui.idm.oclc.org/apps/GDL?u=byuidaho&aty=ip",
@@ -1518,7 +1518,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Diversity Studies",
         description:
-            "The Diversity Studies Collection explores cultural differences, contributions, and influences in the global community.\u00a0",
+            "The Diversity Studies Collection explores cultural differences, contributions, and influences in the global community. ",
         subjects: [
             "History",
             "Humanities and Philosophy",
@@ -1546,7 +1546,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Early American Fiction 1789-1875",
         description:
-            "Early American Fiction 1789\u20131875 contains the full text of hundred of early masterpieces of American fiction.\u00a0",
+            "Early American Fiction 1789 - 1875 contains the full text of hundred of early masterpieces of American fiction. ",
         subjects: ["English"],
         contentTypes: ["eBooks;Full-Text Articles"],
         url: "https://www.proquest.com/lion/docview/2343198504?accountid=9817",
@@ -1562,7 +1562,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Early English Books Online",
         description:
-            "Page images of almost every work printed in the British Isles and North America, as well as works in English printed elsewhere from 1470-1700.\u00a0",
+            "Page images of almost every work printed in the British Isles and North America, as well as works in English printed elsewhere from 1470-1700. ",
         subjects: ["English", "History", "Humanities and Philosophy"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.proquest.com/eebo",
@@ -1570,7 +1570,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Early English Prose Fiction",
         description:
-            "A collection of more than 200 works from the period 1500\u20131700, exploring the prose fiction in English preceding the form of the realist novel.",
+            "A collection of more than 200 works from the period 1500 - 1700, exploring the prose fiction in English preceding the form of the realist novel.",
         subjects: ["English", "History"],
         contentTypes: ["Full-Text Articles"],
         url: "https://www.proquest.com/lion/docview/2343194076?accountid=9817",
@@ -1594,7 +1594,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Ebook Central (ProQuest)",
         description:
-            "Ebook Central offers access to more than a million ebooks, many selected specifically for BYU-Idaho courses.\u00a0",
+            "Ebook Central offers access to more than a million ebooks, many selected specifically for BYU-Idaho courses. ",
         subjects: ["General"],
         contentTypes: ["eBooks;Full-Text Articles"],
         url: "https://ebookcentral.proquest.com/lib/byui/home.action?ebraryDocId=null",
@@ -1602,7 +1602,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "eBook Collections (EBSCO)",
         description:
-            "Access scores high-quality eBooks and audio books in multiple disciplines from major academic publishers and university presses. \u00a0Android app\u00a0\u00a0 iOS app",
+            "Access scores high-quality eBooks and audio books in multiple disciplines from major academic publishers and university presses. Android app   iOS app",
         subjects: ["General"],
         contentTypes: ["eBooks;Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=nlebk,e867sww,e866sww,e864sww,e865sww,e868sww&authtype=sso&custid=s8406107",
@@ -1610,7 +1610,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "EBSCO Research Databases",
         description:
-            "Search all BYU-I's subscribed EBSCO databases simultaneously.\u00a0",
+            "Search all BYU-I's subscribed EBSCO databases simultaneously. ",
         subjects: ["nan"],
         contentTypes: ["Abstract / Citation / Index;Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost,e866sww,e868sww,b6h&custid=s8406107&authtype=sso",
@@ -1626,7 +1626,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Economics and Theory Collection",
         description:
-            "Discover content useful for useful for starting a business, marketing a product, developing policy, analyzing trends, etc.\u00a0",
+            "Discover content useful for useful for starting a business, marketing a product, developing policy, analyzing trends, etc. ",
         subjects: ["Business Management", "Communications", "Economics"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://go.gale.com/ps/start.do?p=PPBE&u=byuidaho",
@@ -1655,7 +1655,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Education - Primary",
         description:
-            "Access magazines and reference materials designed for primary school children. All articles include Lexile reading level information.\u00a0",
+            "Access magazines and reference materials designed for primary school children. All articles include Lexile reading level information. ",
         subjects: ["Teacher Education"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=prh,e867sww,funk,ehk5&authtype=sso&custid=s8406107",
@@ -1671,7 +1671,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Education - Teachers",
         description:
-            "Search multiple EBSCO Education databases designed for education professionals, pedagogy students, and policy makers.\u00a0",
+            "Search multiple EBSCO Education databases designed for education professionals, pedagogy students, and policy makers. ",
         subjects: ["Teacher Education"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=eric,tfh,eue,eft&authtype=sso&custid=s8406107",
@@ -1679,7 +1679,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Education Full Text",
         description:
-            "A research database for education students, professionals and policymakers covering the essentials of education & related fields.\u00a0\u00a0",
+            "A research database for education students, professionals and policymakers covering the essentials of education & related fields. ",
         subjects: ["Teacher Education"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=eft&authtype=sso&custid=s8406107",
@@ -1719,7 +1719,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Eighteenth Century Collections Online",
         description:
-            "ECCO contains English-language and foreign-language titles published in the UK between 1701 and 1800, plus thousands from the Americas.\u00a0",
+            "ECCO contains English-language and foreign-language titles published in the UK between 1701 and 1800, plus thousands from the Americas. ",
         subjects: [
             "Dance",
             "English",
@@ -1742,7 +1742,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Eighteenth Century Fiction",
         description:
-            "A collection of 96 complete works of English prose created during the period 1700\u20131780 by writers from the British Isles.",
+            "A collection of 96 complete works of English prose created during the period 1700 - 1780 by writers from the British Isles.",
         subjects: ["English", "History"],
         contentTypes: ["Full-Text Articles"],
         url: "https://www.proquest.com/lion/docview/2343194074?accountid=9817",
@@ -1750,7 +1750,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Eighteenth Century Journals",
         description:
-            "Rare journals printed between c1685 & 1815, illuminating all aspects of eighteenth-century social, political & literary life.\u00a0",
+            "Rare journals printed between c1685 & 1815, illuminating all aspects of eighteenth-century social, political & literary life. ",
         subjects: [
             "English",
             "History",
@@ -1783,7 +1783,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Empire Online",
         description:
-            "A collection of various primary source materials for the study of \u2018Empire,\u2019 its theories, practices, and consequences. \u00a0",
+            "A collection of various primary source materials for the study of Empire, its theories, practices, and consequences. ",
         subjects: ["English", "History", "Political Science"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.empire.amdigital.co.uk/",
@@ -1791,7 +1791,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "English Drama",
         description:
-            "Plays in verse and prose from medieval mystery cycles of the late thirteenth century to the comedies and dramas of the early twentieth.\u00a0",
+            "Plays in verse and prose from medieval mystery cycles of the late thirteenth century to the comedies and dramas of the early twentieth. ",
         subjects: ["Theatre"],
         contentTypes: ["Full-Text Articles"],
         url: "https://www.proquest.com/lion/docview/2343197739?accountid=9817",
@@ -1807,7 +1807,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Entrepreneurship",
         description:
-            "Analyze business insights, tips, strategies, and success stories. Updated daily. Best for business schools and entrepreneurs.\u00a0",
+            "Analyze business insights, tips, strategies, and success stories. Updated daily. Best for business schools and entrepreneurs. ",
         subjects: [
             "Accounting",
             "Business Management",
@@ -1820,7 +1820,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Environmental Studies",
         description:
-            "Repository of authoritative content on green technologies.\u00a0",
+            "Repository of authoritative content on green technologies. ",
         subjects: [
             "Animal and Food Science",
             "Applied Plant Science",
@@ -1910,7 +1910,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Explora Databases",
         description:
-            "EBSCO's Explora provides a simplified search engine with access to articles of all types. Includes access to databases listed under Additional Info.\u00a0",
+            "EBSCO's Explora provides a simplified search engine with access to articles of all types. Includes access to databases listed under Additional Info. ",
         subjects: ["General", "Teacher Education"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehk5&custid=s8406107&authtype=sso",
@@ -1950,7 +1950,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Filmakers Library Online",
         description:
-            "Award-winning documentaries with relevance across the curriculum.\u00a0",
+            "Award-winning documentaries with relevance across the curriculum. ",
         subjects: [
             "Communications",
             "Dance",
@@ -1968,7 +1968,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Films on Demand",
         description:
-            "A comprehensive video collection of documentaries, nursing films, art and drama performances, and career and technical videos. Apps: Android \u00a0 \u00a0 \u00a0iOS",
+            "A comprehensive video collection of documentaries, nursing films, art and drama performances, and career and technical videos. Apps: Android      iOS",
         subjects: [
             "Dance",
             "English",
@@ -1990,7 +1990,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Financial Times Historical Archive",
         description:
-            "This resource delivers the complete run of the London edition of this internationally known daily paper, from its first issue in 1888 through 2010.\u00a0",
+            "This resource delivers the complete run of the London edition of this internationally known daily paper, from its first issue in 1888 through 2010. ",
         subjects: [
             "Accounting",
             "Business Management",
@@ -2012,7 +2012,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Fine Arts",
         description:
-            "Periodical database for serious students of drama, music, art history, and filmmaking.\u00a0",
+            "Periodical database for serious students of drama, music, art history, and filmmaking. ",
         subjects: ["Art", "Humanities and Philosophy", "Music"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://go.gale.com/ps/start.do?p=PPFA&u=byuidaho",
@@ -2020,7 +2020,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "First World War",
         description:
-            "Primary sources from libraries, archives, and personal collections covering the \u201cGreat War.\u201d Collected from personal accounts, military records, and more.",
+            "Primary sources from libraries, archives, and personal collections covering the Great War. Collected from personal accounts, military records, and more.",
         subjects: ["History", "Special Collections"],
         contentTypes: [
             "Images;Video;Audio;Maps;Primary Resource;Full-Text Articles",
@@ -2030,7 +2030,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Flipster (Popular Magazines)",
         description:
-            "Flipster is an easy-to-use digital magazine newsstand with popular magazines provided by BYU-Idaho. As an app: \u00a0Android\u00a0 \u00a0 \u00a0iOS\u00a0",
+            "Flipster is an easy-to-use digital magazine newsstand with popular magazines provided by BYU-Idaho. As an app:  Android     iOS ",
         subjects: ["General"],
         contentTypes: ["Full-Text Articles"],
         url: "http://search.ebscohost.com/login.aspx?authtype=sso&custid=s8406107&profile=eon&groupid=main",
@@ -2038,7 +2038,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Fold3",
         description:
-            "Fold3 provides convenient access to military records, including the stories, photos, and documents of the men and women who served. NOTE: If you receive an error page after a search, use the \u201cSearch & Browse\u201d feature at the top of the page.",
+            "Fold3 provides convenient access to military records, including the stories, photos, and documents of the men and women who served. NOTE: If you receive an error page after a search, use the Search & Browse feature at the top of the page.",
         subjects: ["Family History", "History"],
         contentTypes: ["Images;Primary Resource;Government"],
         url: "https://www-fold3-com.byui.idm.oclc.org/",
@@ -2046,7 +2046,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Food Science & Technology Abstracts",
         description:
-            "FSTA indexes journals, books, conference proceedings, reports, theses, patents, standards, and legislation related to human nutrition and food science, technology, and manufacturing.\u00a0",
+            "FSTA indexes journals, books, conference proceedings, reports, theses, patents, standards, and legislation related to human nutrition and food science, technology, and manufacturing. ",
         subjects: ["Animal and Food Science", "Home and Family"],
         contentTypes: ["Abstract / Citation / Index"],
         url: "https://www-webofscience-com.byui.idm.oclc.org/wos/fsta/basic-search",
@@ -2084,7 +2084,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Foreign Primary Sources, 1600--1970",
         description:
-            "Provides an interpretive analysis of various European legal codes through monograph publications.\u00a0",
+            "Provides an interpretive analysis of various European legal codes through monograph publications. ",
         subjects: ["Political Science"],
         contentTypes: ["Primary Resource"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/MLFP?u=byuidaho",
@@ -2092,7 +2092,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Foreign, Comparative, and International Law, 1600--1926",
         description:
-            "Provides researchers with instant, full-text access to foreign, comparative, and international legal literature.\u00a0",
+            "Provides researchers with instant, full-text access to foreign, comparative, and international legal literature. ",
         subjects: ["Political Science"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/MMLF?u=byuidaho",
@@ -2108,7 +2108,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Gale Academic OneFile",
         description:
-            "Gale's multi-disciplinary database for accessing millions of peer-reviewed articles, podcasts, and more. \u00a0 App: \u00a0\u00a0Android\u00a0 \u00a0\u00a0Apple\u00a0\u00a0",
+            "Gale's multi-disciplinary database for accessing millions of peer-reviewed articles, podcasts, and more.  App:   Android    Apple  ",
         subjects: [
             "Chemistry",
             "Economics",
@@ -2124,7 +2124,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Gale Databases",
         description:
-            "A searchable listing of all Gale databases to which BYU-Idaho subscribes.\u00a0",
+            "A searchable listing of all Gale databases to which BYU-Idaho subscribes. ",
         subjects: ["General"],
         contentTypes: ["Full-Text Articles"],
         url: "https://find.gale.com/menu/commonmenu.do?userGroupName=byuidaho",
@@ -2177,7 +2177,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Genealogy Connect",
         description:
-            'Gale Genealogy Connect\u00a0provides books on the "how-to" of genealogy research plus dozens of location- and topic-related resources.',
+            'Gale Genealogy Connect provides books on the "how-to" of genealogy research plus dozens of location- and topic-related resources.',
         subjects: ["Family History", "History"],
         contentTypes: ["eBooks;Full-Text Articles"],
         url: "https://link-gale-com.byui.idm.oclc.org/apps/GENVRL?u=byuidaho&aty=ip",
@@ -2236,7 +2236,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "getAbstract",
         description:
-            "Delivers concise summaries of the latest, sharpest, and most relevant books in business. App: \u00a0 \u00a0iOS \u00a0\u00a0 \u00a0Android \u00a0\u00a0\u00a0",
+            "Delivers concise summaries of the latest, sharpest, and most relevant books in business. App:    iOS     Android    ",
         subjects: [
             "Business Management",
             "Communications",
@@ -2307,7 +2307,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "GospeLink",
         description:
-            "GospeLink is a reference library of Latter-day Saint resources. \u00a0",
+            "GospeLink is a reference library of Latter-day Saint resources. ",
         subjects: ["General", "Religious Education"],
         contentTypes: ["eBooks;Full-Text Articles"],
         url: "https://www.gospelink.com/",
@@ -2315,7 +2315,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "GreenFILE",
         description:
-            "A database covering environmental concerns. It indexes scholarly and general interest titles, as well as government documents and reports.\u00a0",
+            "A database covering environmental concerns. It indexes scholarly and general interest titles, as well as government documents and reports. ",
         subjects: [
             "Applied Plant Science",
             "Biology",
@@ -2350,7 +2350,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Harvard Business Publishing Core Curriculum",
         description:
-            "76 readings that cover entrepreneurship, finance, accounting, marketing, operations management, organizational behavior and strategy.\u00a0",
+            "76 readings that cover entrepreneurship, finance, accounting, marketing, operations management, organizational behavior and strategy. ",
         subjects: ["Business Management"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=hcc&authtype=sso&custid=s8406107",
@@ -2366,7 +2366,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Harvard Business School Select Case Study Collection",
         description:
-            "2,000+ Harvard Business School case studies providing real-world scenarios and commentary.\u00a0",
+            "2,000+ Harvard Business School case studies providing real-world scenarios and commentary. ",
         subjects: ["Business Management"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=t098sww&authtype=sso&custid=s8406107",
@@ -2406,7 +2406,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Health Source : Consumer Edition",
         description:
-            "A collection of less-scholarly health information from consumer health magazines, reference books, and current health pamphlets.\u00a0",
+            "A collection of less-scholarly health information from consumer health magazines, reference books, and current health pamphlets. ",
         subjects: ["General", "Health Services", "Nursing"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=hxh&authtype=sso&custid=s8406107",
@@ -2442,7 +2442,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "History Commons (formerly Accessible Archives)",
         description:
-            "Material from historic periodicals and books sharing eyewitness accounts, vivid descriptions of daily life, editorial observations, commerce, and genealogical records.\u00a0",
+            "Material from historic periodicals and books sharing eyewitness accounts, vivid descriptions of daily life, editorial observations, commerce, and genealogical records. ",
         subjects: ["Family History", "History", "Special Collections"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://history-commons.net/",
@@ -2450,7 +2450,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "History of Science, Technology and Medicine",
         description:
-            "History of Science, Technology and Medicine reflects the influences these fields have had on society and culture throughout time.\u00a0",
+            "History of Science, Technology and Medicine reflects the influences these fields have had on society and culture throughout time. ",
         subjects: ["History", "Humanities and Philosophy"],
         contentTypes: [
             "Abstract / Citation / Index;Full-Text Articles;Journals",
@@ -2460,7 +2460,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "History Vault",
         description:
-            "Access millions of primary source materials in five collections; cross-searchable, full-text documents and full images from various archives.\u00a0",
+            "Access millions of primary source materials in five collections; cross-searchable, full-text documents and full images from various archives. ",
         subjects: ["History", "Political Science", "Special Collections"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=home",
@@ -2496,7 +2496,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Humanities Source",
         description:
-            "Offers a single resource for accessing full-text humanities content from EBSCO and H.W. Wilson to provide comprehensive and relevant results.\u00a0",
+            "Offers a single resource for accessing full-text humanities content from EBSCO and H.W. Wilson to provide comprehensive and relevant results. ",
         subjects: ["Art", "English", "Humanities and Philosophy"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=hus&authtype=sso&custid=s8406107",
@@ -2504,7 +2504,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "IBISWorld",
         description:
-            "IBISWorld is a rich source of\u00a0in-depth and concise business intelligence information - research, reports, statistics, etc.",
+            "IBISWorld is a rich source of in-depth and concise business intelligence information - research, reports, statistics, etc.",
         subjects: [
             "Business Management",
             "Communications",
@@ -2524,7 +2524,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Idaho State Death Index",
         description:
-            "Created by the state of Idaho; an index of all deaths that occurred in Idaho from 1911-1951 and were filed with the Idaho Bureau of Vital Statistics.\u00a0",
+            "Created by the state of Idaho; an index of all deaths that occurred in Idaho from 1911-1951 and were filed with the Idaho Bureau of Vital Statistics. ",
         subjects: ["Family History", "Special Collections"],
         contentTypes: ["Abstract / Citation / Index;Government"],
         url: "https://archives.byui.edu/family-history/deaths",
@@ -2553,7 +2553,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Illustrated Civil War Newspapers & Magazines",
         description:
-            "Access to important and rare periodicals from Confederate, Union, Abolitionist, and British Presses.\u00a0",
+            "Access to important and rare periodicals from Confederate, Union, Abolitionist, and British Presses. ",
         subjects: ["History"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://staging.lincolnandthecivilwar.com",
@@ -2569,7 +2569,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Image Quest - Discontinued 5/1/25",
         description:
-            "For more free & Creative Commons (CC) licensed images see below:List compiled by BYU-I faculty \u00a0| \u00a0JSTOR Images \u00a0| \u00a0",
+            "For more free & Creative Commons (CC) licensed images see below:List compiled by BYU-I faculty  |  JSTOR Images  |  ",
         subjects: ["Art", "General"],
         contentTypes: ["Images"],
         url: "nan",
@@ -2577,7 +2577,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Images of America: A History of American Life in Images and Texts",
         description:
-            "An indexed database of images and text depicting the spirit and life of communities across the United States of America and parts of Canada.\u00a0",
+            "An indexed database of images and text depicting the spirit and life of communities across the United States of America and parts of Canada. ",
         subjects: ["Art", "History"],
         contentTypes: ["Images;Full-Text Articles"],
         url: "https://search.alexanderstreet.com/lrho",
@@ -2593,7 +2593,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Indigenous Histories and Cultures in North America",
         description:
-            "Explore manuscripts, artwork, and rare printed books dating from early European colonization up to photographs and Indigenous newspapers from the mid-twentieth century.\u00a0",
+            "Explore manuscripts, artwork, and rare printed books dating from early European colonization up to photographs and Indigenous newspapers from the mid-twentieth century. ",
         subjects: ["History"],
         contentTypes: ["Images;Full-Text Articles"],
         url: "https://www.aihc.amdigital.co.uk",
@@ -2633,7 +2633,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Insider Intelligence",
         description:
-            "Provides market research and trend analysis on Internet, e-business, online marketing, media and emerging technologies.\u00a0",
+            "Provides market research and trend analysis on Internet, e-business, online marketing, media and emerging technologies. ",
         subjects: [
             "Business Management",
             "Communications",
@@ -2687,7 +2687,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "IPA Source",
         description:
-            "The web\u2019s largest library of International Phonetic Alphabet (IPA) transcriptions & literal translations of aria and art song texts.",
+            "The web's largest library of International Phonetic Alphabet (IPA) transcriptions & literal translations of aria and art song texts.",
         subjects: ["Music", "Theatre"],
         contentTypes: ["Full-Text Articles"],
         url: "https://www.ipasource.com/",
@@ -2703,7 +2703,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Japanese Immigrants to the United States, 1887-1924",
         description:
-            "Part of BYU-Idaho's special collections, this resource provides students with thousands of records on the early Japanese immigrants to the United States.\u00a0",
+            "Part of BYU-Idaho's special collections, this resource provides students with thousands of records on the early Japanese immigrants to the United States. ",
         subjects: ["Family History", "History"],
         contentTypes: [
             "Abstract / Citation / Index;Primary Resource;Government",
@@ -2729,7 +2729,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Journal & Newspaper Finder",
         description:
-            "Use this link to find which periodicals you can access thru McKay library databases; particularly helpful for searchers with only a citation.\u00a0",
+            "Use this link to find which periodicals you can access thru McKay library databases; particularly helpful for searchers with only a citation. ",
         subjects: ["General"],
         contentTypes: ["Newspapers"],
         url: "https://library.byui.edu/journals/",
@@ -2737,7 +2737,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Journal of Visualized Experiments (JoVE)",
         description:
-            "Peer-reviewed scientific videos to assist in research and education. Biology Journal | Biology Education | Neuroscience Ed. | BYU-I JoVE subscribed content list\u00a0\r\n\u00a0",
+            "Peer-reviewed scientific videos to assist in research and education. Biology Journal | Biology Education | Neuroscience Ed. | BYU-I JoVE subscribed content list \r\n ",
         subjects: [
             "Biology",
             "Chemistry",
@@ -2754,7 +2754,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "JSTOR",
         description:
-            "A digital library with access millions of academic journals, books, and primary sources in over 50 languages.\u00a0",
+            "A digital library with access millions of academic journals, books, and primary sources in over 50 languages. ",
         subjects: [
             "General",
             "Interdisciplinary Studies",
@@ -2766,7 +2766,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "JSTOR Images | Artstor",
         description:
-            "Explore millions of images for research contributed by universities, archives, museums, plus community and private collections.\u00a0",
+            "Explore millions of images for research contributed by universities, archives, museums, plus community and private collections. ",
         subjects: [
             "Art",
             "Design and Construction Management",
@@ -2823,7 +2823,7 @@ export const resourceDatabase: LibraryResource[] = [
     },
     {
         name: "Latin America and the Caribbean - Content now part of Gale's Academic OneFile",
-        description: "Access to Academic OneFile.\u00a0",
+        description: "Access to Academic OneFile. ",
         subjects: ["nan"],
         contentTypes: ["nan"],
         url: "nan",
@@ -2870,7 +2870,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Libby",
         description:
-            "Popular eBooks and audiobooks from various publishers; covering a variety of interests and ages. App: Android \u00a0 \u00a0 iOS\u00a0",
+            "Popular eBooks and audiobooks from various publishers; covering a variety of interests and ages. App: Android     iOS ",
         subjects: ["General"],
         contentTypes: ["eBooks"],
         url: "https://libbyapp.com/library/byu",
@@ -2974,7 +2974,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Literature, Culture and Society in Depression Era America: Archives of the Federal Writers Project",
         description:
-            "This collection presents the Federal Writers\u2019 Project (FWP) publications of all 47 states involved in the project, which ran from 1933 to 1943.",
+            "This collection presents the Federal Writers' Project (FWP) publications of all 47 states involved in the project, which ran from 1933 to 1943.",
         subjects: ["English", "History", "Political Science"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://link.gale.com/apps/collection/3TQA/GDSC?u=byuidaho&sid=bookmark-GDSC",
@@ -2998,7 +2998,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Magill on Literature Plus",
         description:
-            "Biographical essays on the most studied authors, up-to-date lists of each author's principal works, and essays on genres, themes, & settings.\u00a0",
+            "Biographical essays on the most studied authors, up-to-date lists of each author's principal works, and essays on genres, themes, & settings. ",
         subjects: ["Biographies", "English"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=mjh&authtype=sso&custid=s8406107",
@@ -3014,7 +3014,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Making of Modern Law: Primary Sources",
         description:
-            "Documents published by state constitutional conventions, state codes, city charters, law dictionaries, digests, and more.\u00a0",
+            "Documents published by state constitutional conventions, state codes, city charters, law dictionaries, digests, and more. ",
         subjects: ["Political Science"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/MMLP?u=byuidaho",
@@ -3030,7 +3030,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Mango Languages",
         description:
-            "Learn a language online! Lessons in over 70 world languages; self paced with adaptive technology. App: \u00a0\u00a0Android \u00a0\u00a0 iOS\u00a0",
+            "Learn a language online! Lessons in over 70 world languages; self paced with adaptive technology. App:   Android    iOS ",
         subjects: ["Languages and International Studies"],
         contentTypes: ["Interactive Learning"],
         url: "https://connect.mangolanguages.com/byui/login",
@@ -3060,7 +3060,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Market Research & American Business, 1935-1965",
         description:
-            "This collection provides insight into the American consumer boom of the mid-20th century.\u00a0",
+            "This collection provides insight into the American consumer boom of the mid-20th century. ",
         subjects: [
             "Business Management",
             "Communications",
@@ -3073,7 +3073,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Market Research Reports / Publications in Business Source Premier",
         description:
-            "Market Research Reports offer detailed analyses about a specific market situations by subject.\u00a0",
+            "Market Research Reports offer detailed analyses about a specific market situations by subject. ",
         subjects: ["Business Management", "Economics", "Finance", "Marketing"],
         contentTypes: ["Reports / Data"],
         url: "http://search.ebscohost.com/login.aspx?direct=true&setup=0&db=buh&authdb=buhjnh&browse_option=MR&site=bsi-live",
@@ -3081,7 +3081,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Mediae Latinitatis Lexicon Niermeyer",
         description:
-            "Dictionary of Medieval Latin with English, French, and German translations.\u00a0",
+            "Dictionary of Medieval Latin with English, French, and German translations. ",
         subjects: [
             "English",
             "History",
@@ -3094,7 +3094,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Medici.tv",
         description:
-            "Hundreds of live and archived concerts, operas, ballets, documentaries, artist portraits, educational programs, and master classes.\u00a0 \u00a0iOS \u00a0| \u00a0Android",
+            "Hundreds of live and archived concerts, operas, ballets, documentaries, artist portraits, educational programs, and master classes.  iOS  |  Android",
         subjects: ["Dance", "Humanities and Philosophy", "Music", "Theatre"],
         contentTypes: ["Video;Audio"],
         url: "https://edu.medici.tv",
@@ -3118,7 +3118,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "MEDLINE",
         description:
-            "Bibliographic database with citations and abstracts for biomedical & health journals; some link to full text.\u00a0",
+            "Bibliographic database with citations and abstracts for biomedical & health journals; some link to full text. ",
         subjects: ["Health Services", "Nursing"],
         contentTypes: [
             "Abstract / Citation / Index;Full-Text Articles;Journals",
@@ -3136,7 +3136,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Mergent Online",
         description:
-            "Detail on US and International public companies: business description, history, property, subsidiaries, officers, long-term debt and capital stock.\u00a0",
+            "Detail on US and International public companies: business description, history, property, subsidiaries, officers, long-term debt and capital stock. ",
         subjects: ["Business Management", "Marketing"],
         contentTypes: ["Statistics;Reports / Data"],
         url: "https://www.mergentonline.com/",
@@ -3184,7 +3184,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Migration to New Worlds",
         description:
-            "Charts the emigration experience of millions across 200 years of turbulent history from the \u201ccentury of immigration\u201d to the modern era.",
+            "Charts the emigration experience of millions across 200 years of turbulent history from the century of immigration to the modern era.",
         subjects: ["History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.migration.amdigital.co.uk/",
@@ -3286,7 +3286,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "MRI-Simmons Catalyst",
         description:
-            "A consumer intelligence and discovery platform that provides marketers with fast access to actionable consumer insights.\u00a0",
+            "A consumer intelligence and discovery platform that provides marketers with fast access to actionable consumer insights. ",
         subjects: ["Business Management", "Communications"],
         contentTypes: ["Statistics;Reports / Data"],
         url: "https://insights.mrisimmons.com/university/byui",
@@ -3326,7 +3326,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "National Geographic Virtual Library",
         description:
-            "A complete archive of the magazine to present (45-day embargo); includes all pages & photographs with a browsable & searchable interface.\u00a0",
+            "A complete archive of the magazine to present (45-day embargo); includes all pages & photographs with a browsable & searchable interface. ",
         subjects: ["Art", "General", "Geography", "History"],
         contentTypes: ["Images;Full-Text Articles"],
         url: "http://infotrac.galegroup.com/itweb/byuidaho?db=NGMA",
@@ -3342,7 +3342,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Naxos Music Library",
         description:
-            "The world\u00b4s largest online classical music library, offering millions of music tracks for listening and studying. After opening, users can click on \u201cPlaylists\u201d to see BYU-I playlists and to create their own account.\r\nApp: \u00a0 \u00a0 \u00a0\u00a0Android\u00a0 \u00a0 \u00a0iOS",
+            "The world\u00b4s largest online classical music library, offering millions of music tracks for listening and studying. After opening, users can click on Playlists to see BYU-I playlists and to create their own account.\r\nApp:       Android     iOS",
         subjects: ["General", "Music"],
         contentTypes: ["Audio;Full-Text Articles"],
         url: "https://brighamyui.naxosmusiclibrary.com",
@@ -3366,7 +3366,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "New England Journal of Medicine",
         description:
-            "The New England Journal of Medicine (NEJM) is the world\u2019s leading medical journal and website.\u00a0",
+            "The New England Journal of Medicine (NEJM) is the world's leading medical journal and website. ",
         subjects: ["Nursing"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://content.nejm.org/",
@@ -3374,7 +3374,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "New York Times",
         description:
-            "Breaking U.S. and international news and reports covering politics, business, opinion, technology, science, health, sports, arts, books, style, and more.\u00a0",
+            "Breaking U.S. and international news and reports covering politics, business, opinion, technology, science, health, sports, arts, books, style, and more. ",
         subjects: [
             "Business Management",
             "Communications",
@@ -3390,7 +3390,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "New York Times in Education",
         description:
-            "A resource for faculty and students to utilize instructional strategies, activities, and teaching resources from The New York Times. Register here.\u00a0",
+            "A resource for faculty and students to utilize instructional strategies, activities, and teaching resources from The New York Times. Register here. ",
         subjects: [
             "Accounting",
             "Art",
@@ -3412,7 +3412,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "New York Times: ProQuest Historical Newspapers",
         description:
-            "Provides researchers, genealogists, and scholars with searchable first-hand accounts and coverage of the politics, society, and events since 1851.\u00a0",
+            "Provides researchers, genealogists, and scholars with searchable first-hand accounts and coverage of the politics, society, and events since 1851. ",
         subjects: ["Family History", "General", "History", "Political Science"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://search.proquest.com/hnpnewyorktimes?accountid=9817",
@@ -3428,7 +3428,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "NewsBank",
         description:
-            "The world's largest collection of newspapers. Find current & archived state, national, & international articles on issues, events, & people.\u00a0",
+            "The world's largest collection of newspapers. Find current & archived state, national, & international articles on issues, events, & people. ",
         subjects: ["Family History", "General", "History", "Political Science"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://infoweb.newsbank.com/apps/news/advanced-search/?p=WORLDNEWS&f=advanced",
@@ -3436,7 +3436,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Newspaper / Periodical databases from Gale",
         description:
-            "Search the collection of Gale's historical newspapers and periodicals to which the BYU-I McKay Library subscribes.\u00a0",
+            "Search the collection of Gale's historical newspapers and periodicals to which the BYU-I McKay Library subscribes. ",
         subjects: ["General", "History"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://find.galegroup.com/dvnw/start.do?prodId=DVNW&userGroupName=byuidaho",
@@ -3497,7 +3497,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Nixon Years, 1969-1974",
         description:
-            "This collection provides complete FCO 7 and FCO 82 files for the entire period of Richard Nixon\u2019s presidency.",
+            "This collection provides complete FCO 7 and FCO 82 files for the entire period of Richard Nixon's presidency.",
         subjects: ["History", "Political Science"],
         contentTypes: ["Primary Resource;Government;Full-Text Articles"],
         url: "https://www.thenixonyears.amdigital.co.uk",
@@ -3551,7 +3551,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "North American Women's Magazines & Newspapers",
         description:
-            "A growing, award-winning collection of the most historically important North American women\u2019s magazines and newspapers from the 1800's thru the early 1900's.",
+            "A growing, award-winning collection of the most historically important North American women's magazines and newspapers from the 1800's thru the early 1900's.",
         subjects: [
             "History",
             "Sociology and Social Work",
@@ -3563,7 +3563,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Nursing and Allied Health",
         description:
-            "Access authoritative content on specialized care, treatment, and patient management - includes full-text for most titles cited in CINAHL .\u00a0",
+            "Access authoritative content on specialized care, treatment, and patient management - includes full-text for most titles cited in CINAHL . ",
         subjects: ["Nursing"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://go-gale-com.byui.idm.oclc.org/ps/start.do?p=PPNU&u=byuidaho",
@@ -3589,7 +3589,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Nursing Education in Video",
         description:
-            "Hundreds of up-to-date nurse training videos for demonstration and training for those looking to improve their clinical skills and patient care.\u00a0",
+            "Hundreds of up-to-date nurse training videos for demonstration and training for those looking to improve their clinical skills and patient care. ",
         subjects: ["Nursing"],
         contentTypes: ["Video"],
         url: "https://search.alexanderstreet.com/mcom",
@@ -3597,7 +3597,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "O'Reilly Books Online",
         description:
-            "Up-to-date technical books covering software development, CAD, data, design, hardware, math, engineering, leadership, etc. App:\u00a0 IOS\u00a0 \u00a0\u00a0Anroid\u00a0",
+            "Up-to-date technical books covering software development, CAD, data, design, hardware, math, engineering, leadership, etc. App:  IOS    Anroid ",
         subjects: [
             "Automotive Engineering / Technology",
             "Business Management",
@@ -3615,7 +3615,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "OmniFile",
         description:
-            "Multidisciplinary full-text articles covering topics including art, business, education, humanities, science, social sciences, and technology.\u00a0",
+            "Multidisciplinary full-text articles covering topics including art, business, education, humanities, science, social sciences, and technology. ",
         subjects: ["General"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=ofs&authtype=sso&custid=s8406107",
@@ -3639,7 +3639,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Opera in Video",
         description:
-            "Hundred of hours of opera performances from staged productions, interviews, and documentaries. \u00a0",
+            "Hundred of hours of opera performances from staged productions, interviews, and documentaries. ",
         subjects: ["Dance", "Humanities and Philosophy", "Music", "Theatre"],
         contentTypes: ["Video"],
         url: "https://search.alexanderstreet.com/opiv",
@@ -3663,7 +3663,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Organ Cinema",
         description:
-            "Learn the history, sound, and repertoire of the organ in these masterful films and recordings. No login required; click \u201cView Project Detail.\u201d",
+            "Learn the history, sound, and repertoire of the organ in these masterful films and recordings. No login required; click "View Project Detail.",
         subjects: ["Music"],
         contentTypes: ["Video;Audio"],
         url: "https://organcinema.com",
@@ -3705,7 +3705,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Oxford Music Online",
         description:
-            "The \u00a0world\u2019s premier online music encyclopedia, offering comprehensive coverage of music, musicians, music-making, and music scholarship.\u00a0",
+            "The  world's premier online music encyclopedia, offering comprehensive coverage of music, musicians, music-making, and music scholarship. ",
         subjects: ["Music"],
         contentTypes: ["Reference;Full-Text Articles"],
         url: "https://www.oxfordmusiconline.com/",
@@ -3774,7 +3774,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Perdita Manuscripts: Women Writers, 1500-1700",
         description:
-            "Discover manuscripts written or compiled by women in the British Isles during the sixteenth and seventeenth centuries.\u00a0",
+            "Discover manuscripts written or compiled by women in the British Isles during the sixteenth and seventeenth centuries. ",
         subjects: ["English", "History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.perditamanuscripts.amdigital.co.uk",
@@ -3806,7 +3806,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Periodicals Index Online",
         description:
-            "Provides citations for millions of articles published in the arts, humanities, and social sciences over the past 300 years.\u00a0",
+            "Provides citations for millions of articles published in the arts, humanities, and social sciences over the past 300 years. ",
         subjects: [
             "Art",
             "General",
@@ -3844,7 +3844,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Physical Therapy and Sports Medicine",
         description:
-            "Access to academic journals and magazines covering the fields of physical therapy, physical fitness, and sports medicine.\u00a0",
+            "Access to academic journals and magazines covering the fields of physical therapy, physical fitness, and sports medicine. ",
         subjects: ["Human Performance and Recreation", "Nursing"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://go.gale.com/ps/start.do?p=PPSM&u=byuidaho",
@@ -3908,7 +3908,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Popular Culture in Britain and America, 1950-1975",
         description:
-            "Popular Culture explores the dynamic period of social, political, and cultural change between 1950 and 1975.\u00a0",
+            "Popular Culture explores the dynamic period of social, political, and cultural change between 1950 and 1975. ",
         subjects: ["History", "Music"],
         contentTypes: ["Images;Video;Primary Resource;Full-Text Articles"],
         url: "https://www.rockandroll.amdigital.co.uk/",
@@ -3916,7 +3916,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Post Register Online (Idaho Falls)",
         description:
-            "Access digital editions (past 30 days); plus access other southeast Idaho newspapers. For students, faculty, and staff of BYU-Idaho. Archives at \u00a0NewsBank.\u00a0",
+            "Access digital editions (past 30 days); plus access other southeast Idaho newspapers. For students, faculty, and staff of BYU-Idaho. Archives at  NewsBank. ",
         subjects: ["General"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://content.byui.edu/items/b22ae80b-6324-44da-8d64-fcb64588883d/1/?attachment.uuid=1f00f709-aafa-45bb-a2ee-836990ba74b2&attachment.stream=true",
@@ -3932,7 +3932,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "PrivCo",
         description:
-            "A premiere source for business and financial data on major, non-publicly traded corporations. Use BYU-I email to create account.\u00a0",
+            "A premiere source for business and financial data on major, non-publicly traded corporations. Use BYU-I email to create account. ",
         subjects: ["Business Management"],
         contentTypes: ["Statistics;Reports / Data"],
         url: "https://byui.idm.oclc.org/login?url=https://system.privco.com/academic",
@@ -3974,7 +3974,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Psychology and Behavioral Science Collection",
         description:
-            "Search journals covering emotional & behavioral characteristics, psychiatry & psychology, mental processes, anthropology, and observational & experimental methods.\u00a0",
+            "Search journals covering emotional & behavioral characteristics, psychiatry & psychology, mental processes, anthropology, and observational & experimental methods. ",
         subjects: ["Psychology"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=pbh&authtype=sso&custid=s8406107",
@@ -4032,7 +4032,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Queen Victoria's Journals",
         description:
-            "The full collection of Queen Victoria's surviving diaries, from her childhood days throughout her complete reign.\u00a0",
+            "The full collection of Queen Victoria's surviving diaries, from her childhood days throughout her complete reign. ",
         subjects: ["English", "History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.proquest.com/qvj",
@@ -4101,7 +4101,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Religion and Philosophy Collection",
         description:
-            "Searches three EBSCO databases at once: Religion, Philosophy Collection, and ATLA Religion.\u00a0",
+            "Searches three EBSCO databases at once: Religion, Philosophy Collection, and ATLA Religion. ",
         subjects: ["Humanities and Philosophy", "Religious Education"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://search.ebscohost.com/login.aspx?profile=ehost&defaultdb=rlh&authtype=sso&custid=s8406107",
@@ -4125,7 +4125,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Religious Studies Center",
         description:
-            "Enjoy publications of the Religious Studies Center, the research and publication arm of BYU Religious Education.\u00a0",
+            "Enjoy publications of the Religious Studies Center, the research and publication arm of BYU Religious Education. ",
         subjects: ["nan"],
         contentTypes: ["Video;Audio;Full-Text Articles;Journals"],
         url: "https://rsc.byu.edu/",
@@ -4133,7 +4133,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Research Library",
         description:
-            "A multidisciplinary resource featuring full-text scholarly journals, professional and trade publications, and magazines covering multiple subjects. \u00a0",
+            "A multidisciplinary resource featuring full-text scholarly journals, professional and trade publications, and magazines covering multiple subjects. ",
         subjects: [
             "Art",
             "Business Management",
@@ -4171,7 +4171,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Romanticism: Life, Literature and Landscape",
         description:
-            "Discover the working methods of Romantic poets and trace the evolution of celebrated verse with this collection from the Wordsworth Trust.\u00a0",
+            "Discover the working methods of Romantic poets and trace the evolution of celebrated verse with this collection from the Wordsworth Trust. ",
         subjects: ["Art", "English"],
         contentTypes: ["Images;Maps;Primary Resource;Full-Text Articles"],
         url: "https://www.romanticism.amdigital.co.uk/",
@@ -4251,7 +4251,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Salem Press",
         description:
-            "A broad range of e-books covering literature, history, science, health, and career topics published by Salem Press, H.W. Wilson, and Grey House.\u00a0",
+            "A broad range of e-books covering literature, history, science, health, and career topics published by Salem Press, H.W. Wilson, and Grey House. ",
         subjects: [
             "English",
             "General",
@@ -4290,7 +4290,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Science (AAAS)",
         description:
-            "Science is a leading outlet for scientific news, commentary, and cutting-edge research. Full-text access via the publisher, 1880s-present.\u00a0",
+            "Science is a leading outlet for scientific news, commentary, and cutting-edge research. Full-text access via the publisher, 1880s-present. ",
         subjects: ["Biology", "Chemistry", "Physics"],
         contentTypes: ["Full-Text Articles;Journals"],
         url: "https://science.sciencemag.org/",
@@ -4298,7 +4298,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Science in Context",
         description:
-            "Science In Context showcases how scientific disciplines relate to real-world issues ranging from bacteria to obesity and weather.\u00a0",
+            "Science In Context showcases how scientific disciplines relate to real-world issues ranging from bacteria to obesity and weather. ",
         subjects: [
             "Biographies",
             "Biology",
@@ -4334,7 +4334,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Scopus",
         description:
-            "Abstracts & citations for scientific journals, books, & more covering research across all scientific and technical disciplines. Can register with BYU-I email.\u00a0",
+            "Abstracts & citations for scientific journals, books, & more covering research across all scientific and technical disciplines. Can register with BYU-I email. ",
         subjects: [
             "Animal and Food Science",
             "Applied Plant Science",
@@ -4366,7 +4366,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Scribner Writer Series",
         description:
-            "Access original, scholar-signed essays on the lives and works of authors from around the world and from all time periods.\u00a0",
+            "Access original, scholar-signed essays on the lives and works of authors from around the world and from all time periods. ",
         subjects: ["Biographies", "English"],
         contentTypes: ["Full-Text Articles"],
         url: "http://go.galegroup.com/ps/start.do?p=G-Scrib&u=byuidaho&authCount=1",
@@ -4374,7 +4374,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Scripture Citation Index",
         description:
-            "An index linking scriptures to places they are cited in general conference talks, Journal of Discourses, and Teachings of the prophet Joseph Smith.\u00a0",
+            "An index linking scriptures to places they are cited in general conference talks, Journal of Discourses, and Teachings of the prophet Joseph Smith. ",
         subjects: ["General", "Religious Education"],
         contentTypes: ["Abstract / Citation / Index"],
         url: "http://scriptures.byu.edu/",
@@ -4402,7 +4402,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Shakespeare in Performance",
         description:
-            "Go behind the scenes and explore how Shakespeare\u2019s plays have been interpreted by theatre companies, actors and directors around the world. \u00a0",
+            "Go behind the scenes and explore how Shakespeare's plays have been interpreted by theatre companies, actors and directors around the world. ",
         subjects: ["English", "Theatre"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.shakespeareinperformance.amdigital.co.uk",
@@ -4449,7 +4449,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Slavery and Anti-Slavery: A Transnational Archive",
         description:
-            "A collection devoted to the transatlantic history of slavery (1600s-1800s) through books, manuscripts, court records, and serials.\u00a0",
+            "A collection devoted to the transatlantic history of slavery (1600s-1800s) through books, manuscripts, court records, and serials. ",
         subjects: ["History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://go-gale-com.byui.idm.oclc.org/ps/start.do?p=SAS&u=byuidaho",
@@ -4488,7 +4488,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Social Theory",
         description:
-            "Documents that explore the complexities and interpret the nature of social behavior and organization.\u00a0",
+            "Documents that explore the complexities and interpret the nature of social behavior and organization. ",
         subjects: ["Sociology and Social Work"],
         contentTypes: ["Full-Text Articles"],
         url: "https://search.alexanderstreet.com/soth",
@@ -4512,7 +4512,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Southern Life, Slavery, and the Civil War",
         description:
-            "Features petitions on race & slavery, state laws on slavery, & records from Southern Plantations, Civil War, Reconstruction Era, & industrial slavery.Read more |\u00a0Search\u00a0| Browse Collections",
+            "Features petitions on race & slavery, state laws on slavery, & records from Southern Plantations, Civil War, Reconstruction Era, & industrial slavery.Read more | Search | Browse Collections",
         subjects: ["History", "Political Science", "Special Collections"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=whatsin&action=Southern%20Life,%20Slavery,%20and%20the%20Civil%20War",
@@ -4520,7 +4520,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Southern Literary Messenger: Literature of the Old South",
         description:
-            "Peruse the pages of The Southern Literary Messenger; one of the most successful and influential literary magazines in the South.\u00a0",
+            "Peruse the pages of The Southern Literary Messenger; one of the most successful and influential literary magazines in the South. ",
         subjects: ["English"],
         contentTypes: ["eBooks;Full-Text Articles;Journals"],
         url: "https://link.gale.com/apps/collection/4KOP/GDSC?u=byuidaho&sid=bookmark-GDSC",
@@ -4528,7 +4528,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Special Reports",
         description:
-            "News articles focusing on topics of current interest. Includes content from around the world to provide a global perspective. Updated daily.**** Site under construction 10/12/23 for \u201capproximately 6 more months\u201d ****\u00a0",
+            "News articles focusing on topics of current interest. Includes content from around the world to provide a global perspective. Updated daily.**** Site under construction 10/12/23 for approximately 6 more months **** ",
         subjects: ["General"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://infoweb.newsbank.com/iw-search/we/Static/?p_product=SR&p_theme=current&p_action=home",
@@ -4558,7 +4558,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "State Papers Online [British]",
         description:
-            "State Papers Online provides access to the British State Papers, predominately the papers of the Secretary of State, for the Tudor era 1509-1603.\u00a0",
+            "State Papers Online provides access to the British State Papers, predominately the papers of the Secretary of State, for the Tudor era 1509-1603. ",
         subjects: ["History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/SPOL?u=byuidaho",
@@ -4566,7 +4566,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Statista",
         description:
-            "Statistical insights and facts from over 170 industries and 150 countries. Get statistics, studies, and reports in seconds in response to your query. App: Android \u00a0\u00a0iOS",
+            "Statistical insights and facts from over 170 industries and 150 countries. Get statistics, studies, and reports in seconds in response to your query. App: Android   iOS",
         subjects: [
             "Business Management",
             "Communications",
@@ -4588,7 +4588,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "SUR, 1931-1992",
         description:
-            "The complete run of the Latin magazine, featuring fiction, poetry, philosophy, criticism, and history. Written by leading figures, primarily from Latin America.\u00a0",
+            "The complete run of the Latin magazine, featuring fiction, poetry, philosophy, criticism, and history. Written by leading figures, primarily from Latin America. ",
         subjects: ["History", "Languages and International Studies"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://link.gale.com/apps/collection/8RPY/GDSC?u=byuidaho&sid=bookmark-GDSC",
@@ -4596,7 +4596,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Swank Digital Campus",
         description:
-            "Allows legal viewing of course-assigned films inside and outside the classroom. (Select SAML login for school login). Mobile app available: \u00a0\u00a0Android \u00a0 iOS (no app--view in Safari)",
+            "Allows legal viewing of course-assigned films inside and outside the classroom. (Select SAML login for school login). Mobile app available:   Android   iOS (no app--view in Safari)",
         subjects: ["General"],
         contentTypes: ["Video"],
         url: "https://digitalcampus.swankmp.net/byuidaho279946/",
@@ -4604,7 +4604,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "SWOT Analyses in Business Source Premier",
         description:
-            "A SWOT Analysis provides detailed information about a company\u2019s strengths, weaknesses, opportunities, and threats.",
+            "A SWOT Analysis provides detailed information about a company's strengths, weaknesses, opportunities, and threats.",
         subjects: ["Business Management", "Economics", "Finance", "Marketing"],
         contentTypes: ["Statistics;Reports / Data"],
         url: "https://research.ebsco.com/c/m65exo/topics/categories/TOPIC-0000156095?isDashboardExpanded=true",
@@ -4654,7 +4654,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Theatre in Context Collection",
         description:
-            "This collection helps draw connections between the people who brought key productions and dramas to life: directors, designers, actors, etc.\u00a0",
+            "This collection helps draw connections between the people who brought key productions and dramas to life: directors, designers, actors, etc. ",
         subjects: ["Theatre"],
         contentTypes: ["Images;Full-Text Articles"],
         url: "https://search.alexanderstreet.com/ticc",
@@ -4662,7 +4662,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Theatre in Video",
         description:
-            "Theatre in Video contains hundreds of videos, including documentaries and definitive performances of the world\u2019s most important plays.",
+            "Theatre in Video contains hundreds of videos, including documentaries and definitive performances of the world's most important plays.",
         subjects: ["Art", "Theatre"],
         contentTypes: ["Video"],
         url: "https://search.alexanderstreet.com/ativ",
@@ -4678,7 +4678,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Times Literary Supplement Historical Archive",
         description:
-            "Contains the full text of every issue of the Times Literary Supplement published between 1902 and the present (6 yr embargo)\u00a0",
+            "Contains the full text of every issue of the Times Literary Supplement published between 1902 and the present (6 yr embargo) ",
         subjects: ["English", "History"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
         url: "https://go.galegroup.com/ps/start.do?p=TLSH&u=byuidaho&authCount=1",
@@ -4710,7 +4710,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Trials, 1600--1926",
         description:
-            "A comprehensive database of full-text documents from Anglo-American trials.\u00a0",
+            "A comprehensive database of full-text documents from Anglo-American trials. ",
         subjects: ["Political Science"],
         contentTypes: ["Primary Resource"],
         url: "https://byui.idm.oclc.org/login?url=https://link.gale.com/apps/MMLT?u=byuidaho",
@@ -4818,7 +4818,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "U.S. Newsstream (PQ)",
         description:
-            "Full text of hundreds of U.S. and international news sources. \u00a0 \u00a0View title list (XLS)",
+            "Full text of hundreds of U.S. and international news sources.   View title list (XLS)",
         subjects: ["General"],
         contentTypes: ["Newspapers;Full-Text Articles"],
         url: "https://search.proquest.com/newsstand?accountid=9817",
@@ -4850,7 +4850,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "UpToDate",
         description:
-            "UpToDate is a clinical information resource covering medical specialties, calculators, Medline abstracts, drug database, etc. Apps\u00a0 Android \u00a0iOS",
+            "UpToDate is a clinical information resource covering medical specialties, calculators, Medline abstracts, drug database, etc. Apps  Android  iOS",
         subjects: ["Health Services", "Nursing"],
         contentTypes: ["Abstract / Citation / Index;Reports / Data"],
         url: "https://www.uptodate.com/contents/search",
@@ -4866,7 +4866,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Victorian Popular Culture",
         description:
-            "A resource for the study of popular entertainment in \u00a01800s- early 1900s. Includes popular entertainment, sensation, magic, sideshows, etc.",
+            "A resource for the study of popular entertainment in  1800s- early 1900s. Includes popular entertainment, sensation, magic, sideshows, etc.",
         subjects: ["English", "History"],
         contentTypes: [
             "Images;Video;Audio;Primary Resource;Full-Text Articles",
@@ -4876,7 +4876,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Virginia Company Archives",
         description:
-            "\u00a0A comprehensive record of the history of the Virginia Company of London, 1606-1624.",
+            " A comprehensive record of the history of the Virginia Company of London, 1606-1624.",
         subjects: ["History"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://www.virginiacompanyarchives.amdigital.co.uk/",
@@ -4900,7 +4900,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Vogue archive",
         description:
-            "Searchable archive of the American Vogue magazine from 1892 to the present. Includes every page, covers, and foldouts.\u00a0",
+            "Searchable archive of the American Vogue magazine from 1892 to the present. Includes every page, covers, and foldouts. ",
         subjects: [
             "Art",
             "History",
@@ -4913,7 +4913,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Voices from Ellis Island: An Oral History of American Immigration",
         description:
-            "Stories of immigrants who underwent examination and processing at the Ellis Island facility in upper New York harbor.\u00a0",
+            "Stories of immigrants who underwent examination and processing at the Ellis Island facility in upper New York harbor. ",
         subjects: ["Family History", "History", "Special Collections"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://hv-proquest-com.byui.idm.oclc.org/historyvault/hv.jsp?pageid=browse\u2223=48990&cid=001745&action=detailAZ",
@@ -4921,7 +4921,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Wall Street Journal",
         description:
-            "Leading business & economics newspaper since 1889, following advances in business, science, technology, entertainment, society, & globalization.\u00a0",
+            "Leading business & economics newspaper since 1889, following advances in business, science, technology, entertainment, society, & globalization. ",
         subjects: [
             "Accounting",
             "Business Management",
@@ -4969,7 +4969,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Web of Science",
         description:
-            "A premier research platform, helping users find, analyze, and share information in the sciences, social sciences, arts, and humanities.\u00a0",
+            "A premier research platform, helping users find, analyze, and share information in the sciences, social sciences, arts, and humanities. ",
         subjects: [
             "Animal and Food Science",
             "Biology",
@@ -5007,7 +5007,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Wiley Online Library",
         description:
-            "Multi-disciplinary content from journals, books, reference works, databases, & manuals. On landing page, scroll down to search by subject. Apps: Android\u00a0 \u00a0\u00a0 iOS \u00a0",
+            "Multi-disciplinary content from journals, books, reference works, databases, & manuals. On landing page, scroll down to search by subject. Apps: Android     iOS  ",
         subjects: [
             "Animal and Food Science",
             "Art",
@@ -5038,7 +5038,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Women and Social Movements in the United States, 1600-2000",
         description:
-            "A resource for students and scholars of U.S. history and U.S. women's history.\u00a0",
+            "A resource for students and scholars of U.S. history and U.S. women's history. ",
         subjects: ["History", "Sociology and Social Work"],
         contentTypes: ["Primary Resource;Full-Text Articles"],
         url: "https://search-alexanderstreet-com.byui.idm.oclc.org/wass",
@@ -5099,7 +5099,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "World History in Context",
         description:
-            "Provides balanced coverage of events in world history with relevant articles, sharing both current thinking and established scholarly work.\u00a0",
+            "Provides balanced coverage of events in world history with relevant articles, sharing both current thinking and established scholarly work. ",
         subjects: [
             "Foundations & GE (General Education)",
             "History",
@@ -5124,7 +5124,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "World Religions",
         description:
-            "Covers all the basic information on the beliefs, practices, and history of each major world religion, including leaders, holy days, topics, and texts.\u00a0",
+            "Covers all the basic information on the beliefs, practices, and history of each major world religion, including leaders, holy days, topics, and texts. ",
         subjects: ["Religious Education"],
         contentTypes: ["eBooks;Video;Full-Text Articles"],
         url: "https://online.infobaselearning.com/Direct.aspx?aid=104034&pid=WE30",
@@ -5140,7 +5140,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "World War II: U.S. Documents on Planning, Operations, Intelligence, Axis War Crimes, and Refugees",
         description:
-            "Firsthand accounts of the innermost workings of the top level of military planning during World War II. Part of the History Vault Collection. \u00a0More Info | Search\u00a0",
+            "Firsthand accounts of the innermost workings of the top level of military planning during World War II. Part of the History Vault Collection. More Info | Search ",
         subjects: [
             "History",
             "Languages and International Studies",
