@@ -292,7 +292,7 @@ export function ResourceFinder() {
                         )}
                     </div>
 
-                    <Tabs defaultValue="list" className="w-full">
+                    <Tabs defaultValue="detailed" className="w-full">
                         <TabsList className="mb-4">
                             <TabsTrigger value="list">List View</TabsTrigger>
                             <TabsTrigger value="detailed">
