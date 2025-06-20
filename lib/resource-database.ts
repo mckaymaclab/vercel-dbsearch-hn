@@ -58,7 +58,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Gale's multi-disciplinary search through millions of pages in peer-reviewed articles, eBooks, primary sources, and more.\u00a0",
         subjects: ["General"],
         contentTypes: ["Full-Text Articles"],
-        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=GPS&sw=w&u=byuidaho&v=2.1&pg=BasicSearch\u2062=static&sid=bookmark-GPS",
+        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=GPS&sw=w&u=byuidaho&v=2.1&pg=BasicSearch&it=static&sid=bookmark-GPS",
     },
     {
         name: "Acceda Noticias (NewsBank)",
@@ -478,7 +478,7 @@ export const resourceDatabase: LibraryResource[] = [
         contentTypes: [
             "Newspapers;Primary Resource;Full-Text Articles;Journals",
         ],
-        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=GDSC&sw=w&u=byuidaho&v=2.1&pg=BasicSearch\u2062=static&sid=bookmark-GDSC",
+        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=GDSC&sw=w&u=byuidaho&v=2.1&pg=BasicSearch&it=static&sid=bookmark-GDSC",
     },
     {
         name: "ArkivDigital",
@@ -690,7 +690,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Political Science",
         ],
         contentTypes: ["Full-Text Articles"],
-        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=BIC&sw=w&u=byuidaho&v=2.1&pg=BasicSearch\u2062=static&sid=bookmark-BIC",
+        url: "https://byui.idm.oclc.org/login?url=https://go.gale.com/ps/i.do?p=BIC&sw=w&u=byuidaho&v=2.1&pg=BasicSearch&it=static&sid=bookmark-BIC",
     },
     {
         name: "Biography Reference Source",
@@ -4623,7 +4623,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Gain fundamental insight into domestic and international affairs with access to both the daily and Sunday editions of The Telegraph.",
         subjects: ["History"],
         contentTypes: ["Newspapers;Primary Resource;Full-Text Articles"],
-        url: "https://go.gale.com/ps/i.do?p=TGRH&sw=w&u=byuidaho&v=2.1&pg=BasicSearch\u2062=static&sid=bookmark-TGRH",
+        url: "https://go.gale.com/ps/i.do?p=TGRH&sw=w&u=byuidaho&v=2.1&pg=BasicSearch&it=static&sid=bookmark-TGRH",
     },
     {
         name: "Testaments to the Holocaust",
