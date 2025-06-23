@@ -3663,7 +3663,7 @@ export const resourceDatabase: LibraryResource[] = [
     {
         name: "Organ Cinema",
         description:
-            "Learn the history, sound, and repertoire of the organ in these masterful films and recordings. No login required; click "View Project Detail.",
+            "Learn the history, sound, and repertoire of the organ in these masterful films and recordings. No login required; click 'View Project Detail.'",
         subjects: ["Music"],
         contentTypes: ["Video;Audio"],
         url: "https://organcinema.com",
