@@ -144,7 +144,7 @@ export function ResourceFinder() {
 
     return (
         <div className="space-y-6">
-            {apiStatus.tested && (
+{/*             {apiStatus.tested && (
                 <Alert variant={apiStatus.working ? "default" : "destructive"}>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
@@ -157,7 +157,7 @@ export function ResourceFinder() {
                         )}
                     </AlertDescription>
                 </Alert>
-            )}
+            )} */}
 
             {usingFallback && (
                 <Alert>
@@ -191,7 +191,7 @@ export function ResourceFinder() {
             </form>
 
             {/* Debug Information */}
-            {results.length > 0 && (
+            {/* {results.length > 0 && (
                 <Collapsible open={showDebug} onOpenChange={setShowDebug}>
                     <CollapsibleTrigger asChild>
                         <Button variant="outline" size="sm" className="mb-4">
@@ -239,7 +239,7 @@ export function ResourceFinder() {
                         </Card>
                     </CollapsibleContent>
                 </Collapsible>
-            )}
+            )} */}
 
             {error && (
                 <Alert variant="destructive">
@@ -274,9 +274,9 @@ export function ResourceFinder() {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    {allSubjects.map((subject) => (
+                                    {allSubjects.map((subject, index) => (
                                         <DropdownMenuCheckboxItem
-                                            key={subject}
+                                        key={`${subject}-${index}`}
                                             checked={selectedSubjects.includes(
                                                 subject
                                             )}
@@ -302,9 +302,9 @@ export function ResourceFinder() {
 
                         <TabsContent value="list" className="space-y-2">
                             {filteredResults.length > 0 ? (
-                                filteredResults.map((resource) => (
+                                filteredResults.map((resource, index) => (
                                     <Card
-                                        key={resource.id}
+                                        key={`${resource.id}-${index}`}
                                         className="hover:bg-slate-50 transition-colors"
                                     >
                                         <CardHeader className="py-4">
@@ -342,9 +342,9 @@ export function ResourceFinder() {
                                                 <div className="flex space-x-2">
                                                     {resource.contentTypes
                                                         .slice(0, 2)
-                                                        .map((type) => (
+                                                        .map((type, index) => (
                                                             <Badge
-                                                                key={type}
+                                                                key={index}
                                                                 variant="outline"
                                                                 className="bg-slate-100"
                                                             >
@@ -458,9 +458,9 @@ function ResourceCard({ resource }: { resource: ResourceResult }) {
                         </CardDescription>
                     </div>
                     <div className="flex space-x-2">
-                        {resource.contentTypes.slice(0, 2).map((type) => (
+                        {resource.contentTypes.slice(0, 2).map((type, index) => (
                             <Badge
-                                key={type}
+                                key={index}
                                 variant="outline"
                                 className="bg-slate-100"
                             >
