@@ -144,21 +144,6 @@ export function ResourceFinder() {
 
     return (
         <div className="space-y-6">
-{/*             {apiStatus.tested && (
-                <Alert variant={apiStatus.working ? "default" : "destructive"}>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                        {apiStatus.working ? (
-                            <span className="text-green-700">
-                                ✅ Google API is working: {apiStatus.message}
-                            </span>
-                        ) : (
-                            <span>⚠️ API Issue: {apiStatus.message}</span>
-                        )}
-                    </AlertDescription>
-                </Alert>
-            )} */}
-
             {usingFallback && (
                 <Alert>
                     <Info className="h-4 w-4" />
@@ -171,7 +156,10 @@ export function ResourceFinder() {
                 </Alert>
             )}
 
-            <form onSubmit={handleSearch} className="flex w-full space-x-2">
+            <form
+                onSubmit={handleSearch}
+                className="flex w-full gap-2 items-stretch"
+            >
                 <div className="relative flex-grow">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input
@@ -179,75 +167,27 @@ export function ResourceFinder() {
                         placeholder="Try: 'Civil War primary sources', 'chemistry journals', 'business case studies'"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="pl-10 py-6 text-base"
+                        className="pl-10 py-3 bg-white text-black text-base h-full"
                     />
                 </div>
-                <Button type="submit" disabled={loading} className="px-6">
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className="px-6 h-full text-base"
+                    style={{ minHeight: "3rem" }}
+                >
                     {loading ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     ) : null}
                     {loading ? "Searching..." : "Search"}
                 </Button>
             </form>
-
-            {/* Debug Information */}
-            {/* {results.length > 0 && (
-                <Collapsible open={showDebug} onOpenChange={setShowDebug}>
-                    <CollapsibleTrigger asChild>
-                        <Button variant="outline" size="sm" className="mb-4">
-                            <Bug className="h-4 w-4 mr-2" />
-                            {showDebug ? "Hide" : "Show"} Search Debug Info
-                        </Button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <Card className="bg-slate-50">
-                            <CardHeader>
-                                <CardTitle className="text-sm">
-                                    Search Debug Information
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-sm space-y-2">
-                                <p>
-                                    <strong>Query:</strong> "{lastQuery}"
-                                </p>
-                                <p>
-                                    <strong>Results Found:</strong>{" "}
-                                    {results.length}
-                                </p>
-                                <p>
-                                    <strong>Using Fallback:</strong>{" "}
-                                    {usingFallback ? "Yes" : "No"}
-                                </p>
-                                <p>
-                                    <strong>API Status:</strong>{" "}
-                                    {apiStatus.working
-                                        ? "Working"
-                                        : "Not tested/Error"}
-                                </p>
-                                <div>
-                                    <strong>Resource IDs Returned:</strong>
-                                    <ul className="list-disc list-inside ml-4">
-                                        {results.map((r) => (
-                                            <li key={r.id}>
-                                                {r.id} (Score:{" "}
-                                                {r.relevanceScore})
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </CollapsibleContent>
-                </Collapsible>
-            )} */}
-
             {error && (
                 <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
             )}
-
             {results.length > 0 && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -276,7 +216,7 @@ export function ResourceFinder() {
                                 <DropdownMenuContent align="end">
                                     {allSubjects.map((subject, index) => (
                                         <DropdownMenuCheckboxItem
-                                        key={`${subject}-${index}`}
+                                            key={`${subject}-${index}`}
                                             checked={selectedSubjects.includes(
                                                 subject
                                             )}
@@ -458,15 +398,17 @@ function ResourceCard({ resource }: { resource: ResourceResult }) {
                         </CardDescription>
                     </div>
                     <div className="flex space-x-2">
-                        {resource.contentTypes.slice(0, 2).map((type, index) => (
-                            <Badge
-                                key={index}
-                                variant="outline"
-                                className="bg-slate-100"
-                            >
-                                {type}
-                            </Badge>
-                        ))}
+                        {resource.contentTypes
+                            .slice(0, 2)
+                            .map((type, index) => (
+                                <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="bg-slate-100"
+                                >
+                                    {type}
+                                </Badge>
+                            ))}
                     </div>
                 </div>
             </CardHeader>
