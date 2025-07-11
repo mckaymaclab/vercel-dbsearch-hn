@@ -22,18 +22,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { findResources, testGeminiConnection } from "@/lib/resource-ai";
+import { findResources } from "@/lib/resource-ai";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuCheckboxItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 
 interface ResourceResult {
     id: string;
@@ -56,37 +51,6 @@ export function ResourceFinder() {
     const [error, setError] = useState("");
     const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
     const [usingFallback, setUsingFallback] = useState(false);
-    const [showDebug, setShowDebug] = useState(false);
-    const [lastQuery, setLastQuery] = useState("");
-    const [apiStatus, setApiStatus] = useState<{
-        tested: boolean;
-        working: boolean;
-        message: string;
-    }>({
-        tested: false,
-        working: false,
-        message: "",
-    });
-
-    const testConnection = async () => {
-        setLoading(true);
-        try {
-            const result = await testGeminiConnection();
-            setApiStatus({
-                tested: true,
-                working: result.success,
-                message: result.message,
-            });
-        } catch (err) {
-            setApiStatus({
-                tested: true,
-                working: false,
-                message: "Failed to test API connection",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -95,13 +59,11 @@ export function ResourceFinder() {
         setLoading(true);
         setError("");
         setUsingFallback(false);
-        setLastQuery(query);
 
         try {
             const resourceResults = await findResources(query);
             setResults(resourceResults);
 
-            // Check if we got fallback results
             const hasFallbackResults = resourceResults.some(
                 (r) =>
                     r.matchReason?.includes("Smart search") ||
@@ -149,7 +111,7 @@ export function ResourceFinder() {
                     <AlertDescription>
                         <span className="text-blue-700">
                             ℹ️ Using enhanced smart search. Results are based on
-                            keyword matching across all 523 library resources.
+                            keyword matching across all 500+ library resources.
                         </span>
                     </AlertDescription>
                 </Alert>
@@ -166,6 +128,7 @@ export function ResourceFinder() {
                         placeholder="Try: 'Civil War primary sources', 'chemistry journals', 'business case studies'"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
+                        autoFocus
                         className="pl-10 py-3 bg-white text-black text-base h-full"
                     />
                 </div>
@@ -351,7 +314,7 @@ export function ResourceFinder() {
                     </h3>
                     <p className="text-slate-500 mt-2 max-w-md mx-auto">
                         Describe what you're researching, and we'll suggest the
-                        best resources from the BYU-Idaho McKay Library's 523
+                        best resources from the BYU-Idaho McKay Library's 500+
                         databases.
                     </p>
                     <div className="mt-4 text-sm text-slate-400">
