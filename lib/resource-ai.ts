@@ -173,7 +173,7 @@ export async function findResources(query: string) {
     try {
         const genAI = getGeminiClient(apiKey);
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash-lite",
             generationConfig: {
                 temperature: 0.3,
                 topK: 40,

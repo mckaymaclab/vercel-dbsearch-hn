@@ -156,12 +156,12 @@ export function ResourceFinder() {
                         <h2 className="text-xl font-semibold text-slate-800">
                             Recommended Resources
                             {usingFallback && (
-                                <span className="text-sm text-slate-500">
+                                <span className="ml-1 text-sm text-slate-500">
                                     (Smart Search)
                                 </span>
                             )}
                             {!usingFallback && (
-                                <span className="text-sm text-slate-500">
+                                <span className="ml-1 text-sm text-slate-500">
                                     (AI-Powered)
                                 </span>
                             )}
@@ -355,9 +355,12 @@ function ResourceCard({ resource }: { resource: ResourceResult }) {
                                 {resource.relevanceScore}% match
                             </Badge>
                         </CardTitle>
-                        <CardDescription className="mt-1">
-                            {resource.description}
-                        </CardDescription>
+                        <CardDescription
+                            className="mt-1"
+                            dangerouslySetInnerHTML={{
+                                __html: resource.description,
+                            }}
+                        />
                     </div>
                     <div className="flex space-x-2">
                         {resource.contentTypes
