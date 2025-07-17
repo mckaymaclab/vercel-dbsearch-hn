@@ -22,7 +22,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { findResources } from "@/lib/resource-ai";
+import { findDatabaseResources } from "@/lib/resource-ai";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -51,6 +53,9 @@ export function ResourceFinder() {
     const [error, setError] = useState("");
     const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
     const [usingFallback, setUsingFallback] = useState(false);
+    const [searchType, setSearchType] = useState<"library" | "database">(
+        "database"
+    );
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,7 +66,10 @@ export function ResourceFinder() {
         setUsingFallback(false);
 
         try {
-            const resourceResults = await findResources(query);
+            const resourceResults = await findDatabaseResources(
+                query,
+                searchType
+            );
             setResults(resourceResults);
 
             const hasFallbackResults = resourceResults.some(
@@ -116,7 +124,30 @@ export function ResourceFinder() {
                     </AlertDescription>
                 </Alert>
             )}
-
+            <div className="flex items-center space-x-4">
+                <p className="text-sm font-medium text-slate-700">Search:</p>
+                <RadioGroup
+                    value={searchType}
+                    onValueChange={(value) =>
+                        setSearchType(value as "database" | "library")
+                    }
+                    className="flex"
+                >
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="database" id="database" />
+                        <Label htmlFor="database">Databases</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <RadioGroupItem
+                            value="library"
+                            id="library-resources"
+                        />
+                        <Label htmlFor="library-resources">
+                            Library Resources
+                        </Label>
+                    </div>
+                </RadioGroup>
+            </div>
             <form
                 onSubmit={handleSearch}
                 className="flex w-full gap-2 items-stretch"
@@ -125,7 +156,11 @@ export function ResourceFinder() {
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input
                         type="text"
-                        placeholder="Try: 'Civil War primary sources', 'chemistry journals', 'business case studies'"
+                        placeholder={
+                            searchType === "database"
+                                ? "Try: 'Civil War primary sources', 'chemistry journals', 'business case studies'"
+                                : "Try: 'Equipment rentals, textbooks', 'library hours', 'special collections', and more"
+                        }
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         autoFocus
@@ -178,7 +213,7 @@ export function ResourceFinder() {
                                 <DropdownMenuContent align="end">
                                     {allSubjects.map((subject, index) => (
                                         <DropdownMenuCheckboxItem
-                                            key={`${subject}-${index}`}
+                                            key={`subject-${subject}-${index}`}
                                             checked={selectedSubjects.includes(
                                                 subject
                                             )}
@@ -206,7 +241,7 @@ export function ResourceFinder() {
                             {filteredResults.length > 0 ? (
                                 filteredResults.map((resource, index) => (
                                     <Card
-                                        key={`${resource.id}-${index}`}
+                                        key={`list-${resource.id}-${index}-${resource.url}`}
                                         className="hover:bg-slate-50 transition-colors"
                                     >
                                         <CardHeader className="py-4">
@@ -290,9 +325,9 @@ export function ResourceFinder() {
 
                         <TabsContent value="detailed" className="space-y-4">
                             {filteredResults.length > 0 ? (
-                                filteredResults.map((resource) => (
+                                filteredResults.map((resource, index) => (
                                     <ResourceCard
-                                        key={resource.id}
+                                        key={`detailed-${resource.id}-${index}-${resource.url}`}
                                         resource={resource}
                                     />
                                 ))

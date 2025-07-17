@@ -3,6 +3,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import { resourceDatabase, type LibraryResource } from "./resource-database";
+import { libraryResourceDatabase } from "./library-resources-database";
 
 // Define the schema for resource results
 const ResourceSchema = z.object({
@@ -126,13 +127,19 @@ function getFallbackResources(query: string): any[] {
 }
 
 // Pre-filter resources based on query to send relevant subset to AI
-function getRelevantResources(query: string, limit = 20): LibraryResource[] {
+function getRelevantResources(
+    query: string,
+    limit = 20,
+    dbType: "library" | "database"
+): LibraryResource[] {
     const queryLower = query.toLowerCase();
     const queryWords = queryLower
         .split(/\s+/)
         .filter((word) => word.length > 2);
 
-    const scoredResources = resourceDatabase.map((resource) => {
+    const scoredResources = (
+        dbType === "database" ? resourceDatabase : libraryResourceDatabase
+    ).map((resource) => {
         let score = 0;
 
         const searchableText = [
@@ -168,7 +175,10 @@ function getRelevantResources(query: string, limit = 20): LibraryResource[] {
         .map((item) => item.resource);
 }
 
-export async function findResources(query: string) {
+export async function findDatabaseResources(
+    query: string,
+    searchType: "library" | "database"
+) {
     const apiKey = process.env.GEMINI_API_KEY;
     try {
         const genAI = getGeminiClient(apiKey);
@@ -183,7 +193,7 @@ export async function findResources(query: string) {
         });
 
         // Get relevant resources to send to AI (instead of just first 8)
-        const relevantResources = getRelevantResources(query, 15);
+        const relevantResources = getRelevantResources(query, 15, searchType);
 
         if (relevantResources.length === 0) {
             // If no relevant resources found, use fallback
@@ -263,90 +273,5 @@ Return exactly 5 resources as a JSON array.`;
         // For parsing errors or other issues, use fallback
         console.log("Using fallback search due to error");
         return getFallbackResources(query);
-    }
-}
-
-export async function testGeminiConnection() {
-    const apiKey = process.env.GEMINI_API_KEY;
-    try {
-        const genAI = getGeminiClient(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const result = await model.generateContent("Hello");
-        const response = await result.response;
-        const text = response.text();
-
-        return { success: true, message: `API working: ${text}` };
-    } catch (error) {
-        console.error("Gemini API test failed:", error);
-
-        if (
-            error instanceof Error &&
-            error.message.includes("API_KEY_INVALID")
-        ) {
-            return {
-                success: false,
-                message:
-                    "Invalid API key. Please check your key and ensure the Generative AI API is enabled.",
-            };
-        }
-
-        if (
-            error instanceof Error &&
-            (error.message.includes("429") || error.message.includes("quota"))
-        ) {
-            return {
-                success: false,
-                message:
-                    "API quota exceeded. The app will use fallback search until quota resets.",
-            };
-        }
-
-        return {
-            success: false,
-            message:
-                error instanceof Error
-                    ? error.message
-                    : "Unknown error occurred",
-        };
-    }
-}
-
-export async function indexNewResource(resourceData: string) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    try {
-        const genAI = getGeminiClient(apiKey);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            generationConfig: {
-                temperature: 0.1,
-                maxOutputTokens: 1024,
-            },
-        });
-
-        const prompt = `Parse this resource info into JSON:
-${resourceData}
-
-Return JSON with: id, name, description, url, subjects[], contentTypes[], accessNote, featured (false), fullText (boolean).`;
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
-
-        // Clean up the response
-        text = text.trim();
-        if (text.startsWith("```json")) {
-            text = text.replace(/```json\s*/, "").replace(/```\s*$/, "");
-        }
-        if (text.startsWith("```")) {
-            text = text.replace(/```\s*/, "").replace(/```\s*$/, "");
-        }
-
-        return JSON.parse(text) as LibraryResource;
-    } catch (error) {
-        console.error("Error indexing new resource:", error);
-        throw new Error(
-            "Failed to index new resource. Please try again later."
-        );
     }
 }
