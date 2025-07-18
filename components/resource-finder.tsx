@@ -135,7 +135,7 @@ export function ResourceFinder() {
                 >
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem value="database" id="database" />
-                        <Label htmlFor="database">Databases</Label>
+                        <Label htmlFor="database">Find Databases</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                         <RadioGroupItem
@@ -143,7 +143,7 @@ export function ResourceFinder() {
                             id="library-resources"
                         />
                         <Label htmlFor="library-resources">
-                            Library Resources
+                            Search Library Website
                         </Label>
                     </div>
                 </RadioGroup>
@@ -329,6 +329,7 @@ export function ResourceFinder() {
                                     <ResourceCard
                                         key={`detailed-${resource.id}-${index}-${resource.url}`}
                                         resource={resource}
+                                        searchType={searchType}
                                     />
                                 ))
                             ) : (
@@ -367,7 +368,13 @@ export function ResourceFinder() {
     );
 }
 
-function ResourceCard({ resource }: { resource: ResourceResult }) {
+function ResourceCard({
+    resource,
+    searchType,
+}: {
+    resource: ResourceResult;
+    searchType: "library" | "database";
+}) {
     return (
         <Card>
             <CardHeader>
@@ -440,7 +447,9 @@ function ResourceCard({ resource }: { resource: ResourceResult }) {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Access Resource
+                        {searchType === "database"
+                            ? "Access Resource"
+                            : "Access Website"}
                     </a>
                 </Button>
             </CardFooter>
