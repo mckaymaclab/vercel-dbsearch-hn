@@ -70,6 +70,12 @@ export function ResourceFinder() {
             );
             setResults(resourceResults);
 
+            if (resourceResults.length === 0 && searchType === "database") {
+ setResults([]);
+                setError("No results for your search. Please try again.");
+ return;
+            }
+
             const hasFallbackResults = resourceResults.some(
                 (r) =>
                     r.matchReason?.includes("Smart search") ||
