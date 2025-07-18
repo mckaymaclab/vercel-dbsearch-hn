@@ -326,12 +326,21 @@ export function ResourceFinder() {
                                         </CardHeader>
                                         <CardFooter className="py-3 flex justify-between">
                                             <div className="text-sm text-slate-500 flex items-center">
-                                                <BookOpen className="h-4 w-4 mr-1" />
-                                                {resource.subjects
-                                                    .slice(0, 3)
-                                                    .join(", ")}
-                                                {resource.subjects.length > 3 &&
-                                                    "..."}
+                                                {resource.moreInfo ? (
+                                                    <div className="text-slate-700">
+                                                        {resource.moreInfo}
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <BookOpen className="h-4 w-4 mr-1" />
+                                                        {resource.subjects
+                                                            .slice(0, 3)
+                                                            .join(", ")}
+                                                        {resource.subjects
+                                                            .length > 3 &&
+                                                            "..."}
+                                                    </>
+                                                )}
                                             </div>
                                             <Button
                                                 variant="outline"
