@@ -23,8 +23,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { findDatabaseResources } from "@/lib/resource-ai";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -124,30 +122,58 @@ export function ResourceFinder() {
                     </AlertDescription>
                 </Alert>
             )}
-            <div className="flex items-center space-x-4">
-                <p className="text-sm font-medium text-slate-700">Search:</p>
-                <RadioGroup
-                    value={searchType}
-                    onValueChange={(value) =>
-                        setSearchType(value as "database" | "library")
-                    }
-                    className="flex"
-                >
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="database" id="database" />
-                        <Label htmlFor="database">Find Databases</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem
-                            value="library"
-                            id="library-resources"
-                        />
-                        <Label htmlFor="library-resources">
+
+            <div className="flex justify-between items-start sm:items-center flex-col sm:flex-row mb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                    <p className="text-sm font-medium text-slate-700">
+                        Search:
+                    </p>
+                    <div className="flex gap-1 p-1 bg-zinc-300 rounded-lg">
+                        <Button
+                            variant={
+                                searchType === "database" ? "default" : "ghost"
+                            }
+                            size="sm"
+                            onClick={() => setSearchType("database")}
+                            className={`transition-all text-black ${
+                                searchType === "database"
+                                    ? "bg-white shadow-sm hover:bg-white"
+                                    : "hover:bg-slate-200"
+                            }`}
+                        >
+                            Find Databases
+                        </Button>
+                        <Button
+                            variant={
+                                searchType === "library" ? "default" : "ghost"
+                            }
+                            size="sm"
+                            onClick={() => setSearchType("library")}
+                            className={`transition-all text-black ${
+                                searchType === "library"
+                                    ? "bg-white shadow-sm hover:bg-white"
+                                    : "hover:bg-slate-200"
+                            }`}
+                        >
                             Search Library Website
-                        </Label>
+                        </Button>
                     </div>
-                </RadioGroup>
+                </div>
+                <div className="mt-4 sm:mt-0">
+                    {searchType === "database" ? (
+                        <p className="text-xs text-slate-500">
+                            Search across 500+ databases for academic articles,
+                            journals, and more.
+                        </p>
+                    ) : (
+                        <p className="text-xs text-slate-500">
+                            Search the library website for tools, resources,
+                            guides, and more.
+                        </p>
+                    )}
+                </div>
             </div>
+
             <form
                 onSubmit={handleSearch}
                 className="flex w-full gap-2 items-stretch"
@@ -179,12 +205,14 @@ export function ResourceFinder() {
                     {loading ? "Searching..." : "Search"}
                 </Button>
             </form>
+
             {error && (
                 <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                 </Alert>
             )}
+
             {results.length > 0 && (
                 <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -201,7 +229,6 @@ export function ResourceFinder() {
                                 </span>
                             )}
                         </h2>
-
                         {results.length > 0 && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
