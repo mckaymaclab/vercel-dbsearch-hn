@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import { resourceDatabase, type LibraryResource } from "./resource-database";
 import { libraryResourceDatabase } from "./library-resources-database";
+import { subjectMappings } from "./subject-mappings";
 
 // Define the schema for resource results
 const ResourceSchema = z.object({
@@ -153,12 +154,31 @@ function getRelevantResources(
 
         // Check for matches
         if (searchableText.includes(queryLower)) {
-            score += 50;
+            score += 20; // Reduced from 50
         }
 
         queryWords.forEach((word) => {
             if (searchableText.includes(word)) {
-                score += 10;
+                score += 5; // Reduced from 10
+            }
+            // Check for subject mapping
+            if (subjectMappings[word]) {
+                subjectMappings[word].forEach((subject) => {
+                    if (
+                        resource.subjects.some((s) =>
+                            s.toLowerCase().includes(subject)
+                        )
+                    ) {
+                        score += 30; // Boost for conceptual match
+                    }
+                });
+            }
+        });
+
+        // Boost for subject match
+        resource.subjects.forEach((subject) => {
+            if (queryLower.includes(subject.toLowerCase())) {
+                score += 15;
             }
         });
 
@@ -169,7 +189,7 @@ function getRelevantResources(
     });
 
     return scoredResources
-        .filter((item) => item.score > 0)
+        .filter((item) => item.score > 10) // Increased threshold
         .sort((a, b) => b.score - a.score)
         .slice(0, limit)
         .map((item) => item.resource);
