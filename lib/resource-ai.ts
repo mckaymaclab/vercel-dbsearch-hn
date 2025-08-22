@@ -21,10 +21,10 @@ const ResourceSchema = z.object({
 const ResourcesResponseSchema = z.array(ResourceSchema).max(5);
 
 function getGeminiClient(apiKey?: string) {
-    const key = apiKey || process.env.GOOGLE_API_KEY;
+    const key = apiKey || process.env.GEMINI_API_KEY;
 
     if (!key) {
-        throw new Error("GOOGLE_API_KEY is not available");
+        throw new Error("GEMINI_API_KEY is not available");
     }
 
     return new GoogleGenerativeAI(key);
