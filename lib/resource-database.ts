@@ -4954,7 +4954,7 @@ export const resourceDatabase: LibraryResource[] = [
         ],
         contentTypes: ["Statistics", "Full-Text Articles"],
         url: "https://byui.idm.oclc.org/login?url=https://www.statista.com/",
-        moreInfo: "Available as an app: &nbsp; &nbsp;Android &nbsp;&nbsp;iOS",
+        moreInfo: "Statista; global statistics database; 22,500+ sources; 170+ industries; charts; infographics; reports; forecasts; market analyses; business; finance; consumer behavior; health; technology; politics; media; government data; market research; trade publications; industry reports; research; strategy; insights; trends; comparisons; decision-making.",
     },
     {
         name: "Sunday Times Historical Archive ",
