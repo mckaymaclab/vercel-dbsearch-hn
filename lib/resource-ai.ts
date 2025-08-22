@@ -168,7 +168,11 @@ function getRelevantResources(
         return { resource, score };
     });
 
-    return scoredResources
+ return scoredResources
+    // Sort by relevance score in descending order
+ .sort((a, b) => b.score - a.score)
+    // Filter for relevant resources (score > 0)
+
         .filter((item) => item.score > 0)
         .sort((a, b) => b.score - a.score)
         .slice(0, limit)
