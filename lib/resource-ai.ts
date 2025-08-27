@@ -249,12 +249,12 @@ Return exactly 5 resources as a JSON array.`;
         let finalResults = [];
 
         if (parsedResults.length > 0) {
-            // If AI returned results, use them (up to 5 as per schema)
+            // If AI returned any results, use them
             finalResults = parsedResults;
         } else if (parsedResults.length > 0 && parsedResults.length <= 5) {
             // If AI returned between 1 and 5 results, use them directly
  finalResults = parsedResults;
-        }  else {
+        } else {
             // Fallback if AI didn't return good results
  finalResults = getFallbackResources(query);
         }
@@ -268,6 +268,7 @@ Return exactly 5 resources as a JSON array.`;
                 seenIds.add(resource.id);
                 return true;
             }
+ console.log('Final resources after deduplication:', finalResults);
         }).slice(0, 5); // Ensure maximum of 5 results are returned
 
     } catch (error) {

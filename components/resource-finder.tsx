@@ -68,6 +68,7 @@ export function ResourceFinder() {
                 query,
                 searchType
             );
+            console.log('Resource results received in handleSearch:', resourceResults);
             setResults(resourceResults);
 
             if (resourceResults.length === 0 && searchType === "database") {
