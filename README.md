@@ -62,7 +62,7 @@ Before running this project locally, make sure you have:
     Create a `.env` file in the root directory and add your Google AI API key:
 
     ```env
-    GOOGLE_API_KEY=your_google_ai_api_key_here
+    GEMINI_API_KEY=your_google_ai_api_key_here
     ```
 
     To get a Google AI API key:
@@ -122,7 +122,7 @@ npm run start
 
 | Variable         | Description              | Required |
 | ---------------- | ------------------------ | -------- |
-| `GOOGLE_API_KEY` | Google Gemini AI API key | Yes      |
+| `GEMINI_API_KEY` | Google Gemini AI API key | Yes      |
 
 ### Customization
 
@@ -150,7 +150,7 @@ This project is automatically deployed on Vercel. The live application is availa
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mckaymaclab/vercel-dbsearch-hn)
 
-Make sure to add your `GOOGLE_API_KEY` environment variable in the Vercel dashboard.
+Make sure to add your `GEMINI_API_KEY` environment variable in the Vercel dashboard.
 
 ## License
 
