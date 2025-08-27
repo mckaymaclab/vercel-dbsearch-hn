@@ -247,7 +247,7 @@ Return exactly 5 resources as a JSON array.`;
         const parsedResults = ResourcesResponseSchema.parse(JSON.parse(text));
 
         if (parsedResults.length > 5) {
- return parsedResults.slice(0, 5);
+        return parsedResults.slice(0, 5);
         } else if (parsedResults.length > 0 && parsedResults.length <= 5) {
             return parsedResults;
         }  else {
