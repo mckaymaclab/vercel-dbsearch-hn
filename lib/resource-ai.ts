@@ -246,10 +246,11 @@ Return exactly 5 resources as a JSON array.`;
 
         const parsedResults = ResourcesResponseSchema.parse(JSON.parse(text));
 
-        // If we got results, return them
-        if (parsedResults.length > 0 && parsedResults.length >= 5) {
+        if (parsedResults.length > 5) {
+ return parsedResults.slice(0, 5);
+        } else if (parsedResults.length > 0 && parsedResults.length <= 5) {
             return parsedResults;
-        } else {
+        }  else {
             // Fallback if AI didn't return good results
             return getFallbackResources(query);
         }
