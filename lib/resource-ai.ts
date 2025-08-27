@@ -246,14 +246,30 @@ Return exactly 5 resources as a JSON array.`;
 
         const parsedResults = ResourcesResponseSchema.parse(JSON.parse(text));
 
-        if (parsedResults.length > 5) {
-        return parsedResults.slice(0, 5);
+        let finalResults = [];
+
+        if (parsedResults.length > 0) {
+            // If AI returned results, use them (up to 5 as per schema)
+            finalResults = parsedResults;
         } else if (parsedResults.length > 0 && parsedResults.length <= 5) {
-            return parsedResults;
+            // If AI returned between 1 and 5 results, use them directly
+ finalResults = parsedResults;
         }  else {
             // Fallback if AI didn't return good results
-            return getFallbackResources(query);
+ finalResults = getFallbackResources(query);
         }
+
+        // Deduplicate results based on ID
+        const seenIds = new Set();
+        return finalResults.filter(resource => {
+            if (seenIds.has(resource.id)) {
+                return false;
+            } else {
+                seenIds.add(resource.id);
+                return true;
+            }
+        }).slice(0, 5); // Ensure maximum of 5 results are returned
+
     } catch (error) {
         console.error("Error finding resources:", error);
 
