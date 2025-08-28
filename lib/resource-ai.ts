@@ -1,3 +1,22 @@
+// Helper function for error handling in findDatabaseResources
+function handleResourceError(error: unknown, query: string) {
+    if (
+        error instanceof Error &&
+        (error.message.includes("429") || error.message.includes("quota"))
+    ) {
+        // API quota exceeded, using fallback search
+        return getFallbackResources(query);
+    }
+    if (
+        error instanceof Error &&
+        (error.message.includes("403") || error.message.includes("API"))
+    ) {
+        // API error, using fallback search
+        return getFallbackResources(query);
+    }
+    // Using fallback search due to error
+    return getFallbackResources(query);
+}
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -263,28 +282,7 @@ Return up to 5 resources as a JSON array. If fewer than 5 are relevant, return o
     return finalResults.slice(0, 5);
 
     } catch (error) {
-        console.error("Error finding resources:", error);
-
-        // Check for quota exceeded error
-        if (
-            error instanceof Error &&
-            (error.message.includes("429") || error.message.includes("quota"))
-        ) {
-            console.log("API quota exceeded, using fallback search");
-            return getFallbackResources(query);
-        }
-
-        // For other API errors, also use fallback
-        if (
-            error instanceof Error &&
-            (error.message.includes("403") || error.message.includes("API"))
-        ) {
-            console.log("API error, using fallback search");
-            return getFallbackResources(query);
-        }
-
-        // For parsing errors or other issues, use fallback
-        console.log("Using fallback search due to error");
-        return getFallbackResources(query);
+        // Error handling moved to helper for maintainability
+        return handleResourceError(error, query);
     }
 }
