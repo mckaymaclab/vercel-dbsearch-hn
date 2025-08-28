@@ -204,11 +204,11 @@ export async function findDatabaseResources(
             return getFallbackResources(query);
         }
 
-        const prompt = `You are a librarian helping students find the best academic resources. 
+    const prompt = `You are a librarian helping students find the best academic resources. 
 
 User Query: "${query}"
 
-From these relevant library resources, select the TOP 3 that best match the user's research needs:
+From these relevant library resources, select up to 5 that best match the user's research needs:
 
 ${JSON.stringify(relevantResources, null, 2)}
 
@@ -229,7 +229,7 @@ Return ONLY a JSON array with exactly these fields for each resource:
 - relevanceScore (number 1-100)
 - matchReason (string explaining why this resource fits the query)
 
-Return exactly 5 resources as a JSON array.`;
+Return up to 5 resources as a JSON array. If fewer than 5 are relevant, return only those.`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -259,17 +259,8 @@ Return exactly 5 resources as a JSON array.`;
  finalResults = getFallbackResources(query);
         }
 
-        // Deduplicate results based on ID
-        const seenIds = new Set();
-        return finalResults.filter(resource => {
-            if (seenIds.has(resource.id)) {
-                return false;
-            } else {
-                seenIds.add(resource.id);
-                return true;
-            }
-
-        }).slice(0, 5); // Ensure maximum of 5 results are returned
+    // Return up to 5 results (no deduplication needed, AI prompt ensures uniqueness)
+    return finalResults.slice(0, 5);
 
     } catch (error) {
         console.error("Error finding resources:", error);
