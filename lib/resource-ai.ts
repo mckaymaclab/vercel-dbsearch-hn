@@ -268,7 +268,7 @@ Return exactly 5 resources as a JSON array.`;
                 seenIds.add(resource.id);
                 return true;
             }
- console.log('Final resources after deduplication:', finalResults);
+
         }).slice(0, 5); // Ensure maximum of 5 results are returned
 
     } catch (error) {
