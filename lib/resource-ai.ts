@@ -34,6 +34,7 @@ const ResourceSchema = z.object({
     subjects: z.array(z.string()),
     contentTypes: z.array(z.string()),
     accessNote: z.string().optional(),
+    moreinfo: z.string().optional(),
     relevanceScore: z.number().min(0).max(100),
     matchReason: z.string().optional(),
 });
@@ -65,6 +66,7 @@ function getFallbackResources(query: string): any[] {
         const searchableText = [
             resource.name,
             resource.description,
+            resource.moreInfo || "",
             ...resource.subjects,
             ...resource.contentTypes,
         ]
