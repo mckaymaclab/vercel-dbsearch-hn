@@ -1,3 +1,4 @@
+"use server";
 // Helper function for error handling in findDatabaseResources
 function handleResourceError(error: unknown, query: string) {
     if (
@@ -17,7 +18,7 @@ function handleResourceError(error: unknown, query: string) {
     // Using fallback search due to error
     return getFallbackResources(query);
 }
-"use server";
+
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
@@ -96,35 +97,288 @@ function getFallbackResources(query: string): any[] {
 
         // Subject-specific boosts
         if (
-            queryLower.includes("history") &&
-            resource.subjects.some((s) => s.toLowerCase().includes("history"))
+            queryLower.includes("accounting") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("accounting"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("animal and food science") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("Animal and Food Science"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("applied plant science") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("applied plant science"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("art") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("art"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("automotive engineering") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("automotive engineering"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("biographies") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("biographies"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("biographies") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("biographies"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("biology") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("biology"))
         ) {
             score += 20;
         }
         if (
-            queryLower.includes("science") &&
-            resource.subjects.some((s) => s.toLowerCase().includes("science"))
+            queryLower.includes("business management") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("business management"))
         ) {
             score += 20;
         }
         if (
-            queryLower.includes("business") &&
-            resource.subjects.some((s) => s.toLowerCase().includes("business"))
+            queryLower.includes("chemistry") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("chemistry"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("communications") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("communications"))
         ) {
             score += 20;
         }
         if (
+            queryLower.includes("computer science") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("computer science"))
+        ) {
+            score += 20;
+        }
+        
+        if (
+            queryLower.includes("electrical engineering") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("electrical engineering"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("dance") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("dance"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("design and construction management") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("design and construction management"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("economics") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("economics"))
+        ) {
+            score += 20;
+        }
+		if (
             queryLower.includes("english") &&
             resource.subjects.some((s) => s.toLowerCase().includes("english"))
         ) {
             score += 20;
         }
-        if (
-            queryLower.includes("math") &&
-            resource.subjects.some((s) => s.toLowerCase().includes("math"))
+		if (
+            queryLower.includes("family history") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("family history"))
         ) {
             score += 20;
         }
+		if (
+            queryLower.includes("finance") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("finance"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("general education") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("general education"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("geography") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("geography"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("geology") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("geology"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("health services") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("health services"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("history") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("history"))
+        ) {
+            score += 20;
+        }	
+		if (
+            queryLower.includes("home and family") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("home and family"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("human athletic performance") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("human athletic performance"))
+        ) {
+            score += 20;
+        }
+		if (
+            queryLower.includes("recreation") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("human athletic performance"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("humanities") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("humanities"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("philosophy") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("philosophy"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("interdisciplinary studies") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("interdisciplinary studies"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("interior design") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("interior design"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("job and career resources") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("job and career resources"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("languages and international studies") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("languages and international studies"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("marketing") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("marketing"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("mathematics") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("mathematics"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("mechanical engineering") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("mechanical engineering"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("civil engineering") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("civil engineering"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("music") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("music"))
+        ) {
+            score += 20;
+		} 
+		if (
+            queryLower.includes("nursing") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("nursing"))
+        ) {
+            score += 20;
+		} 
+		if (
+            queryLower.includes("physics") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("physics"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("political science") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("political science"))
+        ) {
+            score += 20;
+		}	
+		if (
+            queryLower.includes("pyschology") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("pyschology"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("religious education") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("religious education"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("sociology and social work") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("sociology and social work"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("special education") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("special education"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("teacher education") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("teacher education"))
+        ) {
+            score += 20;
+		}
+		if (
+            queryLower.includes("theatre") &&
+            resource.subjects.some((s) => s.toLowerCase().includes("theatre"))
+        ) {
+            score += 20;
+		}
 
         return {
             ...resource,
@@ -234,7 +488,9 @@ ${JSON.stringify(relevantResources, null, 2)}
 IMPORTANT INSTRUCTIONS:
 1. Analyze the user's query carefully
 2. Match resources based on subject relevance, content type, and description
-3. Provide different resources (don't just pick the first ones)
+3. Look at the search terms and try and evaluate which subject headings they belong in.
+For example, if the user is searching for "cellular respiration", evaluate where it fits. In this case it would be "Biology".
+Pull resources that have that subject associated with them.
 4. Give each resource a relevance score from 1-100
 5. Explain WHY each resource matches the query
 
@@ -244,6 +500,7 @@ Return ONLY a JSON array with exactly these fields for each resource:
 - description (string)
 - url (string)
 - subjects (array of strings)
+- moreinfo (string)
 - contentTypes (array of strings)
 - relevanceScore (number 1-100)
 - matchReason (string explaining why this resource fits the query)
