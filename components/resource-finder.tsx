@@ -35,13 +35,8 @@ interface ResourceResult {
     name: string;
     description: string;
     url: string;
-    contentTypes: string[];
-    subjects: string[];
-    accessNote?: string;
     relevanceScore: number;
     matchReason?: string;
-    featured?: boolean;
-    fullText?: boolean;
 }
 
 export function ResourceFinder() {
@@ -49,7 +44,7 @@ export function ResourceFinder() {
     const [results, setResults] = useState<ResourceResult[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+    // Removed subject filtering state
     const [usingFallback, setUsingFallback] = useState(false);
     const [searchType, setSearchType] = useState<"library" | "database">(
         "database"
@@ -95,26 +90,9 @@ export function ResourceFinder() {
         }
     };
 
-    const filteredResults =
-        selectedSubjects.length > 0
-            ? results.filter((resource) =>
-                  resource.subjects.some((subject) =>
-                      selectedSubjects.includes(subject)
-                  )
-              )
-            : results;
+    const filteredResults = results;
 
-    const allSubjects = Array.from(
-        new Set(results.flatMap((resource) => resource.subjects))
-    );
-
-    const toggleSubject = (subject: string) => {
-        setSelectedSubjects((prev) =>
-            prev.includes(subject)
-                ? prev.filter((s) => s !== subject)
-                : [...prev, subject]
-        );
-    };
+    // Removed allSubjects and toggleSubject logic
 
     return (
         <div className="space-y-6">
@@ -236,31 +214,7 @@ export function ResourceFinder() {
                                 </span>
                             )}
                         </h2>
-                        {results.length > 0 && (
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="sm">
-                                        <Filter className="h-4 w-4 mr-2" />
-                                        Filter by Subject
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    {allSubjects.map((subject, index) => (
-                                        <DropdownMenuCheckboxItem
-                                            key={`subject-${subject}-${index}`}
-                                            checked={selectedSubjects.includes(
-                                                subject
-                                            )}
-                                            onCheckedChange={() =>
-                                                toggleSubject(subject)
-                                            }
-                                        >
-                                            {subject}
-                                        </DropdownMenuCheckboxItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        )}
+                        {/* Removed subject filter dropdown */}
                     </div>
 
                     <Tabs defaultValue="detailed" className="w-full">
@@ -283,22 +237,7 @@ export function ResourceFinder() {
                                                 <div>
                                                     <CardTitle className="text-lg flex items-center">
                                                         {resource.name}
-                                                        {resource.featured && (
-                                                            <Badge
-                                                                variant="secondary"
-                                                                className="ml-2 bg-blue-100 text-blue-800"
-                                                            >
-                                                                Featured
-                                                            </Badge>
-                                                        )}
-                                                        {resource.fullText && (
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="ml-2"
-                                                            >
-                                                                Full Text
-                                                            </Badge>
-                                                        )}
+                                                        {/* Removed featured/fullText badges */}
                                                         <Badge
                                                             variant="outline"
                                                             className="ml-2 bg-green-100 text-green-800"
@@ -310,38 +249,12 @@ export function ResourceFinder() {
                                                         </Badge>
                                                     </CardTitle>
                                                 </div>
-                                                <div className="flex space-x-2">
-                                                    {resource.contentTypes
-                                                        .slice(0, 2)
-                                                        .map((type, index) => (
-                                                            <Badge
-                                                                key={index}
-                                                                variant="outline"
-                                                                className="bg-slate-100"
-                                                            >
-                                                                {type}
-                                                            </Badge>
-                                                        ))}
-                                                </div>
+                                                {/* Removed contentTypes badges */}
                                             </div>
                                         </CardHeader>
                                         <CardFooter className="py-3 flex justify-between">
                                             <div className="text-sm text-slate-500 flex items-center">
-                                                {resource.moreInfo ? (
-                                                    <div className="text-slate-700">
-                                                        {resource.moreInfo}
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        <BookOpen className="h-4 w-4 mr-1" />
-                                                        {resource.subjects
-                                                            .slice(0, 3)
-                                                            .join(", ")}
-                                                        {resource.subjects
-                                                            .length > 3 &&
-                                                            "..."}
-                                                    </>
-                                                )}
+                                                {/* Removed subject display */}
                                             </div>
                                             <Button
                                                 variant="outline"
@@ -425,14 +338,7 @@ function ResourceCard({
                     <div>
                         <CardTitle className="text-lg flex items-center">
                             {resource.name}
-                            {resource.featured && (
-                                <Badge
-                                    variant="secondary"
-                                    className="ml-2 bg-blue-100 text-blue-800"
-                                >
-                                    Featured
-                                </Badge>
-                            )}
+                            {/* Removed featured badge */}
                             <Badge
                                 variant="outline"
                                 className="ml-2 bg-green-100 text-green-800"
@@ -448,39 +354,21 @@ function ResourceCard({
                         />
                     </div>
                     <div className="flex space-x-2">
-                        {resource.contentTypes
-                            .slice(0, 2)
-                            .map((type, index) => (
-                                <Badge
-                                    key={index}
-                                    variant="outline"
-                                    className="bg-slate-100"
-                                >
-                                    {type}
-                                </Badge>
-                            ))}
+                        {/* Removed contentTypes badges */}
                     </div>
                 </div>
             </CardHeader>
             <CardContent>
                 <div className="text-sm text-slate-600 space-y-2">
-                    <p>
-                        <strong>Content:</strong>{" "}
-                        {resource.contentTypes.join(", ")}
-                    </p>
-                    <p>
-                        <strong>Subjects:</strong>{" "}
-                        {resource.subjects.join(", ")}
-                    </p>
+                    {/* Removed Content (contentTypes) display */}
+                    {/* Removed subject display */}
                     {resource.matchReason && (
                         <div className="mt-3 p-3 bg-blue-50 rounded-md text-blue-800">
                             <strong>Why this matches your search:</strong>{" "}
                             {resource.matchReason}
                         </div>
                     )}
-                    {resource.accessNote && (
-                        <p className="mt-2 italic">{resource.accessNote}</p>
-                    )}
+                    {/* Removed accessNote display */}
                 </div>
             </CardContent>
             <CardFooter className="flex justify-end">
