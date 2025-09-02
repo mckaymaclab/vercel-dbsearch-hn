@@ -8,6 +8,4 @@ export interface ResourceResult {
   accessNote?: string
   relevanceScore: number
   matchReason?: string
-  featured?: boolean
-  fullText?: boolean
 }

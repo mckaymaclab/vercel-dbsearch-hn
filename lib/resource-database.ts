@@ -5,8 +5,6 @@ export interface LibraryResource {
     subjects: string[];
     contentTypes: string[];
     accessNote?: string;
-    featured?: boolean;
-    fullText?: boolean;
     moreInfo?: string;
 }
 
