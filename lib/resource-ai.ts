@@ -114,16 +114,22 @@ Return up to 5 resources as a JSON array. If fewer than 5 are relevant, return o
         })
         .filter(Boolean);
 
-    // Filter for high-relevance results (score >= 80), ensure no nulls
-    const highRelevance = allMatchedResults.filter(r => r && r.relevanceScore >= 80);
+    // Filter for high-relevance results (score >= 80), ensure no nulls, and sort by relevanceScore descending
+    const highRelevance = allMatchedResults
+        .filter(r => r && r.relevanceScore >= 80)
+        .sort((a, b) => (b!.relevanceScore - a!.relevanceScore));
     // If there are at least 1 high-relevance, return all of them (even if >5)
     if (highRelevance.length > 0) {
         console.log("[Final matched results]", highRelevance);
         return highRelevance;
     }
-    // Otherwise, return up to 5 results as before
-    console.log("[Final matched results]", allMatchedResults.slice(0, 5));
-    return allMatchedResults.slice(0, 5);
+    // Otherwise, return up to 5 results as before, sorted by relevanceScore descending
+    const sortedResults = allMatchedResults
+        .filter(r => r)
+        .sort((a, b) => (b!.relevanceScore - a!.relevanceScore))
+        .slice(0, 5);
+    console.log("[Final matched results]", sortedResults);
+    return sortedResults;
 
     } catch (error) {
         // If the AI fails, return an empty array (no fallback)
