@@ -5,6 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import { resourceDatabase, type LibraryResource } from "./resource-database";
 import { libraryResourceDatabase } from "./library-resources-database";
+import Fuse from "fuse.js";
 
 // Define the schema for AI results: only name (and optionally id)
 const ResourceNameSchema = z.object({
@@ -39,15 +40,21 @@ export async function findDatabaseResources(
             },
         });
 
-        // New prompt: only send the user query, not the resource list
-        const prompt = `You are a librarian helping students find the best academic resources.
+    // Get the list of resource names for the prompt
+    const allResources = searchType === "database" ? resourceDatabase : libraryResourceDatabase;
+    const resourceNames = allResources.map(r => r.name).sort();
+    // Prompt: instruct AI to only use names from the provided list
+    const prompt = `You are a librarian helping students find the best academic resources.
 
 User Query: "${query}"
 
-1. Based on these search terms, list up to 7 resources (by name) that a library might subscribe to in order to find information on this topic.
+IMPORTANT: Only suggest resources (by name) that are listed in the following list of database names. Do NOT include open web resources, Google Scholar, Wikipedia, or anything not found in this list. If you are unsure, do not include it.
 
+Database Names:
+${resourceNames.join("\n")}
 
-- name (string)
+For each resource, provide:
+- name (string, must match or be extremely close to a name in the list above)
 - relevanceScore (number 1-100)
 - matchReason (string explaining why this resource fits the query)
 
@@ -79,36 +86,44 @@ Return up to 5 resources as a JSON array. If fewer than 5 are relevant, return o
             return [];
         }
         console.log("[AI parsed results]", parsedResults);
-        const allResources = searchType === "database" ? resourceDatabase : libraryResourceDatabase;
-    let finalResults = parsedResults
-            .map(aiResult => {
-                const aiName = aiResult.name.toLowerCase();
-                // Try exact match first
-                let match = allResources.find(r => r.name.toLowerCase() === aiName);
-                // If not found, try partial (substring) match
-                if (!match) {
-                    match = allResources.find(r =>
-                        r.name.toLowerCase().includes(aiName) ||
-                        aiName.includes(r.name.toLowerCase())
-                    );
-                }
-                if (match) {
-                    return {
-                        name: match.name,
-                        url: match.url,
-                        description: match.description,
-                        relevanceScore: aiResult.relevanceScore,
-                        matchReason: aiResult.matchReason || ""
-                    };
-                }
-                // If not found in our database, skip it
-                return null;
-            })
-            .filter(Boolean);
 
-    console.log("[Final matched results]", finalResults);
-    // Always return up to 5 results
-    return finalResults.slice(0, 5);
+    // Use fuse.js for robust fuzzy matching
+    const fuse = new Fuse(allResources, {
+        keys: ["name"],
+        threshold: 0.3, // adjust as needed for strictness
+        includeScore: true,
+    });
+
+
+    let allMatchedResults = parsedResults
+        .map(aiResult => {
+            // Use fuse.js to find the best match for the AI result name
+            const fuseResults = fuse.search(aiResult.name);
+            if (fuseResults.length > 0 && fuseResults[0].score !== undefined && fuseResults[0].score <= 0.3) {
+                const match = fuseResults[0].item;
+                return {
+                    name: match.name,
+                    url: match.url,
+                    description: match.description,
+                    relevanceScore: aiResult.relevanceScore,
+                    matchReason: aiResult.matchReason || ""
+                };
+            }
+            // If not found in our database, skip it
+            return null;
+        })
+        .filter(Boolean);
+
+    // Filter for high-relevance results (score >= 80), ensure no nulls
+    const highRelevance = allMatchedResults.filter(r => r && r.relevanceScore >= 80);
+    // If there are at least 1 high-relevance, return all of them (even if >5)
+    if (highRelevance.length > 0) {
+        console.log("[Final matched results]", highRelevance);
+        return highRelevance;
+    }
+    // Otherwise, return up to 5 results as before
+    console.log("[Final matched results]", allMatchedResults.slice(0, 5));
+    return allMatchedResults.slice(0, 5);
 
     } catch (error) {
         // If the AI fails, return an empty array (no fallback)
