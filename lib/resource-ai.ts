@@ -11,7 +11,7 @@ import Fuse from "fuse.js";
 // Curated alias registry you generated from the A–Z list
 import { ALIAS_REGISTRY } from "@/lib/aliases/alias-registry";
 
-// Local canonical catalogs (single source of truth)
+// Single-source catalogs (we will select one at runtime)
 import { resourceDatabase } from "./resource-database";
 import { libraryResourceDatabase } from "./library-resources-database";
 
@@ -66,7 +66,7 @@ const RECALL_MAX = 3;             // how many extra catalog items we may add
 const RECALL_BM25_MIN = 1.0;      // minimum BM25 score to be considered meaningful
 const RECALL_SCORE_BASE = 86;     // base score for recalls (keeps ≥80 rule consistent)
 
-// ✨ NEW intents added here:
+// Intents (includes language + test prep)
 type FormatIntent =
   | "books"
   | "articles"
@@ -227,56 +227,56 @@ function dedupeByNameKeepBest<T extends { name: string; relevanceScore?: number 
 }
 
 /* =========================
-   Build the canonical catalog (no scraping) + Fuse
+   Build a per-call catalog (NO cross-pollination)
 ========================= */
 type CatalogItem = { name: string; url?: string; description?: string; normName: string };
-const ALL_RESOURCES: CatalogItem[] = (() => {
-  const merged = [...resourceDatabase, ...libraryResourceDatabase] as Array<{ name: string; url?: string; description?: string }>;
+
+function buildCatalogFrom(list: Array<{ name: string; url?: string; description?: string }>): CatalogItem[] {
   const byKey = new Map<string, CatalogItem>();
-  for (const r of merged) {
+  for (const r of list) {
     const key = norm(r.name);
     const existing = byKey.get(key);
     if (!existing) {
       byKey.set(key, { name: r.name, url: r.url, description: r.description, normName: key });
     } else {
-      // Prefer the one with a URL/description
-      const betterUrl = existing.url ? existing : r;
-      const url = betterUrl.url ?? existing.url;
+      // Prefer richer record
+      const url = existing.url || r.url;
       const desc = (r.description && r.description.length > (existing.description?.length ?? 0)) ? r.description : existing.description;
       byKey.set(key, { name: existing.name, url, description: desc, normName: key });
     }
   }
   return Array.from(byKey.values());
-})();
+}
 
-// Alias index from the catalog
-const CATALOG_ALIAS_INDEX: Map<string, CatalogItem> = (() => {
+function buildAliasIndex(catalog: CatalogItem[]): Map<string, CatalogItem> {
   const m = new Map<string, CatalogItem>();
-  for (const z of ALL_RESOURCES) {
+  for (const z of catalog) {
     for (const a of aliasForms(z.name)) {
       if (!m.has(a)) m.set(a, z);
     }
   }
   return m;
-})();
+}
 
-// Fuse index over the catalog
-const fuse = new Fuse(ALL_RESOURCES, {
-  includeScore: true,
-  threshold: 0.6, // inclusive
-  ignoreLocation: true,
-  keys: ["name", "normName"],
-});
+function buildFuse(catalog: CatalogItem[]): Fuse<CatalogItem> {
+  return new Fuse(catalog, {
+    includeScore: true,
+    threshold: 0.6,
+    ignoreLocation: true,
+    keys: ["name", "normName"],
+  });
+}
 
 /* =========================
-   Lightweight BM25 over catalog (general recall)
+   Lightweight BM25 over a selected catalog (general recall)
 ========================= */
 type BM25Doc = { item: CatalogItem; tf: Map<string, number>; len: number };
-type BM25Index = { docs: BM25Doc[]; idf: Map<string, number>; avgdl: number };
+type BM25Index = { docs: BM25Doc[]; idf: Map<string, number>; avgdl: number; byNorm: Map<string, BM25Doc> };
 
 function buildBm25Index(items: CatalogItem[]): BM25Index {
   const docs: BM25Doc[] = [];
   const df = new Map<string, number>();
+  const byNorm = new Map<string, BM25Doc>();
   let totalLen = 0;
 
   for (const it of items) {
@@ -285,7 +285,9 @@ function buildBm25Index(items: CatalogItem[]): BM25Index {
     for (const t of terms) tf.set(t, (tf.get(t) ?? 0) + 1);
     const len = terms.length || 1;
     totalLen += len;
-    docs.push({ item: it, tf, len });
+    const doc: BM25Doc = { item: it, tf, len };
+    docs.push(doc);
+    byNorm.set(it.normName, doc);
 
     // update document frequency once per term
     for (const t of new Set(terms)) df.set(t, (df.get(t) ?? 0) + 1);
@@ -298,20 +300,18 @@ function buildBm25Index(items: CatalogItem[]): BM25Index {
     idf.set(t, Math.log((N - dfv + 0.5) / (dfv + 0.5) + 1));
   }
 
-  return { docs, idf, avgdl: totalLen / N };
+  return { docs, idf, avgdl: totalLen / N, byNorm };
 }
 
-const BM25 = buildBm25Index(ALL_RESOURCES);
-
-function bm25Score(query: string, doc: BM25Doc): number {
+function bm25Score(query: string, doc: BM25Doc, index: BM25Index): number {
   const k1 = 1.2, b = 0.75;
   const qTerms = Array.from(new Set(textTerms(query)));
   let sum = 0;
   for (const q of qTerms) {
-    const idf = BM25.idf.get(q) ?? 0;
+    const idf = index.idf.get(q) ?? 0;
     const tf = doc.tf.get(q) ?? 0;
     if (tf === 0 || idf <= 0) continue;
-    const denom = tf + k1 * (1 - b + b * (doc.len / BM25.avgdl));
+    const denom = tf + k1 * (1 - b + b * (doc.len / index.avgdl));
     sum += idf * ((tf * (k1 + 1)) / denom);
   }
   return sum;
@@ -344,7 +344,7 @@ function detectIntents(q: string): Set<FormatIntent> {
   // Images
   if (/\b(images?|photos?|photographs?|pictures?|artwork|art images?)\b/.test(s)) intents.add("images");
 
-  // ✨ NEW: Foreign language learning
+  // Foreign language learning
   const languageList = "(spanish|french|german|chinese|mandarin|cantonese|japanese|korean|italian|portuguese|russian|arabic|hindi|urdu|bengali|vietnamese|thai|turkish|greek|hebrew|swedish|norwegian|danish|finnish|polish|czech|romanian|hungarian|indonesian|malay|tagalog|filipino|lao|khmer|persian|farsi|pashto|swahili|zulu|amharic|yiddish|latin|esperanto)";
   const languageLearning =
     /\b(language (learning|course|courses|lesson|lessons|practice|classes?)|learn(ing)? (a )?new language|esl|ell|rosetta stone|mango languages|transparent language|pronunciator)\b/.test(s) ||
@@ -352,13 +352,12 @@ function detectIntents(q: string): Set<FormatIntent> {
     new RegExp(`\\b${languageList} (lessons?|course|courses)\\b`).test(s);
   if (languageLearning) intents.add("language");
 
-  // ✨ NEW: Test prep / certification
+  // Test prep / certification
   const testPrep =
     /\b(test|exam)\s*(prep|practice|study|review|guide|coaching|course|bootcamp|materials?)\b/.test(s) ||
-    /\b(practice )?(tests?|exams?)\b/.test(s) && /\bprep|practice|study|review|guide|materials?\b/.test(s) ||
+    (/\b(practice )?(tests?|exams?)\b/.test(s) && /\b(prep|practice|study|review|guide|materials?)\b/.test(s)) ||
     /\b(cert(ification|ified)?|credential|license|licensure)\b/.test(s) ||
-    /\b(gre|gmat|lsat|mcat|nclex|teas|praxis|act|sat|toefl|ielts|pte|cf(a|p)|cpa|cma|cia|cisa|pmp|capm|comptia|security\+|network\+|a\+)\b/.test(s) ||
-    /\b(learningexpress|prepstep|peterson'?s)\b/.test(s);
+    /\b(gre|gmat|lsat|mcat|nclex|teas|praxis|act|sat|toefl|ielts|pte|cfa|cpa|cma|cia|cisa|pmp|capm|comptia|security\+|network\+|a\+|peterson'?s|learningexpress|prepstep)\b/.test(s);
   if (testPrep) intents.add("testprep");
 
   return intents;
@@ -395,11 +394,9 @@ function classifyResource(name: string, description?: string) {
 
   const isSummaryDigest = /\b(getabstract|book summaries?)\b/.test(nd);
 
-  // ✨ NEW: language learning classification
   const isLanguageLearning =
     /\b(language learning|learn(ing)? (spanish|french|german|chinese|mandarin|cantonese|japanese|korean|italian|portuguese|russian|arabic|hindi|urdu|bengali|vietnamese|thai|greek|turkish|hebrew|swedish|norwegian|danish|finnish|polish|czech|romanian|hungarian|indonesian|malay|tagalog|filipino|lao|khmer|persian|farsi|pashto|swahili|zulu|amharic|yiddish|latin|esperanto)|esl|ell|rosetta stone|mango languages|transparent language|pronunciator)\b/.test(nd);
 
-  // ✨ NEW: test prep / certification classification
   const isTestPrep =
     /\b(test|exam)\s*(prep|practice|study|review|guide|course|bootcamp|materials?)\b/.test(nd) ||
     /\b(cert(ification|ified)?|credential|license|licensure)\b/.test(nd) ||
@@ -414,7 +411,6 @@ function classifyResource(name: string, description?: string) {
     isNews,
     isArticleIndex,
     isSummaryDigest,
-    // new:
     isLanguageLearning,
     isTestPrep,
   };
@@ -439,7 +435,6 @@ function intentAlignmentFactor(intents: Set<FormatIntent>, item: { name: string;
   if (intents.has("audio"))    f *= c.isAudio ? 1.15 : 0.92;
   if (intents.has("video"))    f *= c.isVideo ? 1.15 : 0.92;
   if (intents.has("images"))   f *= c.isImages ? 1.15 : 0.92;
-  // ✨ NEW alignments:
   if (intents.has("language")) f *= c.isLanguageLearning ? 1.18 : 0.90;
   if (intents.has("testprep")) f *= c.isTestPrep ? 1.18 : 0.90;
   return Math.min(1.30, Math.max(0.70, f));
@@ -450,9 +445,20 @@ function intentAlignmentFactor(intents: Set<FormatIntent>, item: { name: string;
 =========================== */
 export async function findDatabaseResources(
   query: string,
-  _searchType: "library" | "database" // not used in this LLM-first flow
+  searchType: "library" | "database" // NOW USED to select the ONLY catalog we search
 ): Promise<ResultRow[]> {
   const apiKey = process.env.GEMINI_API_KEY;
+
+  // 0) Build the per-call catalog & indices from the selected source ONLY
+  const SELECTED_LIST =
+    searchType === "database" ? resourceDatabase
+    : searchType === "library" ? libraryResourceDatabase
+    : resourceDatabase; // defensive default
+
+  const CATALOG: CatalogItem[] = buildCatalogFrom(SELECTED_LIST);
+  const CATALOG_ALIAS_INDEX = buildAliasIndex(CATALOG);
+  const FUSE = buildFuse(CATALOG);
+  const BM25 = buildBm25Index(CATALOG);
 
   try {
     // 1) LLM proposes platforms/databases from its own knowledge.
@@ -528,7 +534,7 @@ User Query: ${JSON.stringify(query)}
       const candidatesToSearch = Array.from(new Set([aiName, norm(aiName), ...aliasForms(aiName)]));
       let best: { item: CatalogItem; score: number } | null = null;
       for (const cand of candidatesToSearch) {
-        const res = fuse.search(cand)[0];
+        const res = FUSE.search(cand)[0];
         if (res) {
           const score = res.score ?? 1;
           if (!best || score < best.score) best = { item: res.item, score };
@@ -613,7 +619,6 @@ User Query: ${JSON.stringify(query)}
             if (c.isImages) factor *= 1.15;
             if (!c.isImages) factor *= 0.92;
             break;
-          // ✨ NEW boosts:
           case "language":
             if (c.isLanguageLearning) factor *= 1.22;
             if (c.isDissertations || c.isSummaryDigest) factor *= 0.90;
@@ -630,7 +635,7 @@ User Query: ${JSON.stringify(query)}
       return { ...m, relevanceScore: adjusted };
     });
 
-    // 6) Coverage injection from the LOCAL catalog (BM25-gated for topical fit)
+    // 6) Coverage injection from the SELECTED catalog (BM25-gated for topical fit)
     const have = (intent: FormatIntent) =>
       scored.some(s => {
         const c = classifyResource(s.name, s.description);
@@ -641,8 +646,8 @@ User Query: ${JSON.stringify(query)}
           case "audio":    return c.isAudio;
           case "video":    return c.isVideo;
           case "images":   return c.isImages;
-          case "language": return c.isLanguageLearning;   // ✨ NEW
-          case "testprep": return c.isTestPrep;           // ✨ NEW
+          case "language": return c.isLanguageLearning;
+          case "testprep": return c.isTestPrep;
         }
       });
 
@@ -651,8 +656,8 @@ User Query: ${JSON.stringify(query)}
       for (const intent of Array.from(userIntents)) {
         if (have(intent)) continue;
 
-        // candidate pool by format
-        const formatPool = ALL_RESOURCES.filter(z => {
+        // candidate pool by format, FROM SELECTED CATALOG ONLY
+        const formatPool = CATALOG.filter(z => {
           const c = classifyResource(z.name, z.description);
           switch (intent) {
             case "books":    return c.isEbook;
@@ -661,16 +666,16 @@ User Query: ${JSON.stringify(query)}
             case "audio":    return c.isAudio;
             case "video":    return c.isVideo;
             case "images":   return c.isImages;
-            case "language": return c.isLanguageLearning;  // ✨ NEW
-            case "testprep": return c.isTestPrep;          // ✨ NEW
+            case "language": return c.isLanguageLearning;
+            case "testprep": return c.isTestPrep;
           }
         });
 
         // rank by BM25 topicality (and require minimal topical signal)
         const ranked = formatPool
           .map(z => {
-            const doc = BM25.docs.find(d => d.item.normName === z.normName)!;
-            const topical = bm25Score(query, doc);
+            const doc = BM25.byNorm.get(z.normName)!;
+            const topical = bm25Score(query, doc, BM25);
             return { z, topical };
           })
           .filter(({ z, topical }) => !existingKeys.has(norm(z.name)) && topical >= (RECALL_BM25_MIN * 0.6))
@@ -690,7 +695,7 @@ User Query: ${JSON.stringify(query)}
           if (injected >= INJECT_MAX_PER_INTENT) break;
         }
         if (injected > 0) {
-          console.warn(`[inject-${intent}] Added ${injected} resource(s) with BM25 gating.`);
+          console.warn(`[inject-${intent}] Added ${injected} resource(s) with BM25 gating (catalog=${searchType}).`);
         }
       }
     }
@@ -703,7 +708,7 @@ User Query: ${JSON.stringify(query)}
       const pool = BM25.docs
         .filter(d => !existingKeys.has(d.item.normName))
         .map(d => {
-          const base = bm25Score(query, d);
+          const base = bm25Score(query, d, BM25);
           const align = intentAlignmentFactor(intents, d.item);
           return { d, score: base * align };
         })
@@ -725,7 +730,7 @@ User Query: ${JSON.stringify(query)}
         if (injected >= RECALL_MAX) break;
       }
       if (injected > 0) {
-        console.warn(`[recall-bm25] Added ${injected} resource(s) via general semantic recall.`);
+        console.warn(`[recall-bm25] Added ${injected} resource(s) via general semantic recall (catalog=${searchType}).`);
       }
     }
 
