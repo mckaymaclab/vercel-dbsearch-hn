@@ -1,13 +1,17 @@
+// lib/resource-ai.ts
+// NOTE: If you see results in the terminal but not in the UI, check the API route or handler that calls this function.
+// The issue is likely in the API response or frontend handling.
+
 "use server";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import Fuse from "fuse.js";
 
-// Alias registry generated from your A–Z list
+// Curated alias registry you generated from the A–Z list
 import { ALIAS_REGISTRY } from "@/lib/aliases/alias-registry";
 
-// Optional local fallbacks if the live A–Z page can’t be fetched
+// Local canonical catalogs (single source of truth)
 import { resourceDatabase } from "./resource-database";
 import { libraryResourceDatabase } from "./library-resources-database";
 
@@ -15,13 +19,21 @@ import { libraryResourceDatabase } from "./library-resources-database";
    Zod runtime validation
 ========================= */
 const AiItemSchema = z.object({
-  name: z.string(), // platform/provider/database name (NOT book titles)
+  name: z.string(), // provider/platform/database name (NOT book titles)
   relevanceScore: z.number().min(0).max(100),
   matchReason: z.string().optional(),
 });
 const AiArraySchema = z.array(AiItemSchema).max(12);
 type AiItem = z.infer<typeof AiItemSchema>;
 type AiArray = z.infer<typeof AiArraySchema>;
+
+export type ResultRow = {
+  name: string;
+  url?: string;
+  description?: string;
+  relevanceScore: number;
+  matchReason?: string;
+};
 
 /* ======================================
    Gemini: force strict JSON structure
@@ -42,15 +54,28 @@ const geminiArraySchema = {
 /* ===================
    Tunables & Helpers
 =================== */
-const RELEVANCE_THRESHOLD = 80;  // include ALL ≥ 80 (after coupling/rerank)
-const MIN_ACCEPT_SIM = 0.45;     // drop very weak matches unless token overlap saves them
+const RELEVANCE_THRESHOLD = 80;   // include ALL ≥ 80 (after coupling/rerank)
+const MIN_ACCEPT_SIM = 0.45;      // drop weak LLM→catalog matches unless token overlap saves them
 const TOKEN_OVERLAP_FLOOR = 0.25;
-const INJECT_MAX_PER_INTENT = 2; // at most 2 injects per requested format
-const INJECT_BASE_SCORE = 84;    // score used for injected coverage
 
-const AZ_URL = "https://libguides.byui.edu/az/databases";
+const INJECT_MAX_PER_INTENT = 2;  // coverage injection cap per requested format
+const INJECT_BASE_SCORE = 84;     // base score used for format coverage
 
-type FormatIntent = "books" | "articles" | "news" | "audio" | "video" | "images";
+// General semantic recall (BM25) tunables
+const RECALL_MAX = 3;             // how many extra catalog items we may add
+const RECALL_BM25_MIN = 1.0;      // minimum BM25 score to be considered meaningful
+const RECALL_SCORE_BASE = 86;     // base score for recalls (keeps ≥80 rule consistent)
+
+// ✨ NEW intents added here:
+type FormatIntent =
+  | "books"
+  | "articles"
+  | "news"
+  | "audio"
+  | "video"
+  | "images"
+  | "language"   // foreign language learning
+  | "testprep";  // test preparation / certification
 
 function getGeminiClient(apiKey?: string) {
   const key = apiKey || process.env.GEMINI_API_KEY;
@@ -63,25 +88,16 @@ function norm(s: string) {
   return (s || "")
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // diacritics
-    .replace(/[\u2019\u2018’‘]/g, "'") // apostrophes
-    .replace(/[\u2013\u2014–—]/g, "-") // dashes
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u2019\u2018’‘]/g, "'")
+    .replace(/[\u2013\u2014–—]/g, "-")
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9' -]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
-
 function stripTags(s: string) {
   return s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ");
-}
-function decodeHtml(s: string) {
-  return s
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'");
 }
 
 /** Vendor/format toggles that help equivalence (don’t steer the LLM). */
@@ -134,9 +150,17 @@ function aliasForms(displayName: string): string[] {
   return Array.from(out).slice(0, 24);
 }
 
-/** Token helpers for overlap checks. */
+/** Token helpers / stopwords for BM25. */
+const STOP = new Set([
+  "the","a","an","and","or","for","of","on","in","to","with","by","about","from","into","at","as","is","are","be","being","been","that","this","these","those","it","its","their"
+]);
+function textTerms(s: string): string[] {
+  return norm(stripTags(s))
+    .split(" ")
+    .filter(t => t && !STOP.has(t));
+}
 function tokens(s: string): Set<string> {
-  return new Set(norm(s).split(" ").filter(Boolean));
+  return new Set(textTerms(s));
 }
 function jaccard(a: Set<string>, b: Set<string>): number {
   const inter = new Set([...a].filter(x => b.has(x)));
@@ -189,238 +213,236 @@ function safeParseResults(raw: string): AiArray | [] {
   }
 }
 
-/** Fetch BYU–Idaho A–Z list (soft fail; we’ll fallback to local arrays). */
-async function fetchAtoZList(): Promise<Array<{ name: string; url?: string; description?: string }>> {
-  try {
-    const res = await fetch(AZ_URL, { method: "GET", headers: { "User-Agent": "Mozilla/5.0" } });
-    if (!res.ok) throw new Error(`A–Z fetch failed: ${res.status}`);
-    const html = await res.text();
-
-    const items: Array<{ name: string; url?: string; description?: string }> = [];
-
-    // Known LibGuides patterns
-    const patterns: RegExp[] = [
-      /<a[^>]+class="[^"]*az-result-title[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi,
-      /<a[^>]+class="[^"]*s-lg-az-result-title[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi,
-      /<a[^>]+class="[^"]*s-lg-az-result-title-link[^"]*"[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi,
-    ];
-
-    let any = false;
-    for (const re of patterns) {
-      let m: RegExpExecArray | null;
-      while ((m = re.exec(html)) !== null) {
-        any = true;
-        const url = decodeHtml(m[1]).trim();
-        const name = stripTags(decodeHtml(m[2])).trim();
-        if (!name) continue;
-        const window = html.slice(Math.max(0, m.index - 500), Math.min(html.length, re.lastIndex + 500));
-        const d =
-          window.match(/<div[^>]*class="[^"]*(az-result-description|s-lg-az-result-description)[^"]*"[^>]*>([\s\S]*?)<\/div>/i)?.[2] ??
-          window.match(/<div[^>]*class="[^"]*(s-lg-az-description|az-description)[^"]*"[^>]*>([\s\S]*?)<\/div>/i)?.[2];
-        const description = d ? stripTags(decodeHtml(d)).trim() : undefined;
-        items.push({ name, url, description });
-      }
+/** Dedupe by normalized name, keep the highest score. */
+function dedupeByNameKeepBest<T extends { name: string; relevanceScore?: number }>(arr: T[]): T[] {
+  const map = new Map<string, T>();
+  for (const item of arr) {
+    const key = norm(item.name);
+    const prev = map.get(key);
+    if (!prev || (item.relevanceScore ?? 0) > (prev.relevanceScore ?? 0)) {
+      map.set(key, item);
     }
-
-    // Last resort: generic anchors in the A–Z block
-    if (!any) {
-      const containerMatch = html.match(/<div[^>]*id="s-lg-az-content"[^>]*>([\s\S]*?)<\/div>/i);
-      const block = containerMatch ? containerMatch[1] : html;
-      const re = /<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
-      let m: RegExpExecArray | null;
-      while ((m = re.exec(block)) !== null) {
-        const url = decodeHtml(m[1]).trim();
-        const name = stripTags(decodeHtml(m[2])).trim();
-        if (!name) continue;
-        if (/^(Next|Prev|Filter|Subject|Type|A–Z|A-Z)$/i.test(name)) continue;
-        items.push({ name, url });
-      }
-    }
-
-    // Dedup
-    const seen = new Set<string>();
-    const deduped = items.filter((it) => {
-      const key = it.name.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    return deduped; // may be []
-  } catch (err) {
-    console.warn("[A–Z fetch exception, will fall back]", err);
-    return [];
   }
+  return Array.from(map.values());
+}
+
+/* =========================
+   Build the canonical catalog (no scraping) + Fuse
+========================= */
+type CatalogItem = { name: string; url?: string; description?: string; normName: string };
+const ALL_RESOURCES: CatalogItem[] = (() => {
+  const merged = [...resourceDatabase, ...libraryResourceDatabase] as Array<{ name: string; url?: string; description?: string }>;
+  const byKey = new Map<string, CatalogItem>();
+  for (const r of merged) {
+    const key = norm(r.name);
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, { name: r.name, url: r.url, description: r.description, normName: key });
+    } else {
+      // Prefer the one with a URL/description
+      const betterUrl = existing.url ? existing : r;
+      const url = betterUrl.url ?? existing.url;
+      const desc = (r.description && r.description.length > (existing.description?.length ?? 0)) ? r.description : existing.description;
+      byKey.set(key, { name: existing.name, url, description: desc, normName: key });
+    }
+  }
+  return Array.from(byKey.values());
+})();
+
+// Alias index from the catalog
+const CATALOG_ALIAS_INDEX: Map<string, CatalogItem> = (() => {
+  const m = new Map<string, CatalogItem>();
+  for (const z of ALL_RESOURCES) {
+    for (const a of aliasForms(z.name)) {
+      if (!m.has(a)) m.set(a, z);
+    }
+  }
+  return m;
+})();
+
+// Fuse index over the catalog
+const fuse = new Fuse(ALL_RESOURCES, {
+  includeScore: true,
+  threshold: 0.6, // inclusive
+  ignoreLocation: true,
+  keys: ["name", "normName"],
+});
+
+/* =========================
+   Lightweight BM25 over catalog (general recall)
+========================= */
+type BM25Doc = { item: CatalogItem; tf: Map<string, number>; len: number };
+type BM25Index = { docs: BM25Doc[]; idf: Map<string, number>; avgdl: number };
+
+function buildBm25Index(items: CatalogItem[]): BM25Index {
+  const docs: BM25Doc[] = [];
+  const df = new Map<string, number>();
+  let totalLen = 0;
+
+  for (const it of items) {
+    const terms = textTerms(`${it.name} ${it.description ?? ""}`);
+    const tf = new Map<string, number>();
+    for (const t of terms) tf.set(t, (tf.get(t) ?? 0) + 1);
+    const len = terms.length || 1;
+    totalLen += len;
+    docs.push({ item: it, tf, len });
+
+    // update document frequency once per term
+    for (const t of new Set(terms)) df.set(t, (df.get(t) ?? 0) + 1);
+  }
+
+  const N = docs.length || 1;
+  const idf = new Map<string, number>();
+  for (const [t, dfv] of df.entries()) {
+    // standard idf variant with +1 smoothing
+    idf.set(t, Math.log((N - dfv + 0.5) / (dfv + 0.5) + 1));
+  }
+
+  return { docs, idf, avgdl: totalLen / N };
+}
+
+const BM25 = buildBm25Index(ALL_RESOURCES);
+
+function bm25Score(query: string, doc: BM25Doc): number {
+  const k1 = 1.2, b = 0.75;
+  const qTerms = Array.from(new Set(textTerms(query)));
+  let sum = 0;
+  for (const q of qTerms) {
+    const idf = BM25.idf.get(q) ?? 0;
+    const tf = doc.tf.get(q) ?? 0;
+    if (tf === 0 || idf <= 0) continue;
+    const denom = tf + k1 * (1 - b + b * (doc.len / BM25.avgdl));
+    sum += idf * ((tf * (k1 + 1)) / denom);
+  }
+  return sum;
 }
 
 /* ============
-   Intent & Type classifiers (used only for reranking; never steer the LLM)
+   Intent & Type classifiers (explicit-only)
 =========== */
-
-/** Detect one or more format intents from the query. */
 function detectIntents(q: string): Set<FormatIntent> {
   const intents = new Set<FormatIntent>();
   const s = q.toLowerCase();
 
+  // Books are explicit
   if (/\b(e-?book|textbooks?|books?)\b/.test(s)) intents.add("books");
-  if (/\b(article|peer[- ]?review|journal|journals|literature review|systematic review|research)\b/.test(s)) intents.add("articles");
+
+  // Articles only when explicit
+  if (/\b(articles?|peer[- ]?review(ed)?|journal|journals|literature review|systematic review)\b/.test(s)) {
+    intents.add("articles");
+  }
+
+  // News
   if (/\b(news|newspapers?|press|headline|current events?)\b/.test(s)) intents.add("news");
+
+  // Audio
   if (/\b(audio|music|recordings?|sound|podcasts?)\b/.test(s)) intents.add("audio");
+
+  // Video
   if (/\b(video|videos|film|documentar(y|ies)|watch|stream)\b/.test(s) || /\bopera\b/.test(s)) intents.add("video");
+
+  // Images
   if (/\b(images?|photos?|photographs?|pictures?|artwork|art images?)\b/.test(s)) intents.add("images");
+
+  // ✨ NEW: Foreign language learning
+  const languageList = "(spanish|french|german|chinese|mandarin|cantonese|japanese|korean|italian|portuguese|russian|arabic|hindi|urdu|bengali|vietnamese|thai|turkish|greek|hebrew|swedish|norwegian|danish|finnish|polish|czech|romanian|hungarian|indonesian|malay|tagalog|filipino|lao|khmer|persian|farsi|pashto|swahili|zulu|amharic|yiddish|latin|esperanto)";
+  const languageLearning =
+    /\b(language (learning|course|courses|lesson|lessons|practice|classes?)|learn(ing)? (a )?new language|esl|ell|rosetta stone|mango languages|transparent language|pronunciator)\b/.test(s) ||
+    new RegExp(`\\b(learn|learning|practice) ${languageList}\\b`).test(s) ||
+    new RegExp(`\\b${languageList} (lessons?|course|courses)\\b`).test(s);
+  if (languageLearning) intents.add("language");
+
+  // ✨ NEW: Test prep / certification
+  const testPrep =
+    /\b(test|exam)\s*(prep|practice|study|review|guide|coaching|course|bootcamp|materials?)\b/.test(s) ||
+    /\b(practice )?(tests?|exams?)\b/.test(s) && /\bprep|practice|study|review|guide|materials?\b/.test(s) ||
+    /\b(cert(ification|ified)?|credential|license|licensure)\b/.test(s) ||
+    /\b(gre|gmat|lsat|mcat|nclex|teas|praxis|act|sat|toefl|ielts|pte|cf(a|p)|cpa|cma|cia|cisa|pmp|capm|comptia|security\+|network\+|a\+)\b/.test(s) ||
+    /\b(learningexpress|prepstep|peterson'?s)\b/.test(s);
+  if (testPrep) intents.add("testprep");
 
   return intents;
 }
 
-/** Classify a resource from its A–Z name/description. */
 function classifyResource(name: string, description?: string) {
   const n = norm(name);
   const d = norm(description || "");
+  const nd = `${n} ${d}`;
 
   const isEbook =
-    /\b(e-?books?|book collection|books online|ebook central|gale ebooks|ebsco ebooks|o'reilly|safari books|oxford scholarship|springer ebooks|wiley ebooks|cambridge books|muse books|project muse books)\b/.test(n) ||
-    /\b(e-?books?|book collection)\b/.test(d);
+    /\b(e-?books?|book collection|books online|ebook central|gale ebooks|ebsco ebooks|o'reilly|safari books|oxford scholarship|springer ebooks|wiley ebooks|cambridge books|muse books|project muse books)\b/.test(nd);
 
-  const isDissertations = /\b(dissertations?|theses|pqdt)\b/.test(n) || /\b(dissertations?|theses|pqdt)\b/.test(d);
+  const isDissertations = /\b(dissertations?|theses|pqdt)\b/.test(nd);
 
   const isVideo =
-    /\b(video|videos|film|streaming video)\b/.test(n) ||
-    /\b(opera in video|academic video online|kanopy|medici\.?tv)\b/.test(n);
+    /\b(video|videos|film|streaming video)\b/.test(nd) ||
+    /\b(opera in video|academic video online|kanopy|medici\.?tv)\b/.test(nd);
 
   const isAudio =
-    /\b(audio|music|streaming audio|sound recordings?)\b/.test(n) ||
-    /\b(naxos music library)\b/.test(n);
+    /\b(audio|music|streaming audio|sound recordings?)\b/.test(nd) ||
+    /\b(naxos music library)\b/.test(nd);
 
   const isImages =
-    /\b(images?|photos?|photographs?|artstor|jstor images|image collection|picture library)\b/.test(n) ||
-    /\b(images?|photos?|photographs?)\b/.test(d);
+    /\b(images?|photos?|photographs?|artstor|jstor images|image collection|picture library)\b/.test(nd);
 
   const isNews =
-    /\b(news|newspapers?|press|headline)\b/.test(n) ||
-    /\b(nexis|factiva|newsbank|newsstream)\b/.test(n) ||
-    /\b(news|newspapers?|press|headline)\b/.test(d);
+    /\b(news|newspapers?|press|headline|nexis|factiva|newsbank|newsstream)\b/.test(nd);
 
-  // Reasonable “article database” signal (broad; not exclusive)
+  // “Article database” signal (broad; not exclusive)
   const isArticleIndex =
-    (/\b(abstracts|index|database|journals?)\b/.test(n) || /\b(abstracts|index|journals?)\b/.test(d)) &&
+    (/\b(abstracts|index|database|journals?)\b/.test(nd)) &&
     !isEbook && !isDissertations && !isVideo && !isAudio && !isImages && !isNews;
 
-  // Summaries/digests like getAbstract
-  const isSummaryDigest = /\b(getabstract|book summaries?)\b/.test(n) || /\b(book summaries?)\b/.test(d);
+  const isSummaryDigest = /\b(getabstract|book summaries?)\b/.test(nd);
 
-  return { isEbook, isDissertations, isVideo, isAudio, isImages, isNews, isArticleIndex, isSummaryDigest };
+  // ✨ NEW: language learning classification
+  const isLanguageLearning =
+    /\b(language learning|learn(ing)? (spanish|french|german|chinese|mandarin|cantonese|japanese|korean|italian|portuguese|russian|arabic|hindi|urdu|bengali|vietnamese|thai|greek|turkish|hebrew|swedish|norwegian|danish|finnish|polish|czech|romanian|hungarian|indonesian|malay|tagalog|filipino|lao|khmer|persian|farsi|pashto|swahili|zulu|amharic|yiddish|latin|esperanto)|esl|ell|rosetta stone|mango languages|transparent language|pronunciator)\b/.test(nd);
+
+  // ✨ NEW: test prep / certification classification
+  const isTestPrep =
+    /\b(test|exam)\s*(prep|practice|study|review|guide|course|bootcamp|materials?)\b/.test(nd) ||
+    /\b(cert(ification|ified)?|credential|license|licensure)\b/.test(nd) ||
+    /\b(gre|gmat|lsat|mcat|nclex|teas|praxis|act|sat|toefl|ielts|pte|cfa|cpa|cma|cia|cisa|pmp|capm|comptia|security\+|network\+|a\+|peterson'?s|learningexpress|prepstep)\b/.test(nd);
+
+  return {
+    isEbook,
+    isDissertations,
+    isVideo,
+    isAudio,
+    isImages,
+    isNews,
+    isArticleIndex,
+    isSummaryDigest,
+    // new:
+    isLanguageLearning,
+    isTestPrep,
+  };
 }
 
-/** Format-aware reranking that ONLY reorders/adjusts scores; never filters. */
-function rerankByIntent(
-  items: Array<{ name: string; description?: string; relevanceScore: number; _sim?: number }>,
-  intents: Set<FormatIntent>,
-  azList: Array<{ name: string; url?: string; description?: string }>
-) {
-  if (intents.size === 0) return items;
+/** Tiny name-boost if the user's query literally mentions a resource by name. */
+function nameQueryBoost(query: string, resName: string) {
+  const qTok = tokens(query);
+  const rTok = tokens(resName);
+  const overlap = jaccard(qTok, rTok);
+  return overlap >= 0.6 ? 1.12 : overlap >= 0.4 ? 1.06 : 1.0;
+}
 
-  let scored = items.map(m => {
-    const c = classifyResource(m.name, m.description);
-    let factor = 1.0;
-
-    // apply all intents multiplicatively but gently; cap to avoid extremes
-    for (const intent of intents) {
-      switch (intent) {
-        case "books":
-          if (c.isEbook) factor *= 1.12;
-          if (c.isDissertations) factor *= 0.70;
-          if (c.isVideo) factor *= 0.88;
-          if (c.isAudio) factor *= 0.90;
-          if (c.isSummaryDigest) factor *= 0.80;
-          break;
-        case "articles":
-          if (c.isArticleIndex) factor *= 1.10;
-          if (c.isDissertations) factor *= 0.85;
-          if (c.isEbook) factor *= 0.93;
-          if (c.isVideo) factor *= 0.90;
-          if (c.isAudio) factor *= 0.90;
-          if (c.isSummaryDigest) factor *= 0.90;
-          break;
-        case "news":
-          if (c.isNews) factor *= 1.15;
-          if (c.isDissertations) factor *= 0.75;
-          if (c.isEbook) factor *= 0.90;
-          break;
-        case "audio":
-          if (c.isAudio) factor *= 1.15;
-          if (c.isVideo) factor *= 0.95;
-          if (!c.isAudio) factor *= 0.92;
-          break;
-        case "video":
-          if (c.isVideo) factor *= 1.15;
-          if (c.isAudio) factor *= 0.95;
-          if (!c.isVideo) factor *= 0.92;
-          break;
-        case "images":
-          if (c.isImages) factor *= 1.15;
-          if (!c.isImages) factor *= 0.92;
-          break;
-      }
-    }
-
-    // cap factor
-    factor = Math.min(1.30, Math.max(0.70, factor));
-    const adjusted = Math.max(0, Math.min(100, Math.round(m.relevanceScore * factor)));
-    return { ...m, relevanceScore: adjusted };
-  });
-
-  // Coverage injection: ensure each requested intent has at least one candidate
-  const have = (intent: FormatIntent) =>
-    scored.some(s => {
-      const c = classifyResource(s.name, s.description);
-      switch (intent) {
-        case "books": return c.isEbook;
-        case "articles": return c.isArticleIndex;
-        case "news": return c.isNews;
-        case "audio": return c.isAudio;
-        case "video": return c.isVideo;
-        case "images": return c.isImages;
-      }
-    });
-
-  const existingKeys = new Set(scored.map(s => norm(s.name)));
-
-  for (const intent of intents) {
-    if (have(intent)) continue;
-
-    const candidates = azList.filter(z => {
-      const c = classifyResource(z.name, z.description);
-      switch (intent) {
-        case "books": return c.isEbook;
-        case "articles": return c.isArticleIndex;
-        case "news": return c.isNews;
-        case "audio": return c.isAudio;
-        case "video": return c.isVideo;
-        case "images": return c.isImages;
-      }
-    });
-
-    let injected = 0;
-    for (const z of candidates) {
-      const key = norm(z.name);
-      if (existingKeys.has(key)) continue;
-      scored.push({
-        name: z.name,
-        description: z.description ?? "",
-        relevanceScore: INJECT_BASE_SCORE,
-        _sim: 0.95, // neutral-good for tie-breaks
-      } as any);
-      existingKeys.add(key);
-      injected++;
-      if (injected >= INJECT_MAX_PER_INTENT) break;
-    }
-
-    if (injected > 0) {
-      console.warn(`[inject-${intent}] Added ${injected} resource(s) to cover requested format intent.`);
-    }
-  }
-
-  return scored;
+/** Intent-alignment factor for BM25 recall. */
+function intentAlignmentFactor(intents: Set<FormatIntent>, item: { name: string; description?: string }) {
+  if (intents.size === 0) return 1.0;
+  const c = classifyResource(item.name, item.description);
+  let f = 1.0;
+  if (intents.has("books"))    f *= c.isEbook ? 1.12 : 0.92;
+  if (intents.has("articles")) f *= c.isArticleIndex ? 1.10 : 0.93;
+  if (intents.has("news"))     f *= c.isNews ? 1.15 : 0.92;
+  if (intents.has("audio"))    f *= c.isAudio ? 1.15 : 0.92;
+  if (intents.has("video"))    f *= c.isVideo ? 1.15 : 0.92;
+  if (intents.has("images"))   f *= c.isImages ? 1.15 : 0.92;
+  // ✨ NEW alignments:
+  if (intents.has("language")) f *= c.isLanguageLearning ? 1.18 : 0.90;
+  if (intents.has("testprep")) f *= c.isTestPrep ? 1.18 : 0.90;
+  return Math.min(1.30, Math.max(0.70, f));
 }
 
 /* ===========================
@@ -429,7 +451,7 @@ function rerankByIntent(
 export async function findDatabaseResources(
   query: string,
   _searchType: "library" | "database" // not used in this LLM-first flow
-) {
+): Promise<ResultRow[]> {
   const apiKey = process.env.GEMINI_API_KEY;
 
   try {
@@ -480,43 +502,16 @@ User Query: ${JSON.stringify(query)}
     }
     console.log("[AI parsed results]", aiPicks);
 
-    // 3) Fetch live A–Z (soft fail), otherwise fall back to your local arrays
-    let azList = await fetchAtoZList();
-    if (azList.length === 0) {
-      console.warn("[A–Z parse yielded 0 items] Falling back to local arrays");
-      azList = [...resourceDatabase, ...libraryResourceDatabase].map((r: any) => ({
-        name: r.name,
-        url: r.url,
-        description: r.description ?? "",
-      }));
-    }
-
-    // Prepare alias index and generous fuzzy index
-    const aliasIndex = new Map<string, { name: string; url?: string; description?: string }>();
-    for (const z of azList) {
-      for (const a of aliasForms(z.name)) {
-        if (!aliasIndex.has(a)) aliasIndex.set(a, z);
-      }
-    }
-    const azAugmented = azList.map((z) => ({ ...z, normName: norm(z.name) }));
-
-    const fuse = new Fuse(azAugmented, {
-      includeScore: true,
-      threshold: 0.6, // inclusive
-      ignoreLocation: true,
-      keys: ["name", "normName"],
-    });
-
-    // 4) Map each AI pick to the best A–Z entry — with acceptance gates
+    // 3) Map each AI pick to the best catalog entry — alias first, then fuzzy
     const userIntents = detectIntents(query);
 
     const matched = (aiPicks as AiArray).map((pick) => {
       const aiName = pick.name;
       const aiTokens = tokens(aiName);
 
-      // (a) Alias/exact-ish match wins
+      // (a) Alias/exact-ish match wins (catalog-backed only)
       for (const form of aliasForms(aiName)) {
-        const hit = aliasIndex.get(form);
+        const hit = CATALOG_ALIAS_INDEX.get(form);
         if (hit) {
           return {
             name: hit.name,
@@ -529,9 +524,9 @@ User Query: ${JSON.stringify(query)}
         }
       }
 
-      // (b) Fuzzy best among normalized variants
+      // (b) Fuzzy best among normalized variants (catalog-backed only)
       const candidatesToSearch = Array.from(new Set([aiName, norm(aiName), ...aliasForms(aiName)]));
-      let best: { item: any; score: number } | null = null;
+      let best: { item: CatalogItem; score: number } | null = null;
       for (const cand of candidatesToSearch) {
         const res = fuse.search(cand)[0];
         if (res) {
@@ -567,23 +562,180 @@ User Query: ${JSON.stringify(query)}
     }>;
 
     if (matched.length === 0) {
-      console.warn("[No A–Z matches found for AI picks after gating]");
+      console.warn("[No catalog matches found for AI picks after gating]");
       return [];
     }
 
-    // 5) Couple LLM score to similarity (prevents bad mappings from scoring high)
+    // 4) Couple LLM score to similarity
     let scored = matched.map((m) => {
       const base = Math.round(m.relevanceScore * (m._sim ?? 1));
       return { ...m, relevanceScore: Math.max(0, Math.min(100, base)) };
     });
 
-    // 6) General, multi-format reranker + coverage injection
-    scored = rerankByIntent(scored, userIntents, azList);
+    // 5) Purpose-fit reranker (multi-format) + tiny “name mentioned in query” boost
+    scored = scored.map((m) => {
+      const c = classifyResource(m.name, m.description);
+      let factor = nameQueryBoost(query, m.name); // small boost if user typed the name
 
-    // 7) Return ALL ≥ threshold, else top-5 (tie-break by similarity)
+      for (const intent of userIntents) {
+        switch (intent) {
+          case "books":
+            if (c.isEbook) factor *= 1.12;
+            if (c.isDissertations) factor *= 0.70;
+            if (c.isVideo) factor *= 0.88;
+            if (c.isAudio) factor *= 0.90;
+            if (c.isSummaryDigest) factor *= 0.80;
+            break;
+          case "articles":
+            if (c.isArticleIndex) factor *= 1.10;
+            if (c.isDissertations) factor *= 0.85;
+            if (c.isEbook) factor *= 0.93;
+            if (c.isVideo) factor *= 0.90;
+            if (c.isAudio) factor *= 0.90;
+            if (c.isSummaryDigest) factor *= 0.90;
+            break;
+          case "news":
+            if (c.isNews) factor *= 1.15;
+            if (c.isDissertations) factor *= 0.75;
+            if (c.isEbook) factor *= 0.90;
+            break;
+          case "audio":
+            if (c.isAudio) factor *= 1.15;
+            if (c.isVideo) factor *= 0.95;
+            if (!c.isAudio) factor *= 0.92;
+            break;
+          case "video":
+            if (c.isVideo) factor *= 1.15;
+            if (c.isAudio) factor *= 0.95;
+            if (!c.isVideo) factor *= 0.92;
+            break;
+          case "images":
+            if (c.isImages) factor *= 1.15;
+            if (!c.isImages) factor *= 0.92;
+            break;
+          // ✨ NEW boosts:
+          case "language":
+            if (c.isLanguageLearning) factor *= 1.22;
+            if (c.isDissertations || c.isSummaryDigest) factor *= 0.90;
+            break;
+          case "testprep":
+            if (c.isTestPrep) factor *= 1.22;
+            if (c.isDissertations || c.isSummaryDigest) factor *= 0.88;
+            break;
+        }
+      }
+
+      factor = Math.min(1.30, Math.max(0.70, factor));
+      const adjusted = Math.max(0, Math.min(100, Math.round(m.relevanceScore * factor)));
+      return { ...m, relevanceScore: adjusted };
+    });
+
+    // 6) Coverage injection from the LOCAL catalog (BM25-gated for topical fit)
+    const have = (intent: FormatIntent) =>
+      scored.some(s => {
+        const c = classifyResource(s.name, s.description);
+        switch (intent) {
+          case "books":    return c.isEbook;
+          case "articles": return c.isArticleIndex;
+          case "news":     return c.isNews;
+          case "audio":    return c.isAudio;
+          case "video":    return c.isVideo;
+          case "images":   return c.isImages;
+          case "language": return c.isLanguageLearning;   // ✨ NEW
+          case "testprep": return c.isTestPrep;           // ✨ NEW
+        }
+      });
+
+    {
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      for (const intent of Array.from(userIntents)) {
+        if (have(intent)) continue;
+
+        // candidate pool by format
+        const formatPool = ALL_RESOURCES.filter(z => {
+          const c = classifyResource(z.name, z.description);
+          switch (intent) {
+            case "books":    return c.isEbook;
+            case "articles": return c.isArticleIndex;
+            case "news":     return c.isNews;
+            case "audio":    return c.isAudio;
+            case "video":    return c.isVideo;
+            case "images":   return c.isImages;
+            case "language": return c.isLanguageLearning;  // ✨ NEW
+            case "testprep": return c.isTestPrep;          // ✨ NEW
+          }
+        });
+
+        // rank by BM25 topicality (and require minimal topical signal)
+        const ranked = formatPool
+          .map(z => {
+            const doc = BM25.docs.find(d => d.item.normName === z.normName)!;
+            const topical = bm25Score(query, doc);
+            return { z, topical };
+          })
+          .filter(({ z, topical }) => !existingKeys.has(norm(z.name)) && topical >= (RECALL_BM25_MIN * 0.6))
+          .sort((a, b) => b.topical - a.topical);
+
+        let injected = 0;
+        for (const { z, topical } of ranked) {
+          scored.push({
+            name: z.name,
+            url: z.url,
+            description: z.description ?? "",
+            relevanceScore: Math.min(100, Math.round(INJECT_BASE_SCORE + Math.min(10, topical * 6))),
+            _sim: 0.9,
+          } as any);
+          existingKeys.add(norm(z.name));
+          injected++;
+          if (injected >= INJECT_MAX_PER_INTENT) break;
+        }
+        if (injected > 0) {
+          console.warn(`[inject-${intent}] Added ${injected} resource(s) with BM25 gating.`);
+        }
+      }
+    }
+
+    // 6b) GENERAL CATALOG RECALL (BM25): add the best missing catalog items if strongly topical
+    {
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      const intents = userIntents;
+
+      const pool = BM25.docs
+        .filter(d => !existingKeys.has(d.item.normName))
+        .map(d => {
+          const base = bm25Score(query, d);
+          const align = intentAlignmentFactor(intents, d.item);
+          return { d, score: base * align };
+        })
+        .filter(({ score }) => score >= RECALL_BM25_MIN)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 24);
+
+      let injected = 0;
+      for (const { d, score } of pool) {
+        scored.push({
+          name: d.item.name,
+          url: d.item.url,
+          description: d.item.description ?? "",
+          relevanceScore: Math.min(100, Math.round(RECALL_SCORE_BASE + Math.min(12, score * 8))),
+          _sim: 0.9,
+        } as any);
+        existingKeys.add(d.item.normName);
+        injected++;
+        if (injected >= RECALL_MAX) break;
+      }
+      if (injected > 0) {
+        console.warn(`[recall-bm25] Added ${injected} resource(s) via general semantic recall.`);
+      }
+    }
+
+    // 6.5) Dedupe by normalized name, keep highest score
+    scored = dedupeByNameKeepBest(scored);
+
+    // 7) Return ALL ≥ threshold, else top-5 (tie-break by similarity if present)
     const high = scored
       .filter((r) => r.relevanceScore >= RELEVANCE_THRESHOLD)
-      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b._sim ?? 0) - (a._sim ?? 0)))
+      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
       .map(({ _sim, ...rest }) => rest);
 
     if (high.length > 0) {
@@ -592,7 +744,7 @@ User Query: ${JSON.stringify(query)}
     }
 
     const top5 = scored
-      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b._sim ?? 0) - (a._sim ?? 0)))
+      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
       .slice(0, 5)
       .map(({ _sim, ...rest }) => rest);
 
