@@ -9,11 +9,19 @@ import { z } from "zod";
 import Fuse from "fuse.js";
 
 // Curated alias registry you generated from the A–Z list
-import { ALIAS_REGISTRY } from "@/lib/aliases/alias-registry";
+import { ALIAS_REGISTRY as RAW_ALIAS_REGISTRY } from "@/lib/aliases/alias-registry";
 
 // Single-source catalogs (we will select one at runtime)
 import { resourceDatabase } from "./resource-database";
 import { libraryResourceDatabase } from "./library-resources-database";
+
+/* =========================
+   debug bundle companions
+========================= */
+const DEBUG_BUNDLE = true;
+function dlog(...args: any[]) {
+  if (DEBUG_BUNDLE) console.log(...args);
+}
 
 /* =========================
    Zod runtime validation
@@ -122,7 +130,21 @@ function vendorToggles(name: string) {
   return Array.from(out).filter(v => v && v !== name);
 }
 
-/** Alias forms (normalized), including curated registry. */
+/**
+ * Alias forms (normalized), including curated registry.
+ * Now with an additional normalization pass for the alias registry.
+ */
+let ALIAS_REGISTRY: Record<string, string[]> | null = null;
+function getNormalizedAliasRegistry(): Record<string, string[]> {
+  if (ALIAS_REGISTRY) return ALIAS_REGISTRY;
+  ALIAS_REGISTRY = {};
+  for (const [key, arr] of Object.entries(RAW_ALIAS_REGISTRY as Record<string, string[]>)) {
+    const normKey = norm(key);
+    ALIAS_REGISTRY[normKey] = Array.from(new Set(arr.map(a => norm(a))));
+  }
+  return ALIAS_REGISTRY;
+}
+
 function aliasForms(displayName: string): string[] {
   const out = new Set<string>();
   const baseNorm = norm(displayName);
@@ -138,12 +160,11 @@ function aliasForms(displayName: string): string[] {
     if (nv) out.add(nv);
   }
 
-  // Curated registry expansions
-  const reg = (ALIAS_REGISTRY as Record<string, string[]>)[baseNorm];
+  // Curated registry expansions (normalized)
+  const reg = getNormalizedAliasRegistry()[baseNorm];
   if (reg && Array.isArray(reg)) {
     for (const a of reg) {
-      const na = norm(a);
-      if (na) out.add(na);
+      if (a) out.add(a);
     }
   }
 
@@ -178,7 +199,7 @@ function extractJsonArray(text: string): string | null {
     .replace(/[\u2018\u2019\u201B]/g, "'")
     .replace(/,\s*([}\]])/g, "$1")
     .trim();
-  if (/^\s*\[.*\]\s*$/s.test(text)) return text;
+  if (/^\s*\[.*\]\s*$/.test(text)) return text;
   const first = text.indexOf("[");
   const last = text.lastIndexOf("]");
   if (first !== -1 && last !== -1 && last > first) return text.slice(first, last + 1);
@@ -250,9 +271,21 @@ function buildCatalogFrom(list: Array<{ name: string; url?: string; description?
 
 function buildAliasIndex(catalog: CatalogItem[]): Map<string, CatalogItem> {
   const m = new Map<string, CatalogItem>();
+  const aliasRegistry = getNormalizedAliasRegistry();
   for (const z of catalog) {
+    // Index all alias forms of the catalog name
     for (const a of aliasForms(z.name)) {
       if (!m.has(a)) m.set(a, z);
+    }
+  }
+  // For each alias key, map all its values to the canonical catalog entry (if present)
+  for (const [aliasKey, aliasArr] of Object.entries(aliasRegistry)) {
+    // Find the catalog entry for the alias key (if it exists)
+    const canonical = catalog.find(c => norm(c.name) === aliasKey);
+    if (canonical) {
+      for (const alias of aliasArr) {
+        if (!m.has(alias)) m.set(alias, canonical);
+      }
     }
   }
   return m;
@@ -440,6 +473,104 @@ function intentAlignmentFactor(intents: Set<FormatIntent>, item: { name: string;
   return Math.min(1.30, Math.max(0.70, f));
 }
 
+// --- BEGIN: CQ/SIRS/Opposing Viewpoints bundle helpers (robust resolver) ---
+const BUNDLE_CANONICAL = [
+  "CQ Researcher Plus Archives",
+  "SIRS Issues Researcher",
+  "Opposing Viewpoints",
+].map(s => norm(s));
+
+const BUNDLE_EXTRA_ALIASES: Record<string, string[]> = {
+  [norm("Opposing Viewpoints")]: [
+    norm("Gale In Context: Opposing Viewpoints"),
+    norm("Opposing Viewpoints in Context"),
+    norm("Gale Opposing Viewpoints"),
+  ],
+};
+
+const BUNDLE_REASON =
+  "Included as a related companion database for pro/con & current issues coverage (CQ Researcher / SIRS / Opposing Viewpoints bundle).";
+
+function resolveBundleTarget(
+  targetNorm: string,
+  aliasIndex: Map<string, { name: string; url?: string; description?: string }>,
+  fuse: Fuse<{ name: string; url?: string; description?: string; normName: string }>
+) {
+  const variants = new Set<string>([targetNorm]);
+
+  // & / and swaps
+  variants.add(targetNorm.replace(/\band\b/g, "&"));
+  variants.add(targetNorm.replace(/&/g, " and "));
+
+  // known vendor-style aliases (e.g., “Gale In Context: Opposing Viewpoints”)
+  for (const extra of (BUNDLE_EXTRA_ALIASES[targetNorm] ?? [])) variants.add(extra);
+
+  // also try a vendor-stripped form (“in context”/leading brand trimmed)
+  for (const v of [...variants]) {
+    variants.add(norm(v.replace(/^gale (in )?context:\s*/i, "")));
+    variants.add(norm(v.replace(/\s+in context$/i, "")));
+  }
+
+  // aliasIndex first (fast & exact)
+  for (const key of variants) {
+    const hit = aliasIndex.get(key);
+    if (hit) return hit;
+  }
+
+  // fuzzy fallback via Fuse
+  for (const key of variants) {
+    const res = fuse.search(key)[0];
+    if (res) {
+      const sim = 1 - (res.score ?? 1);
+      if (sim >= 0.65) return res.item;
+    }
+  }
+  return null;
+}
+
+function applyBundleCompanions(
+  scored: Array<ResultRow & { _sim?: number }>,
+  aliasIndex: Map<string, { name: string; url?: string; description?: string }>,
+  fuse: Fuse<{ name: string; url?: string; description?: string; normName: string }>,
+  minScore: number = 80
+) {
+  try {
+    const present = new Set(scored.map(s => norm(s.name)));
+    const anyPresent = BUNDLE_CANONICAL.some(b => present.has(b));
+    if (!anyPresent) return;
+
+    const anchorScore = Math.max(
+      ...scored
+        .filter(s => BUNDLE_CANONICAL.includes(norm(s.name)))
+        .map(s => s.relevanceScore),
+      0
+    );
+    const addScore = Math.max(minScore, Math.round(anchorScore || 88));
+
+    for (const b of BUNDLE_CANONICAL) {
+      if (present.has(b)) continue;
+
+      const hit = resolveBundleTarget(b, aliasIndex, fuse);
+      if (!hit) continue;
+
+      scored.push({
+        name: hit.name,
+        url: hit.url,
+        description: hit.description ?? "",
+        relevanceScore: addScore,
+        matchReason: BUNDLE_REASON,
+        _sim: 0.98,
+      } as any);
+
+      present.add(norm(hit.name));
+    }
+  } catch (e) {
+    console.warn("[bundle-companions] skipped due to error", e);
+  }
+}
+// --- END: CQ/SIRS/Opposing Viewpoints bundle helpers ---
+
+
 /* ===========================
    Main exported entry point
 =========================== */
@@ -515,10 +646,20 @@ User Query: ${JSON.stringify(query)}
       const aiName = pick.name;
       const aiTokens = tokens(aiName);
 
-      // (a) Alias/exact-ish match wins (catalog-backed only)
-      for (const form of aliasForms(aiName)) {
+      // Debug: print normalized forms and alias lookups
+      const aliasFormsArr = aliasForms(aiName);
+      console.log('[DEBUG alias match]', {
+        aiName,
+        norm: norm(aiName),
+        aliasForms: aliasFormsArr,
+        catalogAliasHits: aliasFormsArr.map(f => ({ form: f, hit: CATALOG_ALIAS_INDEX.get(f)?.name || null }))
+      });
+
+      // (1) Strict alias/exact match
+      for (const form of aliasFormsArr) {
         const hit = CATALOG_ALIAS_INDEX.get(form);
         if (hit) {
+          console.log('[MATCH strict/alias]', aiName, '→', hit.name);
           return {
             name: hit.name,
             url: hit.url,
@@ -530,34 +671,47 @@ User Query: ${JSON.stringify(query)}
         }
       }
 
-      // (b) Fuzzy best among normalized variants (catalog-backed only)
-      const candidatesToSearch = Array.from(new Set([aiName, norm(aiName), ...aliasForms(aiName)]));
-      let best: { item: CatalogItem; score: number } | null = null;
-      for (const cand of candidatesToSearch) {
-        const res = FUSE.search(cand)[0];
-        if (res) {
-          const score = res.score ?? 1;
-          if (!best || score < best.score) best = { item: res.item, score };
+      // (2) Fuzzy match against all catalog entries (high threshold)
+      const fuzzyRes = FUSE.search(norm(aiName));
+      if (fuzzyRes.length > 0) {
+        const best = fuzzyRes[0];
+        const sim = 1 - (best.score ?? 1);
+        if (sim >= 0.7) {
+          console.log('[MATCH fuzzy]', aiName, '→', best.item.name, 'sim:', sim);
+          return {
+            name: best.item.name,
+            url: best.item.url,
+            description: best.item.description ?? "",
+            _sim: sim,
+            relevanceScore: pick.relevanceScore,
+            matchReason: pick.matchReason || "",
+          };
         }
       }
-      if (!best) return null;
 
-      const sim = 1 - (best.score ?? 0);
-      const nameTokOverlap = jaccard(aiTokens, tokens(best.item.name));
-
-      if (sim < MIN_ACCEPT_SIM && nameTokOverlap < TOKEN_OVERLAP_FLOOR) {
-        console.warn(`[drop-weak-match] LLM "${aiName}" → "${best.item.name}" (sim=${sim.toFixed(2)}, overlap=${nameTokOverlap.toFixed(2)})`);
-        return null;
+      // (3) Super-loose fallback: strip all non-alphanumeric and compare (token overlap ≥ 0.5)
+      const superLoose = (s: string) => norm(s).replace(/[^a-z0-9]/g, "");
+      const aiLoose = superLoose(aiName);
+      for (const item of CATALOG) {
+        if (superLoose(item.name) === aiLoose) {
+          const overlap = jaccard(tokens(aiName), tokens(item.name));
+          if (overlap >= 0.5) {
+            console.log('[MATCH super-loose]', aiName, '→', item.name, 'overlap:', overlap);
+            return {
+              name: item.name,
+              url: item.url,
+              description: item.description ?? "",
+              _sim: 0.7,
+              relevanceScore: pick.relevanceScore,
+              matchReason: pick.matchReason || "",
+            };
+          }
+        }
       }
 
-      return {
-        name: best.item.name,
-        url: best.item.url,
-        description: best.item.description ?? "",
-        _sim: sim,
-        relevanceScore: pick.relevanceScore,
-        matchReason: pick.matchReason || "",
-      };
+      // (4) No match found
+      console.warn('[NO MATCH]', aiName);
+      return null;
     }).filter(Boolean) as Array<{
       name: string;
       url?: string;
@@ -734,7 +888,17 @@ User Query: ${JSON.stringify(query)}
       }
     }
 
+    
+    // Bundle companions (CQ/SIRS/Opposing Viewpoints)
+    applyBundleCompanions(
+      scored as Array<ResultRow & { _sim?: number }>,
+      CATALOG_ALIAS_INDEX,
+      FUSE,
+      RELEVANCE_THRESHOLD
+    );
+    
     // 6.5) Dedupe by normalized name, keep highest score
+
     scored = dedupeByNameKeepBest(scored);
 
     // 7) Return ALL ≥ threshold, else top-5 (tie-break by similarity if present)

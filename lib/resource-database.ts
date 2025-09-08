@@ -32,7 +32,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Included in the 4,000+ maps are: political maps, physical maps, outline maps, population maps, precipitation maps, climate maps, and other thematic maps. Updated monthly.&nbsp;",
     },
     {
-        name: "Academic Search Premier ",
+    name: "Academic Search Premier",
         description:
             "<p>EBSCO's multi-disciplinary database with millions of articles for academic study.</p>",
         subjects: [
@@ -44,7 +44,7 @@ export const resourceDatabase: LibraryResource[] = [
             "World's largest scholarly, multi-disciplinary database accessing nearly 4,600&nbsp; publications with full text plus indexing and abstracts for over 8,000 others. Information covers nearly every area of academic study including: social sciences, humanities, education, computer sciences, engineering, physics, chemistry, language and linguistics, arts &amp; literature, medical sciences, ethnic studies, etc.&nbsp;Available as an App:&nbsp; &nbsp;&nbsp;Android&nbsp;&nbsp;&nbsp; Apple",
     },
     {
-        name: "AcademicPowerSearch ",
+    name: "AcademicPowerSearch",
         description:
             "<p>Gale's multi-disciplinary search through millions of pages in peer-reviewed articles, eBooks, primary sources, and more.&nbsp;</p>",
         subjects: ["General"],
@@ -63,7 +63,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Acceda Noticias also includes tens of thousands of current and archived full-text articles from other news sources and complete electronic newspaper editions across Argentina, Brazil, Chile, China, Columbia, Ecuador, Mexico, Peru, Spain, and more.",
     },
     {
-        name: "Access Engineering (McGraw-Hill) ",
+    name: "Access Engineering (McGraw-Hill)",
         description:
             "<p>A collection of the most-used authoritative, regularly updated engineering reference information; interactive tools, resources, codes, etc.</p>",
         subjects: [
@@ -92,7 +92,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Includes content from the Associated Press, the Los Angeles Times, Washington Post News Service and the Targeted News Service.",
     },
     {
-        name: "ACLS Humanities E-Book Project ",
+    name: "ACLS Humanities E-Book Project",
         description:
             "<p><i><strong>Now Open Access Content Only</strong></i>. Books in the humanities: culture, society, history, rhetoric, language arts, visual &amp; performing arts, etc.&nbsp;</p><p>&nbsp;</p>",
         subjects: [
@@ -146,7 +146,7 @@ export const resourceDatabase: LibraryResource[] = [
             "This database is an electronic version of the complete print edition published in sixty-eight volumes by the Soci\u00e9t\u00e9 des Bollandistes. It is a collection of documents examining the lives of saints, organized according to each saint's feast day. It runs from the two January volumes published in 1643 to the Propylaeum to December published in 1940. The entire Acta Sanctorum is available, including all prefatory material, original texts, critical apparatus and indices along with Bibliotheca Hagiographica Latina reference numbers.&nbsp;This collection lends itself to historical research of many kinds - social and ecclesiastical history, art and architecture, literature, folklore, and ethnology. Acta Sanctorum records every detail of domestic and public life from the beginning of the Christian era to the end of the 16th century.",
     },
     {
-        name: "African American Music Reference ",
+    name: "African American Music Reference",
         description:
             "<p>A comprehensive collection of blues, jazz, spirituals, slave songs, minstrels, rhythm &amp; blues, gospel, hip hop, and other forms of black American musical expression.</p>",
         subjects: ["Music"],
@@ -155,7 +155,7 @@ export const resourceDatabase: LibraryResource[] = [
         moreInfo: "",
     },
     {
-        name: "African American Newspapers ",
+    name: "African American Newspapers",
         description:
             '<p>An collection of African American newspapers with a wealth of information about cultural life and history during the 1800s. <a href="https://byui.idm.oclc.org/login?url=https://coherentdigital.net/aanw">Learn more</a></p>',
         subjects: ["Family History, History, Special Collections"],
@@ -165,7 +165,7 @@ export const resourceDatabase: LibraryResource[] = [
             "An extensive collection of African American newspapers containing a wealth of information about cultural life and history during the 1800s rich with first-hand reports of the major events and issues of the day, all of which embody the African-American experience.Provides many related early biographies, vital statistics, essays, editorials, poetry, prose, and advertisements.&nbsp;Learn more about African American Newspapers &nbsp; &nbsp; | &nbsp; &nbsp; This resource is part History Commons'&nbsp;Accessible Archives&nbsp;collection&nbsp;Includes:&nbsp;The Canadian ObserverThe Christian RecorderThe Colored AmericanDouglass\u2019 MonthlyFrederick Douglass\u2019 PaperThe Freedmen\u2019s RecordFreedom\u2019s JournalThe North StarThe LiberatorThe National EraThe National Anti-Slavery StandardThe Negro Business League HeraldThe Provincial FreemanThe Weekly Advocate",
     },
     {
-        name: "African American Poetry ",
+    name: "African American Poetry",
         description:
             "<p>A collection of poetry by African American poets from the 1700s - 1800s.</p>",
         subjects: ["English"],
@@ -185,7 +185,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Agricola contains bibliographic records from the U.S. Department of Agriculture's National Agricultural Library for documents created for the land grant and other state colleges. Covers materials in all formats. The citations are comprised of journal articles, monographs, theses, patents, software, audiovisual materials, &amp; technical reports related to agriculture.",
     },
     {
-        name: "Agriculture ",
+    name: "Agriculture",
         description:
             "<p>Access current and authoritative periodical content covering agriculture and its related fields.</p>",
         subjects: ["Animal and Food Science, Applied Plant Science"],
@@ -195,7 +195,7 @@ export const resourceDatabase: LibraryResource[] = [
             "&nbsp;Provides access to over 600 journals and 30 Delmar e-textbooks focused on agriculture and related fields. Provides access to current and authoritative content on topics from practical aspects of farming to cutting-edge scientific research in horticulture (coverage has a strong emphasis on titles covered in the Agricola database).",
     },
     {
-        name: "AIP Publishing ",
+    name: "AIP Publishing",
         description:
             "<p>Current and influential news, analysis, and research in these Physical Science journals: <i>American Journal of Physics</i>, <i>Physics Today</i>, and <i>Physics Teacher</i>.&nbsp;</p>",
         subjects: ["Physics"],
@@ -224,7 +224,7 @@ export const resourceDatabase: LibraryResource[] = [
             "&nbsp;Discover over 10 million audio tracks,&nbsp;1.3 million pages of scores, thousands of video performances, along with reference materials and primary sources are included in this collection, founded&nbsp;with the goal of publishing digital collections in the humanities and social sciences. This has grown to include materials&nbsp;in the fields of counseling, anthropology, history, diversity studies, theatre, film, music, dance, news, current affairs, and the social sciences.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Alexander Street Home&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Alexander Street Video Home PageCollections we subscribe to:American Civil War Research DatabaseAmerican Film Scripts OnlineAmerican History in VideoBlack DramaBlack Women WritersBritish and Irish Women\u2019s Letters and DiariesClassical Scores Library, Volume 1Counseling and Psychotherapy Transcripts: Client Narratives, and Reference WorksCounseling and Therapy in Video, Volume 1Early Encounters in North AmericaFilmmakers Library OnlineGarland Encyclopedia of World MusicImages of AmericaImages of the American Civil WarNorth American Immigrant LettersDiaries and Oral HistoriesNorth American Indian DramaNorth American Indian Thought and CultureNorth American Theatre OnlineNorth American Women\u2019s DramaNorth American Women\u2019s Letters and DiariesNursing Education in VideoOpera in VideoOral History OnlineScottish Women Poets of the Romantic PeriodSocial TheoryThe American Civil War: Letters and DiariesThe Digital Library of Classic Protestant TextsThe Sixties: Primary Documents and Personal Narratives 1960 \u2013 1974Twentieth Century Advice LiteratureTwentieth Century North American DramaTwentieth Century Religious Thought, Volume 1: ChristianityWomen and Social MovementsWorld History in Video",
     },
     {
-        name: "ALT HealthWatch ",
+    name: "ALT HealthWatch",
         description:
             "<p>A research database with peer-reviewed articles on holistic medicine and therapies.</p>",
         subjects: ["Health Services, Nursing"],
@@ -246,7 +246,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Learn more about AM ExplorerCollections at BYU-Idaho: &nbsp;&nbsp;American HistoryAmerican Indian Histories and CulturesAmerican Indian NewspapersAmerican WestChina, America and the PacificColonial AmericaConfidential Print: Latin AmericaDefining GenderEighteenth Century DramaEighteenth Century JournalsEmpire OnlineFirst World WarForeign Office Files for ChinaFrontier LifeJewish Life in America c.1654-1954Literary Manuscripts BergLiterary Manuscripts LeedsLondon Low LifeMarket Research and American BusinessMedieval Family LifeMedieval TravelMigration to New WorldsPerdita ManuscriptsRomanticism: Life, Literature and LandscapeShakespeare In PerformanceSlavery, Abolition and Social JusticeThe Nixon YearsTravel WritingVictorian Popular CultureVirginia Company Archives",
     },
     {
-        name: "America: History & Life ",
+    name: "America: History & Life",
         description:
             "<p>A bibliographic database focusing on the history of and life in the United States and Canada.&nbsp;</p>",
         subjects: ["Geography, History, Political Science"],
@@ -256,7 +256,7 @@ export const resourceDatabase: LibraryResource[] = [
             "A bibliographic database focusing on the history of and life in the United States and Canada. Indexes journal coverage, includes citations and links to book &amp; media reviews along with abstracts in English for articles published in a variety of languages.&nbsp;",
     },
     {
-        name: "America's Historical Imprints, 1640-1819 ",
+    name: "America's Historical Imprints, 1640-1819",
         description:
             "<p>A collection of virtually every know book, monograph, pamphlet, and broadside published in American between 1640 and 1819.</p>",
         subjects: ["English, History, Humanities and Philosophy"],
@@ -326,7 +326,7 @@ export const resourceDatabase: LibraryResource[] = [
             "This collection is indexed to enhance searching. Includes biographies, an extensive bibliography of the sources in the database, and material licensed from The Civil War Day-by-Day.&nbsp;Part of the Alexander Street collection.",
     },
     {
-        name: "American County Histories ",
+    name: "American County Histories",
         description:
             "<p>A collection of county histories from throughout the United States.</p>",
         subjects: ["Family History, Geography, History"],
@@ -336,7 +336,7 @@ export const resourceDatabase: LibraryResource[] = [
             "These books contain information about history, statistics, geology, geography, weather, government, medical systems, military, business, legal concerns, schools, cemeteries, family histories, transportation, public officials, banking, insurance, public service, and more.&nbsp; More about American County Histories collection&nbsp; &nbsp; &nbsp; | &nbsp; &nbsp; &nbsp;This resource is part History Commons'&nbsp;Accessible Archives&nbsp;collection &nbsp; &nbsp;",
     },
     {
-        name: "American Drama 1714-1915 ",
+    name: "American Drama 1714-1915",
         description:
             "<p>A comprehensive survey of American dramaturgy from its origins up to the era of sensational melodrama and manners comedy.</p>",
         subjects: ["Theatre"],
@@ -375,7 +375,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Over 760 hours of footage covering historical events in United States history, gleaned from commercial and governmental newsreels, archival footage, public affairs footage, and documentaries. Includes profiles of American leaders and personalities. Allows the researcher to examine culture, rhetoric, stereotypes, propaganda, and more in the context of history.",
     },
     {
-        name: "American History, 1493-1945 ",
+    name: "American History, 1493-1945",
         description:
             "<p>This unique collection documents American History from the earliest settlers to the mid-twentieth century. From the Gilder Lehrman Collection.</p>",
         subjects: ["History, Political Science, Special Collections"],
@@ -409,7 +409,7 @@ export const resourceDatabase: LibraryResource[] = [
             "The database includes songs by and about Native Americans, miners, immigrants, slaves, children, pioneers and cowboys.&nbsp;Includes songs of Civil Rights, political campaigns, Prohibition, the Revolutionary War, the Civil War, anti-war protests, and more.&nbsp;Includes music from early America through the twentieth century.",
     },
     {
-        name: "American Periodicals ",
+    name: "American Periodicals",
         description:
             "<p>Digitized images of periodicals published between 1740 and 1940 in the United States.</p>",
         subjects: ["Family History, General, History, Special Collections"],
@@ -419,7 +419,7 @@ export const resourceDatabase: LibraryResource[] = [
             "This database contains digitized images of periodicals published between 1740 and 1940, including special interest and general magazines, literary and professional journals, children's and women's magazines and many other historically-significant periodicals.",
     },
     {
-        name: "American Poetry ",
+    name: "American Poetry",
         description:
             "<p>Works by and biographies about poets in America from the 1700s to the early 1900s.</p>",
         subjects: ["English, General, History"],
@@ -439,7 +439,7 @@ export const resourceDatabase: LibraryResource[] = [
             "The files cover Asian immigration, especially Japanese and Chinese migration, to California, Hawaii, and other states; Mexican immigration to the U.S. from 1906-1930; and European immigration. There are also extensive files on the INS's regulation of prostitution and white slavery and on suppression of radical aliens.Features Roosevelt, Truman, Eisenhower, Kennedy, Johnson, and Nixon administration records as well as numerous collections focusing on the Progressive Era and Immigration.Read More | Search | Browse",
     },
     {
-        name: "American State Papers, 1789-1838 ",
+    name: "American State Papers, 1789-1838",
         description:
             "<p>Legislative and executive documents from the United States, most originating from the important period between 1789 and 1817.</p>",
         subjects: ["History"],
@@ -449,7 +449,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Provides a detailed record of the birth of the nation. Cross-searchable with the Readex U.S. Congressional Serial Set and all other Readex Archive of American collections.",
     },
     {
-        name: "Ancestry ",
+    name: "Ancestry",
         description:
             "<p>Billions of historical records, millions of family trees, and the AncestryDNA database for genealogical research.</p>",
         subjects: ["Family History"],
@@ -524,7 +524,7 @@ export const resourceDatabase: LibraryResource[] = [
             "A robust &amp; constantly refreshed collection of music for educational use from one of the largest and broadest music collections in the industry.&nbsp;Find music tracks by genre, style, mood, region, context, popularity, instrument, tempo, and length, using state-of-the-art&nbsp;search, download, and project cue sheet applications.&nbsp;Under our educational license you are allowed to use APM Music in your classroom videos &amp; projects, in classrooms, for campus events, or in other student/staff/faculty projects.Non-educational uses require additional licensing.&nbsp;",
     },
     {
-        name: "ArchiveGrid ",
+    name: "ArchiveGrid",
         description:
             "<p>Search hundreds of archival collections throughout the world.</p>",
         subjects: ["History, Special Collections"],
@@ -534,7 +534,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Find descriptions and photos of the archived items and information on how to arrange a visit to examine the materials. Collections are located in archives, libraries, museums, and historical societies.",
     },
     {
-        name: "Archives Unbound ",
+    name: "Archives Unbound",
         description:
             "<p>Topically-focused digital collections of historical documents that support the research on various topics.</p>",
         subjects: ["Geography, History, Special Collections"],
@@ -4003,7 +4003,7 @@ export const resourceDatabase: LibraryResource[] = [
             "Representing the world\u2019s best performers, conductors, and opera houses, users of Opera in Video are able to experience classical music through thousands of titles, including 200 full operas and 75 dance titles, as well as masterclasses, documentaries, and interviews. Video as a learning tool provides a rich experience for music students.&nbsp;&nbsp;",
     },
     {
-        name: "Opposing Viewpoints ",
+    name: "Opposing Viewpoints",
         description:
             "<p>Browse controversial subjects and view the pros and cons from both sides of frequently studied and discussed issues.</p>",
         subjects: ["General"],
