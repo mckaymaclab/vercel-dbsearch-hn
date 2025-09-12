@@ -1,4 +1,15 @@
 {
     "IDX.aI.enableInlineCompletion": true,
-    "IDX.aI.enableCodebaseIndexing": true
+    "IDX.aI.enableCodebaseIndexing": true,
+    "mcpServers": {
+        "library-search": {
+            "command": "node",
+            "args": ["mcp-server.js"],
+            "env": {}
+        }
+    },
+    "python.defaultInterpreterPath": "",
+    "python.showStartPage": false,
+    "python.analysis.autoImportCompletions": false,
+    "python.languageServer": "None"
 }

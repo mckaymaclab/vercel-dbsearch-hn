@@ -72,7 +72,27 @@ const INJECT_BASE_SCORE = 84;     // base score used for format coverage
 // General semantic recall (BM25) tunables
 const RECALL_MAX = 3;             // how many extra catalog items we may add
 const RECALL_BM25_MIN = 1.0;      // minimum BM25 score to be considered meaningful
+const RECALL_BM25_MIN_SHORT = 0.3; // lower threshold for short queries (1-2 words)
 const RECALL_SCORE_BASE = 86;     // base score for recalls (keeps ≥80 rule consistent)
+
+// Helper function to determine BM25 threshold based on query characteristics
+function getBm25Threshold(query: string): number {
+  const words = query.trim().split(/\s+/).filter(w => w.length > 0);
+  const normalizedQuery = norm(query);
+  
+  // For very common, broad single-word queries, use an even lower threshold
+  const commonBroadTerms = ['news', 'articles', 'books', 'journals', 'database', 'research'];
+  if (words.length === 1 && commonBroadTerms.includes(normalizedQuery)) {
+    return 0.01; // Very low threshold for broad terms
+  }
+  
+  // Use lower threshold for short queries (1-2 words) as they tend to be broader
+  if (words.length <= 2) {
+    return RECALL_BM25_MIN_SHORT;
+  }
+  
+  return RECALL_BM25_MIN;
+}
 
 // Intents (includes language + test prep)
 type FormatIntent =
@@ -313,7 +333,7 @@ function buildBm25Index(items: CatalogItem[]): BM25Index {
   let totalLen = 0;
 
   for (const it of items) {
-    const terms = textTerms(`${it.name} ${it.description ?? ""}`);
+    const terms = textTerms(`${it.name} ${it.description ?? ""} ${it.moreInfo ?? ""}`);
     const tf = new Map<string, number>();
     for (const t of terms) tf.set(t, (tf.get(t) ?? 0) + 1);
     const len = terms.length || 1;
@@ -447,6 +467,195 @@ function classifyResource(name: string, description?: string) {
     isLanguageLearning,
     isTestPrep,
   };
+}
+
+/**
+ * Check if the query contains news-related terms that should trigger
+ * news prioritization.
+ */
+function hasNewsTerms(query: string): boolean {
+  return /\b(news|newspapers?|press|journalism|journalist|current events?)\b/i.test(query);
+}
+
+/**
+ * Check if query contains music-related terms that should trigger music prioritization.
+ */
+function hasMusicTerms(query: string): boolean {
+  return /\b(music|musical|musician|composer|composition|compositional|symphony|opera|classical|jazz|mozart|beethoven|bach|musicology|ethnomusicology)\w*/i.test(query);
+}
+
+/**
+ * Get prioritized music collections for music-focused queries.
+ * Returns them in priority order for music research.
+ */
+function getMusicCollections(catalog: CatalogItem[]): CatalogItem[] {
+  const musicResources: CatalogItem[] = [];
+  
+  // Primary music databases (always include for music queries)
+  const primaryMusicNames = [
+    'Music Periodicals Database',
+    'RILM Abstracts of Music Literature', 
+    'Oxford Music Online',
+    'Naxos Music Library'
+  ];
+  
+  // Additional music resources
+  const additionalMusicNames = [
+    'Alexander Street Music',
+    'APM Music',
+    'American Music',
+    'African American Music Reference',
+    'Classical Scores Library',
+    'Berliner Philharmoniker: Digital Concert Hall'
+  ];
+  
+  // Build the prioritized list
+  const targetNames = [...primaryMusicNames, ...additionalMusicNames];
+  
+  // Find resources in catalog by normalized name matching
+  for (const targetName of targetNames) {
+    // First try exact match
+    let resource = catalog.find(item => norm(item.name) === norm(targetName));
+    
+    // If no exact match, try partial matches
+    if (!resource) {
+      resource = catalog.find(item => 
+        norm(item.name).includes(norm(targetName)) ||
+        norm(targetName).includes(norm(item.name))
+      );
+    }
+    
+    if (resource) {
+      musicResources.push(resource);
+    }
+  }
+  
+  return musicResources;
+}
+
+/**
+ * Check if query contains image-related terms that should trigger image prioritization.
+ */
+function hasImageTerms(query: string): boolean {
+  return /\b(image|images|picture|pictures|photo|photos|photograph|photographs|visual|visuals|artwork|illustration|illustrations)\b/i.test(query);
+}
+
+/**
+ * Get prioritized image collections for image-focused queries.
+ * Returns them in priority order for visual research.
+ */
+function getImageCollections(catalog: CatalogItem[]): CatalogItem[] {
+  const imageResources: CatalogItem[] = [];
+  
+  // Primary image databases (always include for image queries)
+  const primaryImageNames = [
+    'ARTstor - now   JSTOR Images',
+    'JSTOR Images | Artstor',
+    'Alexander Street Video & Image Collection'
+  ];
+  
+  // Additional image resources
+  const additionalImageNames = [
+    'Art Full Text',
+    'ARTbibliographies Modern', 
+    'Art Index Retrospective',
+    'Design and Applied Arts Index'
+  ];
+  
+  // Build the prioritized list
+  const targetNames = [...primaryImageNames, ...additionalImageNames];
+  
+  // Find resources in catalog by normalized name matching
+  for (const targetName of targetNames) {
+    // First try exact match
+    let resource = catalog.find(item => norm(item.name) === norm(targetName));
+    
+    // If no exact match, try partial matches
+    if (!resource) {
+      resource = catalog.find(item => 
+        norm(item.name).includes(norm(targetName)) ||
+        norm(targetName).includes(norm(item.name))
+      );
+    }
+    
+    if (resource) {
+      imageResources.push(resource);
+    }
+  }
+  
+  // Also add any databases with "Images" as primary content type that we might have missed
+  const imageContentDatabases = catalog.filter(item => 
+    item.contentTypes && 
+    item.contentTypes.includes("Images") &&
+    !imageResources.some(existing => existing.name === item.name)
+  );
+  
+  // Add up to 3 additional image-focused databases
+  imageResources.push(...imageContentDatabases.slice(0, 3));
+  
+  return imageResources;
+}
+
+/**
+ * Get prioritized news collections based on whether the query is historical.
+ * Returns them in priority order for news-focused queries.
+ */
+function getNewsCollections(catalog: CatalogItem[], isHistorical: boolean): CatalogItem[] {
+  const newsResources: CatalogItem[] = [];
+  
+  // Primary news collections (always include for news queries)
+  const primaryNewsNames = [
+    'NewsBank', 
+    'News: Gale OneFile', 
+    'U.S. Newsstream (PQ)',
+    'Newspaper / Periodical databases from Gale'
+  ];
+  
+  // Individual newspapers (always include)
+  const individualNewspapers = [
+    'New York Times',
+    'Wall Street Journal', 
+    'Atlantic'
+  ];
+  
+  // Historical collections (only if historical query detected)
+  const historicalNewsNames = [
+    'Historical Newspapers',
+    'New York Times: ProQuest Historical Newspapers',
+    'Wall Street Journal: ProQuest Historical Newspapers',
+    'Daily Mail Historical Archive',
+    'Financial Times Historical Archive',
+    'The Times (London)',
+    'Colonial Newspapers',
+    'Civil War Newspapers',
+    'African American Newspapers'
+  ];
+  
+  // Build the prioritized list
+  const targetNames = [...primaryNewsNames, ...individualNewspapers];
+  if (isHistorical) {
+    targetNames.push(...historicalNewsNames);
+  }
+  
+  // Find resources in catalog by normalized name matching
+  for (const targetName of targetNames) {
+    // First try exact match
+    let resource = catalog.find(item => norm(item.name) === norm(targetName));
+    
+    // If no exact match, try partial matches
+    if (!resource) {
+      resource = catalog.find(item => 
+        norm(item.name).includes(norm(targetName)) ||
+        norm(targetName).includes(norm(item.name))
+      );
+    }
+    
+    if (resource) {
+      newsResources.push(resource);
+    }
+  }
+  
+  return newsResources;
 }
 
 /** Tiny name-boost if the user's query literally mentions a resource by name. */
@@ -632,12 +841,48 @@ User Query: ${JSON.stringify(query)}
       const rawJson = extractJsonArray(text);
       if (!rawJson) {
         console.error("[AI parse error: no JSON array found]", text);
-        return [];
+        aiPicks = []; // Set to empty array instead of returning
+      } else {
+        aiPicks = safeParseResults(rawJson);
       }
-      aiPicks = safeParseResults(rawJson);
-      if (aiPicks.length === 0) return [];
     }
     console.log("[AI parsed results]", aiPicks);
+
+    // 2.5) Filter AI results for news queries to ensure only news sources are included
+    if (hasNewsTerms(query) && searchType === "database") {
+      const originalCount = aiPicks.length;
+      aiPicks = (aiPicks as AiArray).filter(pick => {
+        // Find the resource in catalog to check if it's actually a news source
+        const aliasFormsArr = aliasForms(pick.name);
+        
+        // Check if it matches a known catalog item
+        for (const form of aliasFormsArr) {
+          const hit = CATALOG_ALIAS_INDEX.get(form);
+          if (hit) {
+            const classification = classifyResource(hit.name, hit.description);
+            return classification.isNews;
+          }
+        }
+        
+        // For fuzzy matches, check if the best match is a news source
+        const fuzzyRes = FUSE.search(norm(pick.name));
+        if (fuzzyRes.length > 0) {
+          const best = fuzzyRes[0];
+          const sim = 1 - (best.score ?? 1);
+          if (sim >= 0.7) {
+            const classification = classifyResource(best.item.name, best.item.description);
+            return classification.isNews;
+          }
+        }
+        
+        // If no match found, exclude from news queries to be safe
+        return false;
+      });
+      
+      if (originalCount !== aiPicks.length) {
+        console.warn(`[news-filter] Filtered AI results from ${originalCount} to ${aiPicks.length} to include only news sources.`);
+      }
+    }
 
     // 3) Map each AI pick to the best catalog entry — alias first, then fuzzy
     const userIntents = detectIntents(query);
@@ -723,7 +968,7 @@ User Query: ${JSON.stringify(query)}
 
     if (matched.length === 0) {
       console.warn("[No catalog matches found for AI picks after gating]");
-      return [];
+      // Don't return early - let BM25 injection handle this case
     }
 
     // 4) Couple LLM score to similarity
@@ -805,6 +1050,99 @@ User Query: ${JSON.stringify(query)}
         }
       });
 
+    // 6a) NEWS PRIORITIZATION: dedicated handling for news queries
+    if (hasNewsTerms(query) && searchType === "database") {
+      const isHistoricalQuery = /\b(historical|archival|archive|history|historic|past|old|19th|20th|century|decades?\s+ago)\b/i.test(query);
+      const newsResources = getNewsCollections(CATALOG, isHistoricalQuery);
+      
+      let injected = 0;
+      const INJECT_BASE_SCORE = 92;
+      const MAX_NEWS_INJECT = 6;
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      
+      for (const resource of newsResources) {
+        const resourceKey = norm(resource.name);
+        if (!existingKeys.has(resourceKey)) {
+          scored.push({
+            name: resource.name,
+            url: resource.url,
+            description: resource.description ?? "",
+            relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            _newsInject: true,
+          } as any);
+          existingKeys.add(resourceKey);
+          injected++;
+          if (injected >= MAX_NEWS_INJECT) break;
+        }
+      }
+      
+      if (injected > 0) {
+        console.warn(`[news-prioritization] Added ${injected} news collection(s) for news-focused query.`);
+      }
+    }
+
+    // 6a2) MUSIC PRIORITIZATION: dedicated handling for music queries
+    if (hasMusicTerms(query) && searchType === "database") {
+      const musicResources = getMusicCollections(CATALOG);
+      
+      let injected = 0;
+      const INJECT_BASE_SCORE = 94; // Slightly higher than news to prioritize specialized music resources
+      const MAX_MUSIC_INJECT = 4;
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      
+      for (const resource of musicResources) {
+        const resourceKey = norm(resource.name);
+        if (!existingKeys.has(resourceKey)) {
+          scored.push({
+            name: resource.name,
+            url: resource.url,
+            description: resource.description ?? "",
+            relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            _musicInject: true,
+          } as any);
+          existingKeys.add(resourceKey);
+          injected++;
+          if (injected >= MAX_MUSIC_INJECT) break;
+        }
+      }
+      
+      if (injected > 0) {
+        console.warn(`[music-prioritization] Added ${injected} music collection(s) for music-focused query.`);
+      }
+    }
+
+    // 6a3) IMAGE PRIORITIZATION: dedicated handling for image queries
+    if (hasImageTerms(query) && searchType === "database") {
+      const imageResources = getImageCollections(CATALOG);
+      
+      let injected = 0;
+      const INJECT_BASE_SCORE = 96; // Higher than news and music to prioritize specialized image resources
+      const MAX_IMAGE_INJECT = 4;
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      
+      for (const resource of imageResources) {
+        const resourceKey = norm(resource.name);
+        if (!existingKeys.has(resourceKey)) {
+          scored.push({
+            name: resource.name,
+            url: resource.url,
+            description: resource.description ?? "",
+            relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            _imageInject: true,
+          } as any);
+          existingKeys.add(resourceKey);
+          injected++;
+          if (injected >= MAX_IMAGE_INJECT) break;
+        }
+      }
+      
+      if (injected > 0) {
+        console.warn(`[image-prioritization] Added ${injected} image collection(s) for image-focused query.`);
+      }
+    }
+
+    // 6b) INTENT-BASED INJECTION: add focused resources by user intent
+
     {
       const existingKeys = new Set(scored.map(s => norm(s.name)));
       for (const intent of Array.from(userIntents)) {
@@ -826,13 +1164,14 @@ User Query: ${JSON.stringify(query)}
         });
 
         // rank by BM25 topicality (and require minimal topical signal)
+        const bm25Threshold = getBm25Threshold(query);
         const ranked = formatPool
           .map(z => {
             const doc = BM25.byNorm.get(z.normName)!;
             const topical = bm25Score(query, doc, BM25);
             return { z, topical };
           })
-          .filter(({ z, topical }) => !existingKeys.has(norm(z.name)) && topical >= (RECALL_BM25_MIN * 0.6))
+          .filter(({ z, topical }) => !existingKeys.has(norm(z.name)) && topical >= (bm25Threshold * 0.6))
           .sort((a, b) => b.topical - a.topical);
 
         let injected = 0;
@@ -855,18 +1194,39 @@ User Query: ${JSON.stringify(query)}
     }
 
     // 6b) GENERAL CATALOG RECALL (BM25): add the best missing catalog items if strongly topical
-    {
+    if (scored.length < 8) {
       const existingKeys = new Set(scored.map(s => norm(s.name)));
       const intents = userIntents;
+      const bm25Threshold = getBm25Threshold(query);
 
       const pool = BM25.docs
         .filter(d => !existingKeys.has(d.item.normName))
         .map(d => {
           const base = bm25Score(query, d, BM25);
           const align = intentAlignmentFactor(intents, d.item);
-          return { d, score: base * align };
+          let finalScore = base * align;
+          
+          // Backup: if BM25 gives 0 and it's a short query, try substring matching
+          if (finalScore === 0 && query.trim().split(/\s+/).length <= 2) {
+            const queryNorm = norm(query);
+            const itemText = norm(`${d.item.name} ${d.item.description ?? ""}`);
+            if (itemText.includes(queryNorm)) {
+              // Give a small score for substring matches
+              finalScore = 0.1 * align;
+            }
+          }
+          
+          return { d, score: finalScore };
         })
-        .filter(({ score }) => score >= RECALL_BM25_MIN)
+        .filter(({ score }) => score >= bm25Threshold)
+        // For news queries, only include news sources in BM25 recall
+        .filter(({ d }) => {
+          if (hasNewsTerms(query) && searchType === "database") {
+            const classification = classifyResource(d.item.name, d.item.description);
+            return classification.isNews;
+          }
+          return true;
+        })
         .sort((a, b) => b.score - a.score)
         .slice(0, 24);
 

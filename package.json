@@ -2,17 +2,21 @@
     "name": "my-v0-project",
     "version": "0.1.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
         "test": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test:once": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "mcp": "node mcp-server.js"
     },
     "dependencies": {
         "@google/generative-ai": "latest",
         "@hookform/resolvers": "^3.10.0",
+        "@modelcontextprotocol/sdk": "^1.18.0",
         "@radix-ui/react-accordion": "^1.2.2",
         "@radix-ui/react-alert-dialog": "^1.1.4",
         "@radix-ui/react-aspect-ratio": "^1.1.1",

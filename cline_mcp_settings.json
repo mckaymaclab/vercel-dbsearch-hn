@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "library-search": {
+      "command": "node",
+      "args": ["mcp-server.js"],
+      "cwd": "C:/Users/milesm/Documents/repos/vercel-dbsearch-hn"
+    }
+  }
+}
