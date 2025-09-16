@@ -139,6 +139,24 @@ To customize the application:
 -   `npm run build` - Create production build
 -   `npm run start` - Start production server
 -   `npm run lint` - Run ESLint
+-   `npm run check:urls` - Validate that resource URLs in `lib/resource-database.ts` contain no spaced domain segments or malformed host patterns
+
+### URL Integrity Check
+
+Run the automated URL spacing/format validator anytime you modify `lib/resource-database.ts`:
+
+```bash
+npm run check:urls
+```
+
+It fails (non‑zero exit) if it detects:
+
+- Spaces inside domain segments (e.g. `link. gale. com`)
+- Spaced proxy host variants (e.g. `byui . idm` or `oclc . org`)
+- `%20` inside the hostname portion
+- `http(s)://www.` followed by a space after the dot
+
+All current URLs pass this check. Add new patterns to `scripts/check-resource-urls.cjs` if future anomalies arise.
 
 ## Deployment
 
