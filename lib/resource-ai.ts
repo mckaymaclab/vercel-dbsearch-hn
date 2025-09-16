@@ -803,18 +803,7 @@ export async function findDatabaseResources(
   try {
     // 1) LLM proposes platforms/databases from its own knowledge.
     const genAI = getGeminiClient(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash-lite",
-      generationConfig: {
-        temperature: 0.4,
-        topK: 40,
-        topP: 0.8,
-        maxOutputTokens: 2048,
-        responseMimeType: "application/json",
-        responseSchema: geminiArraySchema as unknown as any,
-      },
-    });
-
+    
     const prompt = `You are an academic librarian.
 
 TASK: Recommend up to 12 LIBRARY DATABASES/PLATFORMS a university library would subscribe to that best match the user's query.
@@ -827,9 +816,46 @@ TASK: Recommend up to 12 LIBRARY DATABASES/PLATFORMS a university library would 
 User Query: ${JSON.stringify(query)}
 `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let text = response.text(); // strict JSON expected
+    let text: string;
+    
+    // Try primary model first, then fallback
+    try {
+      const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash-lite",
+        generationConfig: {
+          temperature: 0.4,
+          topK: 40,
+          topP: 0.8,
+          maxOutputTokens: 2048,
+          responseMimeType: "application/json",
+          responseSchema: geminiArraySchema as unknown as any,
+        },
+      });
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      text = response.text();
+    } catch (primaryError: any) {
+      console.warn(`[Gemini] Primary model (gemini-2.0-flash-lite) failed, trying fallback:`, primaryError.message);
+      
+      // Fallback to gemini-1.5-flash
+      const fallbackModel = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: {
+          temperature: 0.4,
+          topK: 40,
+          topP: 0.8,
+          maxOutputTokens: 2048,
+          responseMimeType: "application/json",
+          responseSchema: geminiArraySchema as unknown as any,
+        },
+      });
+
+      const fallbackResult = await fallbackModel.generateContent(prompt);
+      const fallbackResponse = await fallbackResult.response;
+      text = fallbackResponse.text();
+      console.log(`[Gemini] Successfully used fallback model: gemini-1.5-flash`);
+    }
 
     console.log("[AI raw response]", text);
 
