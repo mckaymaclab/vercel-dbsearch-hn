@@ -271,20 +271,54 @@ function dedupeByNameKeepBest<T extends { name: string; relevanceScore?: number 
 /* =========================
    Build a per-call catalog (NO cross-pollination)
 ========================= */
-type CatalogItem = { name: string; url?: string; description?: string; normName: string };
+type CatalogItem = { 
+  name: string; 
+  url?: string; 
+  description?: string; 
+  normName: string;
+  moreInfo?: string;
+  contentTypes?: string[];
+  subjects?: string[];
+};
 
-function buildCatalogFrom(list: Array<{ name: string; url?: string; description?: string }>): CatalogItem[] {
+function buildCatalogFrom(list: Array<{ 
+  name: string; 
+  url?: string; 
+  description?: string;
+  moreInfo?: string;
+  contentTypes?: string[];
+  subjects?: string[];
+}>): CatalogItem[] {
   const byKey = new Map<string, CatalogItem>();
   for (const r of list) {
     const key = norm(r.name);
     const existing = byKey.get(key);
     if (!existing) {
-      byKey.set(key, { name: r.name, url: r.url, description: r.description, normName: key });
+      byKey.set(key, { 
+        name: r.name, 
+        url: r.url, 
+        description: r.description, 
+        normName: key,
+        moreInfo: r.moreInfo,
+        contentTypes: r.contentTypes,
+        subjects: r.subjects
+      });
     } else {
       // Prefer richer record
       const url = existing.url || r.url;
       const desc = (r.description && r.description.length > (existing.description?.length ?? 0)) ? r.description : existing.description;
-      byKey.set(key, { name: existing.name, url, description: desc, normName: key });
+      const moreInfo = (r.moreInfo && r.moreInfo.length > (existing.moreInfo?.length ?? 0)) ? r.moreInfo : existing.moreInfo;
+      const contentTypes = r.contentTypes || existing.contentTypes;
+      const subjects = r.subjects || existing.subjects;
+      byKey.set(key, { 
+        name: existing.name, 
+        url, 
+        description: desc, 
+        normName: key,
+        moreInfo,
+        contentTypes,
+        subjects
+      });
     }
   }
   return Array.from(byKey.values());
@@ -768,6 +802,9 @@ function applyBundleCompanions(
         description: hit.description ?? "",
         relevanceScore: addScore,
         matchReason: BUNDLE_REASON,
+        moreInfo: (hit as any).moreInfo,
+        contentTypes: (hit as any).contentTypes,
+        subjects: (hit as any).subjects,
         _sim: 0.98,
       } as any);
 
@@ -963,6 +1000,9 @@ User Query: ${JSON.stringify(query)}
             name: hit.name,
             url: hit.url,
             description: hit.description ?? "",
+            moreInfo: hit.moreInfo,
+            contentTypes: hit.contentTypes,
+            subjects: hit.subjects,
             _sim: 1,
             relevanceScore: pick.relevanceScore,
             matchReason: pick.matchReason || "",
@@ -981,6 +1021,9 @@ User Query: ${JSON.stringify(query)}
             name: best.item.name,
             url: best.item.url,
             description: best.item.description ?? "",
+            moreInfo: best.item.moreInfo,
+            contentTypes: best.item.contentTypes,
+            subjects: best.item.subjects,
             _sim: sim,
             relevanceScore: pick.relevanceScore,
             matchReason: pick.matchReason || "",
@@ -1000,6 +1043,9 @@ User Query: ${JSON.stringify(query)}
               name: item.name,
               url: item.url,
               description: item.description ?? "",
+              moreInfo: item.moreInfo,
+              contentTypes: item.contentTypes,
+              subjects: item.subjects,
               _sim: 0.7,
               relevanceScore: pick.relevanceScore,
               matchReason: pick.matchReason || "",
@@ -1122,6 +1168,9 @@ User Query: ${JSON.stringify(query)}
             url: resource.url,
             description: resource.description ?? "",
             relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            moreInfo: resource.moreInfo,
+            contentTypes: resource.contentTypes,
+            subjects: resource.subjects,
             _newsInject: true,
           } as any);
           existingKeys.add(resourceKey);
@@ -1152,6 +1201,9 @@ User Query: ${JSON.stringify(query)}
             url: resource.url,
             description: resource.description ?? "",
             relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            moreInfo: resource.moreInfo,
+            contentTypes: resource.contentTypes,
+            subjects: resource.subjects,
             _musicInject: true,
           } as any);
           existingKeys.add(resourceKey);
@@ -1182,6 +1234,9 @@ User Query: ${JSON.stringify(query)}
             url: resource.url,
             description: resource.description ?? "",
             relevanceScore: INJECT_BASE_SCORE - injected * 2,
+            moreInfo: resource.moreInfo,
+            contentTypes: resource.contentTypes,
+            subjects: resource.subjects,
             _imageInject: true,
           } as any);
           existingKeys.add(resourceKey);
@@ -1235,6 +1290,9 @@ User Query: ${JSON.stringify(query)}
             url: z.url,
             description: z.description ?? "",
             relevanceScore: Math.min(100, Math.round(INJECT_BASE_SCORE + Math.min(10, topical * 6))),
+            moreInfo: z.moreInfo,
+            contentTypes: z.contentTypes,
+            subjects: z.subjects,
             _sim: 0.9,
           } as any);
           existingKeys.add(norm(z.name));
@@ -1291,6 +1349,9 @@ User Query: ${JSON.stringify(query)}
           url: d.item.url,
           description: d.item.description ?? "",
           relevanceScore: Math.min(100, Math.round(RECALL_SCORE_BASE + Math.min(12, score * 8))),
+          moreInfo: d.item.moreInfo,
+          contentTypes: d.item.contentTypes,
+          subjects: d.item.subjects,
           _sim: 0.9,
         } as any);
         existingKeys.add(d.item.normName);
@@ -1320,9 +1381,23 @@ User Query: ${JSON.stringify(query)}
       .filter((r) => r.relevanceScore >= 50)
       .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
       .slice(0, 50)
-      .map(({ _sim, ...rest }) => rest);
+      .map((item) => {
+        // Explicitly preserve all fields except internal ones
+        const { _sim, _newsInject, _musicInject, _imageInject, ...result } = item as any;
+        return result;
+      });
 
     console.log("[Final matched results >= 50]", filtered);
+    
+    // Debug: Log a few items to check if moreInfo is present
+    if (filtered.length > 0) {
+      console.log("[DEBUG] First result with all fields:", {
+        name: filtered[0].name,
+        moreInfo: (filtered[0] as any).moreInfo,
+        contentTypes: (filtered[0] as any).contentTypes
+      });
+    }
+    
     return filtered;
   } catch (err) {
     console.error("[findDatabaseResources error]", err);

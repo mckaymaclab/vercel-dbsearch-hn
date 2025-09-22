@@ -36,6 +36,8 @@ interface ResourceResult {
     url: string;
     relevanceScore: number;
     matchReason?: string;
+    moreInfo?: string;
+    contentTypes?: string[];
 }
 
 interface ResourceFinderProps {
@@ -80,6 +82,8 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
                     url: r.url,
                     relevanceScore: r.relevanceScore,
                     matchReason: r.matchReason,
+                    moreInfo: r.moreInfo,
+                    contentTypes: r.contentTypes,
                 }))
             );
 
@@ -389,6 +393,30 @@ function ResourceCard({
     resource: ResourceResult;
     searchType: "library" | "database";
 }) {
+    // Parse contact information from moreInfo field
+    const parseContactInfo = (moreInfo: string) => {
+        if (!moreInfo) return null;
+        
+        const phoneMatch = moreInfo.match(/Phone:\s*([^,]+)/i);
+        const emailMatch = moreInfo.match(/Email:\s*([^,]+)/i);
+        const locationMatch = moreInfo.match(/Location:\s*([^,]+)/i);
+        
+        if (phoneMatch || emailMatch || locationMatch) {
+            return {
+                phone: phoneMatch?.[1]?.trim(),
+                email: emailMatch?.[1]?.trim(),
+                location: locationMatch?.[1]?.trim(),
+            };
+        }
+        return null;
+    };
+
+    // Check if this is a person/department with contact info
+    const isContactInfo = resource.description?.includes("Contact information") || 
+                         resource.contentTypes?.includes("Contact Information");
+    
+    const contactInfo = isContactInfo ? parseContactInfo(resource.moreInfo || "") : null;
+
     return (
         <Card>
             <CardHeader>
@@ -418,6 +446,38 @@ function ResourceCard({
             </CardHeader>
             <CardContent>
                 <div className="text-sm text-slate-600 space-y-2">
+                    {/* Contact information display */}
+                    {contactInfo && (
+                        <div className="mt-3 p-3 bg-slate-50 rounded-md border">
+                            <h4 className="font-medium text-slate-800 mb-2">Contact Information</h4>
+                            <div className="space-y-1">
+                                {contactInfo.phone && (
+                                    <div className="flex items-center">
+                                        <span className="font-medium text-slate-600 w-16">Phone:</span>
+                                        <span className="text-slate-800">{contactInfo.phone}</span>
+                                    </div>
+                                )}
+                                {contactInfo.email && (
+                                    <div className="flex items-center">
+                                        <span className="font-medium text-slate-600 w-16">Email:</span>
+                                        <a 
+                                            href={`mailto:${contactInfo.email}`}
+                                            className="text-blue-600 hover:text-blue-800 underline"
+                                        >
+                                            {contactInfo.email}
+                                        </a>
+                                    </div>
+                                )}
+                                {contactInfo.location && (
+                                    <div className="flex items-center">
+                                        <span className="font-medium text-slate-600 w-16">Office:</span>
+                                        <span className="text-slate-800">{contactInfo.location}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    
                     {/* Removed Content (contentTypes) display */}
                     {/* Removed subject display */}
                     {resource.matchReason && (
