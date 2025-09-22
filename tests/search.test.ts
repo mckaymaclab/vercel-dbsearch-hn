@@ -133,4 +133,56 @@ describe('findDatabaseResources', () => {
     expect(result).toEqual([]);
     expect(mockGenerateContent).toHaveBeenCalled();
   });
+
+  it('returns up to 50 results with relevanceScore >= 50 (integration)', async () => {
+    const mockResults = Array.from({ length: 60 }, (_, i) => ({
+      name: `DB${i+1}`,
+      relevanceScore: i < 55 ? 100 - i : 49 // 55 results >= 50, 5 below 50
+    }));
+    // Use the same normalization as the backend
+  function norm(s: string) {
+      return (s || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\u2019\u2018’‘]/g, "'")
+        .replace(/[\u2013\u2014–—]/g, "-")
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9' -]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+    const mockCatalog = Array.from({ length: 60 }, (_, i) => {
+      const name = `DB${i+1}`;
+      const normName = norm(name);
+      return {
+        name,
+        url: `http://db${i+1}`,
+        description: `desc${i+1}`,
+        normName
+      };
+    });
+    vi.resetModules();
+    vi.doMock('../lib/resource-database', () => ({ resourceDatabase: mockCatalog }));
+    vi.doMock('../lib/library-resources-database', () => ({ libraryResourceDatabase: mockCatalog }));
+    const mockGenerateContent = vi.fn().mockResolvedValueOnce({
+      response: {
+        text: () => JSON.stringify(mockResults),
+        functionCall: () => undefined,
+        functionCalls: () => undefined
+      }
+    });
+    const { GoogleGenerativeAI } = await import('@google/generative-ai');
+    vi.mocked(GoogleGenerativeAI).mockImplementation(() => ({
+      getGenerativeModel: () => ({
+        generateContent: mockGenerateContent
+      })
+    } as any));
+    const { findDatabaseResources } = await import('../lib/resource-ai');
+    const result = await findDatabaseResources('test', 'database');
+    expect(result.length).toBe(50);
+    expect(result.every(r => r.relevanceScore >= 50)).toBe(true);
+    expect(result[0].name).toBe('DB1');
+    expect(result[49].name).toBe('DB50');
+  });
 });

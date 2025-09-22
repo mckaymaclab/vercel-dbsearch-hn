@@ -31,7 +31,7 @@ const AiItemSchema = z.object({
   relevanceScore: z.number().min(0).max(100),
   matchReason: z.string().optional(),
 });
-const AiArraySchema = z.array(AiItemSchema).max(12);
+const AiArraySchema = z.array(AiItemSchema).max(50);
 type AiItem = z.infer<typeof AiItemSchema>;
 type AiArray = z.infer<typeof AiArraySchema>;
 
@@ -48,6 +48,7 @@ export type ResultRow = {
 ====================================== */
 const geminiArraySchema = {
   type: "ARRAY",
+  maxItems: 50,
   items: {
     type: "OBJECT",
     properties: {
@@ -333,7 +334,7 @@ function buildBm25Index(items: CatalogItem[]): BM25Index {
   let totalLen = 0;
 
   for (const it of items) {
-    const terms = textTerms(`${it.name} ${it.description ?? ""} ${it.moreInfo ?? ""}`);
+    const terms = textTerms(`${it.name} ${it.description ?? ""}`);
     const tf = new Map<string, number>();
     for (const t of terms) tf.set(t, (tf.get(t) ?? 0) + 1);
     const len = terms.length || 1;
@@ -583,15 +584,14 @@ function getImageCollections(catalog: CatalogItem[]): CatalogItem[] {
     }
   }
   
-  // Also add any databases with "Images" as primary content type that we might have missed
-  const imageContentDatabases = catalog.filter(item => 
-    item.contentTypes && 
-    item.contentTypes.includes("Images") &&
+  // Also add any databases that might have image-related content
+  const additionalImageDatabases = catalog.filter(item => 
+    /\b(image|visual|art|photo|picture)\b/i.test(`${item.name} ${item.description ?? ""}`) &&
     !imageResources.some(existing => existing.name === item.name)
   );
   
   // Add up to 3 additional image-focused databases
-  imageResources.push(...imageContentDatabases.slice(0, 3));
+  imageResources.push(...additionalImageDatabases.slice(0, 3));
   
   return imageResources;
 }
@@ -838,23 +838,51 @@ User Query: ${JSON.stringify(query)}
     } catch (primaryError: any) {
       console.warn(`[Gemini] Primary model (gemini-2.0-flash-lite) failed, trying fallback:`, primaryError.message);
       
-      // Fallback to gemini-1.5-flash
-      const fallbackModel = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        generationConfig: {
-          temperature: 0.4,
-          topK: 40,
-          topP: 0.8,
-          maxOutputTokens: 2048,
-          responseMimeType: "application/json",
-          responseSchema: geminiArraySchema as unknown as any,
-        },
-      });
+      try {
+        // Fallback to gemini-1.5-flash
+        const fallbackModel = genAI.getGenerativeModel({
+          model: "gemini-1.5-flash",
+          generationConfig: {
+            temperature: 0.4,
+            topK: 40,
+            topP: 0.8,
+            maxOutputTokens: 2048,
+            responseMimeType: "application/json",
+            responseSchema: geminiArraySchema as unknown as any,
+          },
+        });
 
-      const fallbackResult = await fallbackModel.generateContent(prompt);
-      const fallbackResponse = await fallbackResult.response;
-      text = fallbackResponse.text();
-      console.log(`[Gemini] Successfully used fallback model: gemini-1.5-flash`);
+        const fallbackResult = await fallbackModel.generateContent(prompt);
+        const fallbackResponse = await fallbackResult.response;
+        text = fallbackResponse.text();
+        console.log(`[Gemini] Successfully used fallback model: gemini-1.5-flash`);
+      } catch (fallbackError: any) {
+        console.warn(`[Gemini] Second model (gemini-1.5-flash) also failed, trying final fallback:`, fallbackError.message);
+        
+        try {
+          // Final fallback to gemini-1.5-pro
+          const finalFallbackModel = genAI.getGenerativeModel({
+            model: "gemini-1.5-pro",
+            generationConfig: {
+              temperature: 0.4,
+              topK: 40,
+              topP: 0.8,
+              maxOutputTokens: 2048,
+              responseMimeType: "application/json",
+              responseSchema: geminiArraySchema as unknown as any,
+            },
+          });
+
+          const finalResult = await finalFallbackModel.generateContent(prompt);
+          const finalResponse = await finalResult.response;
+          text = finalResponse.text();
+          console.log(`[Gemini] Successfully used final fallback model: gemini-1.5-pro`);
+        } catch (finalError: any) {
+          console.error(`[Gemini] All three models failed. Primary: ${primaryError.message}, Second: ${fallbackError.message}, Final: ${finalError.message}`);
+          // Return empty results when all models are unavailable
+          return [];
+        }
+      }
     }
 
     console.log("[AI raw response]", text);
@@ -1287,24 +1315,15 @@ User Query: ${JSON.stringify(query)}
 
     scored = dedupeByNameKeepBest(scored);
 
-    // 7) Return ALL ≥ threshold, else top-5 (tie-break by similarity if present)
-    const high = scored
-      .filter((r) => r.relevanceScore >= RELEVANCE_THRESHOLD)
+    // 7) Return up to 50 results with relevanceScore >= 50, sorted by relevance
+    const filtered = scored
+      .filter((r) => r.relevanceScore >= 50)
       .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
+      .slice(0, 50)
       .map(({ _sim, ...rest }) => rest);
 
-    if (high.length > 0) {
-      console.log("[Final matched results >= threshold]", high);
-      return high;
-    }
-
-    const top5 = scored
-      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
-      .slice(0, 5)
-      .map(({ _sim, ...rest }) => rest);
-
-    console.log("[Final matched results (top-5)]", top5);
-    return top5;
+    console.log("[Final matched results >= 50]", filtered);
+    return filtered;
   } catch (err) {
     console.error("[findDatabaseResources error]", err);
     return [];

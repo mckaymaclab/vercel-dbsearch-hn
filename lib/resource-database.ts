@@ -10,18 +10,6 @@ export interface LibraryResource {
 
 export const resourceDatabase: LibraryResource[] = [
     {
-        name: "McKay Library Catalog",
-        description:
-            "<p>Search the library's catalog for books, eBooks, media, and more.</p>",
-        subjects: ["General"],
-        contentTypes: ["Books", "eBooks", "Media"],
-    url: "https://byui.idm.oclc.org/login?url=https://byui.ent.sirsi.net/",
-        moreInfo:
-            "Search the library's catalog for books, eBooks, media, and more. Both physical and digital items are included in the catalog. You can also search for items in other libraries and request them through Interlibrary Loan.",
-        accessNote:
-            "Access is available to all BYU-Idaho students, faculty, and staff.",
-    },
-    {
         name: "A to Z Maps Online",
         description:
             "<p>Thousands of current, proprietary, royalty-free maps of the world, continents, countries, and states.&nbsp;</p>",

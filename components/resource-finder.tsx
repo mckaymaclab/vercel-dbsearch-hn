@@ -1,6 +1,5 @@
 "use client";
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
     Search,
     Loader2,
@@ -39,16 +38,23 @@ interface ResourceResult {
     matchReason?: string;
 }
 
-export function ResourceFinder() {
+interface ResourceFinderProps {
+    initialResults?: ResourceResult[];
+}
+
+export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState<ResourceResult[]>([]);
+    const [results, setResults] = useState<ResourceResult[]>(initialResults || []);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     // Removed subject filtering state
     const [usingFallback, setUsingFallback] = useState(false);
-    const [searchType, setSearchType] = useState<"library" | "database">(
-        "database"
-    );
+    const [searchType, setSearchType] = useState<"library" | "database">("database");
+    // Pagination state
+    const [page, setPage] = useState(1);
+    const RESULTS_PER_PAGE = 5;
+    // Reset page to 1 on new search
+    React.useEffect(() => { setPage(1); }, [results]);
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,7 +70,18 @@ export function ResourceFinder() {
                 searchType
             );
             console.log('Resource results received in handleSearch:', resourceResults);
-            setResults(resourceResults);
+
+            // Map resourceResults to ResourceResult shape if needed
+            setResults(
+                resourceResults.map((r: any) => ({
+                    id: r.id ?? r.url, // fallback to url if id missing
+                    name: r.name,
+                    description: r.description,
+                    url: r.url,
+                    relevanceScore: r.relevanceScore,
+                    matchReason: r.matchReason,
+                }))
+            );
 
             if (resourceResults.length === 0 && searchType === "database") {
  setResults([]);
@@ -90,7 +107,19 @@ export function ResourceFinder() {
         }
     };
 
-    const filteredResults = results;
+
+    // Pagination logic: always show top 5 on first page, paginate the rest
+    const totalResults = results.length;
+    const totalPages = totalResults <= 5 ? 1 : Math.ceil((totalResults - 5) / RESULTS_PER_PAGE) + 1;
+
+    function getPaginatedResults() {
+        if (totalResults <= 5) return results;
+        if (page === 1) return results.slice(0, 5);
+        const start = 5 + (page - 2) * RESULTS_PER_PAGE;
+        const end = start + RESULTS_PER_PAGE;
+        return results.slice(start, end);
+    }
+    const filteredResults = getPaginatedResults();
 
     // Removed allSubjects and toggleSubject logic
 
@@ -225,53 +254,60 @@ export function ResourceFinder() {
                             </TabsTrigger>
                         </TabsList>
 
+
                         <TabsContent value="list" className="space-y-2">
                             {filteredResults.length > 0 ? (
-                                filteredResults.map((resource, index) => (
-                                    <Card
-                                        key={`list-${resource.id}-${index}-${resource.url}`}
-                                        className="hover:bg-slate-50 transition-colors"
-                                    >
-                                        <CardHeader className="py-4">
-                                            <div className="flex justify-between items-start">
-                                                <div>
-                                                    <CardTitle className="text-lg flex items-center">
-                                                        {resource.name}
-                                                        {/* Removed featured/fullText badges */}
-                                                        <Badge
-                                                            variant="outline"
-                                                            className="ml-2 bg-green-100 text-green-800"
-                                                        >
-                                                            {
-                                                                resource.relevanceScore
-                                                            }
-                                                            % match
-                                                        </Badge>
-                                                    </CardTitle>
+                                <>
+                                    {filteredResults.map((resource, index) => (
+                                        <Card
+                                            key={`list-${resource.id}-${index}-${resource.url}`}
+                                            className="hover:bg-slate-50 transition-colors"
+                                        >
+                                            <CardHeader className="py-4">
+                                                <div className="flex justify-between items-start">
+                                                    <div>
+                                                        <CardTitle className="text-lg flex items-center">
+                                                            {resource.name}
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="ml-2 bg-green-100 text-green-800"
+                                                            >
+                                                                {resource.relevanceScore}% match
+                                                            </Badge>
+                                                        </CardTitle>
+                                                    </div>
                                                 </div>
-                                                {/* Removed contentTypes badges */}
-                                            </div>
-                                        </CardHeader>
-                                        <CardFooter className="py-3 flex justify-between">
-                                            <div className="text-sm text-slate-500 flex items-center">
-                                                {/* Removed subject display */}
-                                            </div>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                asChild
-                                            >
-                                                <a
-                                                    href={resource.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
+                                            </CardHeader>
+                                            <CardFooter className="py-3 flex justify-between">
+                                                <div className="text-sm text-slate-500 flex items-center"></div>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                                                        Access
+                                                    </a>
+                                                </Button>
+                                            </CardFooter>
+                                        </Card>
+                                    ))}
+                                    {totalPages > 1 && (
+                                        <div className="flex justify-center items-center gap-2 mt-4">
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <Button
+                                                    key={i + 1}
+                                                    size="sm"
+                                                    variant={page === i + 1 ? "default" : "outline"}
+                                                    onClick={() => setPage(i + 1)}
                                                 >
-                                                    Access
-                                                </a>
-                                            </Button>
-                                        </CardFooter>
-                                    </Card>
-                                ))
+                                                    {i + 1}
+                                                </Button>
+                                            ))}
+                                            {page < totalPages && (
+                                                <Button size="sm" variant="ghost" onClick={() => setPage(page + 1)}>
+                                                    Next
+                                                </Button>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <p className="text-center py-4 text-slate-500">
                                     No resources match the selected filters.
@@ -279,15 +315,37 @@ export function ResourceFinder() {
                             )}
                         </TabsContent>
 
+
                         <TabsContent value="detailed" className="space-y-4">
                             {filteredResults.length > 0 ? (
-                                filteredResults.map((resource, index) => (
-                                    <ResourceCard
-                                        key={`detailed-${resource.id}-${index}-${resource.url}`}
-                                        resource={resource}
-                                        searchType={searchType}
-                                    />
-                                ))
+                                <>
+                                    {filteredResults.map((resource, index) => (
+                                        <ResourceCard
+                                            key={`detailed-${resource.id}-${index}-${resource.url}`}
+                                            resource={resource}
+                                            searchType={searchType}
+                                        />
+                                    ))}
+                                    {totalPages > 1 && (
+                                        <div className="flex justify-center items-center gap-2 mt-4">
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <Button
+                                                    key={i + 1}
+                                                    size="sm"
+                                                    variant={page === i + 1 ? "default" : "outline"}
+                                                    onClick={() => setPage(i + 1)}
+                                                >
+                                                    {i + 1}
+                                                </Button>
+                                            ))}
+                                            {page < totalPages && (
+                                                <Button size="sm" variant="ghost" onClick={() => setPage(page + 1)}>
+                                                    Next
+                                                </Button>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <p className="text-center py-4 text-slate-500">
                                     No resources match the selected filters.
