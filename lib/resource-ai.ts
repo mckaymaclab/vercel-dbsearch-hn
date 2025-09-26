@@ -513,6 +513,13 @@ function hasNewsTerms(query: string): boolean {
 }
 
 /**
+ * Check if query contains book-related terms that should trigger library catalog prioritization.
+ */
+function hasBookTerms(query: string): boolean {
+  return /\b(books?|e-?books?|textbooks?|monographs?|novels?|literature|catalog|catalogue|library catalog|physical books)\b/i.test(query);
+}
+
+/**
  * Check if query contains music-related terms that should trigger music prioritization.
  */
 function hasMusicTerms(query: string): boolean {
@@ -634,6 +641,52 @@ function getImageCollections(catalog: CatalogItem[]): CatalogItem[] {
  * Get prioritized news collections based on whether the query is historical.
  * Returns them in priority order for news-focused queries.
  */
+function getBookCollections(catalog: CatalogItem[]): CatalogItem[] {
+  const bookResources: CatalogItem[] = [];
+  
+  // Primary book collections (always include for book queries)
+  const primaryBookNames = [
+    'BYU-Idaho McKay Library Catalog', // The main library catalog - highest priority
+    'EBSCO eBook Academic Collection',
+    'ProQuest Ebook Central Academic Complete',
+    'Gale eBooks'
+  ];
+  
+  // Additional book platforms
+  const additionalBookNames = [
+    'Oxford Scholarship Online',
+    'Cambridge Core',
+    'Taylor & Francis eBooks',
+    'Wiley Online Library',
+    'SpringerLink',
+    'JSTOR Books'
+  ];
+  
+  // Build the prioritized list
+  const targetNames = [...primaryBookNames, ...additionalBookNames];
+  
+  // Find resources in catalog by normalized name matching
+  for (const targetName of targetNames) {
+    // First try exact match
+    let resource = catalog.find(item => norm(item.name) === norm(targetName));
+    
+    // If no exact match, try partial matches
+    if (!resource) {
+      resource = catalog.find(item => {
+        const itemNorm = norm(item.name);
+        const targetNorm = norm(targetName);
+        return itemNorm.includes(targetNorm) || targetNorm.includes(itemNorm);
+      });
+    }
+    
+    if (resource && !bookResources.some(r => norm(r.name) === norm(resource!.name))) {
+      bookResources.push(resource);
+    }
+  }
+  
+  return bookResources;
+}
+
 function getNewsCollections(catalog: CatalogItem[], isHistorical: boolean): CatalogItem[] {
   const newsResources: CatalogItem[] = [];
   
@@ -975,6 +1028,50 @@ User Query: ${JSON.stringify(query)}
       }
     }
 
+    // 2.6) Filter AI results for book queries to prioritize book sources
+    if (hasBookTerms(query) && searchType === "database") {
+      const originalCount = aiPicks.length;
+      aiPicks = (aiPicks as AiArray).filter(pick => {
+        // Find the resource in catalog to check if it's actually a book source
+        const aliasFormsArr = aliasForms(pick.name);
+        
+        // Check if it matches a known catalog item
+        for (const form of aliasFormsArr) {
+          const hit = CATALOG_ALIAS_INDEX.get(form);
+          if (hit) {
+            const classification = classifyResource(hit.name, hit.description);
+            // Allow ebooks, library catalog, or explicitly book-related resources
+            return classification.isEbook || 
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(hit.name) ||
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(hit.description || '');
+          }
+        }
+        
+        // For fuzzy matches, check if the best match is a book source
+        const fuzzyRes = FUSE.search(norm(pick.name));
+        if (fuzzyRes.length > 0) {
+          const best = fuzzyRes[0];
+          const sim = 1 - (best.score ?? 1);
+          if (sim >= 0.7) {
+            const classification = classifyResource(best.item.name, best.item.description);
+            // Allow ebooks, library catalog, or explicitly book-related resources
+            return classification.isEbook || 
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(best.item.name) ||
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(best.item.description || '');
+          }
+        }
+        
+        // For book queries, be more permissive than news queries but still filter out obvious non-book sources
+        const pickNameLower = pick.name.toLowerCase();
+        const isObviousNonBookSource = /\b(journals?|abstracts?|indexe?s?|citations?|articles?|periodicals?|newspapers?|web of science|scopus|pubmed)\b/i.test(pickNameLower);
+        return !isObviousNonBookSource;
+      });
+      
+      if (originalCount !== aiPicks.length) {
+        console.warn(`[book-filter] Filtered AI results from ${originalCount} to ${aiPicks.length} to prioritize book sources.`);
+      }
+    }
+
     // 3) Map each AI pick to the best catalog entry — alias first, then fuzzy
     const userIntents = detectIntents(query);
 
@@ -1081,6 +1178,11 @@ User Query: ${JSON.stringify(query)}
     scored = scored.map((m) => {
       const c = classifyResource(m.name, m.description);
       let factor = nameQueryBoost(query, m.name); // small boost if user typed the name
+
+      // Special boost for BYU-Idaho McKay Library Catalog in book queries
+      if (hasBookTerms(query) && /\bbyu-?idaho\s+mckay\s+library\s+catalog\b/i.test(m.name)) {
+        factor *= 1.25; // Significant boost to ensure it's #1
+      }
 
       for (const intent of userIntents) {
         switch (intent) {
@@ -1217,7 +1319,43 @@ User Query: ${JSON.stringify(query)}
       }
     }
 
-    // 6a3) IMAGE PRIORITIZATION: dedicated handling for image queries
+    // 6a3) BOOK PRIORITIZATION: dedicated handling for book queries
+    if (hasBookTerms(query) && searchType === "database") {
+      const bookResources = getBookCollections(CATALOG);
+      
+      let injected = 0;
+      const MAX_BOOK_INJECT = 5;
+      const existingKeys = new Set(scored.map(s => norm(s.name)));
+      
+      for (const resource of bookResources) {
+        const resourceKey = norm(resource.name);
+        if (!existingKeys.has(resourceKey)) {
+          // BYU-Idaho McKay Library Catalog gets highest priority (99), others get descending scores
+          const isLibraryCatalog = /\bbyu-?idaho\s+mckay\s+library\s+catalog\b/i.test(resource.name);
+          const baseScore = isLibraryCatalog ? 99 : 96;
+          
+          scored.push({
+            name: resource.name,
+            url: resource.url,
+            description: resource.description ?? "",
+            relevanceScore: baseScore - (isLibraryCatalog ? 0 : injected * 2),
+            moreInfo: resource.moreInfo,
+            contentTypes: resource.contentTypes,
+            subjects: resource.subjects,
+            _bookInject: true,
+          } as any);
+          existingKeys.add(resourceKey);
+          injected++;
+          if (injected >= MAX_BOOK_INJECT) break;
+        }
+      }
+      
+      if (injected > 0) {
+        console.warn(`[book-prioritization] Added ${injected} book collection(s) for book-focused query.`);
+      }
+    }
+
+    // 6a4) IMAGE PRIORITIZATION: dedicated handling for image queries
     if (hasImageTerms(query) && searchType === "database") {
       const imageResources = getImageCollections(CATALOG);
       
@@ -1337,6 +1475,16 @@ User Query: ${JSON.stringify(query)}
             const classification = classifyResource(d.item.name, d.item.description);
             return classification.isNews;
           }
+          // For book queries, prioritize book sources in BM25 recall
+          if (hasBookTerms(query) && searchType === "database") {
+            const classification = classifyResource(d.item.name, d.item.description);
+            // Allow ebooks, library catalog, or explicitly book-related resources
+            return classification.isEbook || 
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(d.item.name) ||
+                   /\b(catalogs?|catalogues?|librar(y|ies)|books?|e-?books?)\b/i.test(d.item.description || '') ||
+                   // Also filter out obvious non-book sources
+                   !/\b(journals?|abstracts?|indexe?s?|citations?|articles?|periodicals?|newspapers?|web of science|scopus|pubmed)\b/i.test(d.item.name);
+          }
           return true;
         })
         .sort((a, b) => b.score - a.score)
@@ -1379,11 +1527,23 @@ User Query: ${JSON.stringify(query)}
     // 7) Return up to 50 results with relevanceScore >= 50, sorted by relevance
     const filtered = scored
       .filter((r) => r.relevanceScore >= 50)
-      .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim))
+      .sort((a, b) => {
+        // For book queries, always put BYU-Idaho McKay Library Catalog first
+        if (hasBookTerms(query) && searchType === "database") {
+          const aIsLibraryCatalog = /\bbyu-?idaho\s+mckay\s+library\s+catalog\b/i.test(a.name);
+          const bIsLibraryCatalog = /\bbyu-?idaho\s+mckay\s+library\s+catalog\b/i.test(b.name);
+          
+          if (aIsLibraryCatalog && !bIsLibraryCatalog) return -1; // a first
+          if (!aIsLibraryCatalog && bIsLibraryCatalog) return 1;  // b first
+        }
+        
+        // Default sorting by relevance score, then similarity
+        return (b.relevanceScore - a.relevanceScore) || ((b as any)._sim - (a as any)._sim);
+      })
       .slice(0, 50)
       .map((item) => {
         // Explicitly preserve all fields except internal ones
-        const { _sim, _newsInject, _musicInject, _imageInject, ...result } = item as any;
+        const { _sim, _newsInject, _musicInject, _imageInject, _bookInject, ...result } = item as any;
         return result;
       });
 
@@ -1404,3 +1564,6 @@ User Query: ${JSON.stringify(query)}
     return [];
   }
 }
+
+// Export helper functions for testing
+export { hasBookTerms, hasNewsTerms, hasMusicTerms, getBookCollections, getNewsCollections, getMusicCollections };
