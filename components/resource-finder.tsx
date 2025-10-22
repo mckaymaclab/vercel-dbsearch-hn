@@ -58,8 +58,8 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
     // Reset page to 1 on new search
     React.useEffect(() => { setPage(1); }, [results]);
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSearch = async (e?: React.MouseEvent | React.KeyboardEvent) => {
+        e?.preventDefault();
         if (!query.trim()) return;
 
         setLoading(true);
@@ -192,10 +192,7 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
                 </div>
             </div>
 
-            <form
-                onSubmit={handleSearch}
-                className="flex w-full gap-2 items-stretch"
-            >
+            <div className="flex w-full gap-2 items-stretch">
                 <div className="relative flex-grow">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <Input
@@ -207,12 +204,18 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
                         }
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSearch(e);
+                            }
+                        }}
                         autoFocus
                         className="pl-10 py-3 bg-white text-black text-base h-full"
                     />
                 </div>
                 <Button
-                    type="submit"
+                    onClick={handleSearch}
                     disabled={loading}
                     className="px-6 h-full text-base"
                     style={{ minHeight: "3rem" }}
@@ -222,7 +225,7 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
                     ) : null}
                     {loading ? "Searching..." : "Search"}
                 </Button>
-            </form>
+            </div>
 
             {error && (
                 <Alert variant="destructive">
