@@ -129,13 +129,42 @@ export async function getAIRecommendationsWithFallback(query) {
         const result = await model.generateContent(prompt);
         response = result.response.text();
       } else {
-        // Use OpenAI-compatible API
-        const prompt = `Based on this search query: "${query}", recommend relevant library databases. Return a JSON object with a "databases" array containing objects with: name, relevanceScore (1-100), and matchReason fields.`;
+        // Use OpenAI-compatible API - request databases format since that's what Groq returns
+        const prompt = `You are an expert academic librarian. Based on this search query: "${query}", recommend relevant library databases. Return a JSON object with a "databases" array containing objects with: name, relevanceScore (1-100), and matchReason fields.`;
         response = await callOpenAICompatibleAPI(provider, prompt, apiKey);
       }
 
       console.log(`[AI] ${provider.name} successful`);
-      return JSON.parse(response);
+      
+      // Parse and normalize response to standard format
+      const parsedResponse = JSON.parse(response);
+      console.log(`[DEBUG] Response format:`, Object.keys(parsedResponse));
+      
+      // Handle different response formats and normalize to array
+      let recommendations = [];
+      if (Array.isArray(parsedResponse)) {
+        recommendations = parsedResponse;
+        console.log(`[DEBUG] Direct array with ${recommendations.length} items`);
+      } else if (parsedResponse.databases && Array.isArray(parsedResponse.databases)) {
+        recommendations = parsedResponse.databases;
+        console.log(`[DEBUG] Databases array with ${recommendations.length} items`);
+      } else if (parsedResponse.recommendations && Array.isArray(parsedResponse.recommendations)) {
+        recommendations = parsedResponse.recommendations;
+        console.log(`[DEBUG] Recommendations array with ${recommendations.length} items`);
+      } else {
+        console.warn(`[AI] ${provider.name} unexpected format:`, parsedResponse);
+        return [];
+      }
+      
+      // Ensure each item has the required fields
+      const normalizedRecommendations = recommendations.map((item: any) => ({
+        name: item.name || item.database || item.title || 'Unknown Database',
+        relevanceScore: Math.min(100, Math.max(0, item.relevanceScore || item.score || item.relevance || 75)),
+        matchReason: item.matchReason || item.reason || item.description || 'Relevant to query'
+      })).filter((item: any) => item.name && item.name !== 'Unknown Database');
+      
+      console.log(`[DEBUG] Returning ${normalizedRecommendations.length} normalized recommendations`);
+      return normalizedRecommendations;
       
     } catch (error) {
       console.warn(`[AI] ${provider.name} failed:`, error.message);
