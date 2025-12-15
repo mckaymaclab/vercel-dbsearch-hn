@@ -4,7 +4,6 @@
 
 // Removed "use server" directive for static export compatibility
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import Fuse from "fuse.js";
 
@@ -105,12 +104,6 @@ type FormatIntent =
   | "images"
   | "language"   // foreign language learning
   | "testprep";  // test preparation / certification
-
-function getGeminiClient(apiKey?: string) {
-  const key = apiKey || process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("GEMINI_API_KEY is not available");
-  return new GoogleGenerativeAI(key);
-}
 
 /** Normalize for matching (lowercase, strip diacritics, unify punctuation). */
 function norm(s: string) {
@@ -891,9 +884,7 @@ export async function findDatabaseResources(
   const BM25 = buildBm25Index(CATALOG);
 
   try {
-    // 1) LLM proposes platforms/databases from its own knowledge.
-    const genAI = getGeminiClient(apiKey);
-    
+    // 1) LLM proposes platforms/databases from its own knowledge using multi-provider system
     const prompt = `You are an academic librarian.
 
 TASK: Recommend up to 12 LIBRARY DATABASES/PLATFORMS a university library would subscribe to that best match the user's query.
@@ -910,7 +901,9 @@ User Query: ${JSON.stringify(query)}
     
     // Use multi-provider LLM system for better rate limits and availability
     try {
+      console.log('[AI] Loading multi-provider system...');
       const { getAIRecommendationsWithFallback } = await import('./multi-llm-providers');
+      console.log('[AI] Multi-provider system loaded, making request...');
       const aiResults = await getAIRecommendationsWithFallback(query);
       
       if (aiResults && aiResults.length > 0) {
@@ -926,6 +919,7 @@ User Query: ${JSON.stringify(query)}
         throw new Error('No AI recommendations returned from any provider');
       }
     } catch (aiError: any) {
+      console.error(`[AI] Multi-provider system failed:`, aiError);
       console.warn(`[AI] Multi-provider system failed, falling back to fuzzy search:`, aiError.message);
       // Return empty results when all providers are unavailable, fuzzy search will be used
       return [];
