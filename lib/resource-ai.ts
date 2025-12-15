@@ -2,7 +2,7 @@
 // NOTE: If you see results in the terminal but not in the UI, check the API route or handler that calls this function.
 // The issue is likely in the API response or frontend handling.
 
-"use server";
+// Removed "use server" directive for static export compatibility
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
@@ -911,7 +911,7 @@ User Query: ${JSON.stringify(query)}
     // Try primary model first, then fallback
     try {
       const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash-lite",
+        model: "models/gemini-flash-latest",
         generationConfig: {
           temperature: 0.4,
           topK: 40,
@@ -926,52 +926,28 @@ User Query: ${JSON.stringify(query)}
       const response = await result.response;
       text = response.text();
     } catch (primaryError: any) {
-      console.warn(`[Gemini] Primary model (gemini-2.0-flash-lite) failed, trying fallback:`, primaryError.message);
+      console.warn(`[Gemini] Primary model (models/gemini-flash-latest) failed, trying fallback:`, primaryError.message);
       
       try {
-        // Fallback to gemini-1.5-flash
+        // Fallback to 2.5-flash without structured output constraints
         const fallbackModel = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
+          model: "models/gemini-2.5-flash",
           generationConfig: {
             temperature: 0.4,
             topK: 40,
             topP: 0.8,
             maxOutputTokens: 2048,
-            responseMimeType: "application/json",
-            responseSchema: geminiArraySchema as unknown as any,
           },
         });
 
         const fallbackResult = await fallbackModel.generateContent(prompt);
         const fallbackResponse = await fallbackResult.response;
         text = fallbackResponse.text();
-        console.log(`[Gemini] Successfully used fallback model: gemini-1.5-flash`);
+        console.log(`[Gemini] Successfully used fallback model: models/gemini-2.5-flash`);
       } catch (fallbackError: any) {
-        console.warn(`[Gemini] Second model (gemini-1.5-flash) also failed, trying final fallback:`, fallbackError.message);
-        
-        try {
-          // Final fallback to gemini-1.5-pro
-          const finalFallbackModel = genAI.getGenerativeModel({
-            model: "gemini-1.5-pro",
-            generationConfig: {
-              temperature: 0.4,
-              topK: 40,
-              topP: 0.8,
-              maxOutputTokens: 2048,
-              responseMimeType: "application/json",
-              responseSchema: geminiArraySchema as unknown as any,
-            },
-          });
-
-          const finalResult = await finalFallbackModel.generateContent(prompt);
-          const finalResponse = await finalResult.response;
-          text = finalResponse.text();
-          console.log(`[Gemini] Successfully used final fallback model: gemini-1.5-pro`);
-        } catch (finalError: any) {
-          console.error(`[Gemini] All three models failed. Primary: ${primaryError.message}, Second: ${fallbackError.message}, Final: ${finalError.message}`);
-          // Return empty results when all models are unavailable
-          return [];
-        }
+        console.warn(`[Gemini] Second attempt also failed, using fuzzy search only:`, fallbackError.message);
+        // Return empty results when all models are unavailable, fuzzy search will be used
+        return [];
       }
     }
 

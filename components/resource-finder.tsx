@@ -21,7 +21,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { findDatabaseResources } from "@/lib/resource-ai";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -67,10 +66,23 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
         setUsingFallback(false);
 
         try {
-            const resourceResults = await findDatabaseResources(
-                query,
-                searchType
-            );
+            const response = await fetch('/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    searchType
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API call failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const resourceResults = data.results;
             console.log('Resource results received in handleSearch:', resourceResults);
 
             // Map resourceResults to ResourceResult shape if needed
@@ -94,7 +106,7 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
             }
 
             const hasFallbackResults = resourceResults.some(
-                (r) =>
+                (r: any) =>
                     r.matchReason?.includes("Smart search") ||
                     r.matchReason?.includes("General academic")
             );

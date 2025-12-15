@@ -3,6 +3,7 @@ import { ResourceFinder } from "@/components/resource-finder";
 import { LibraryHeader } from "@/components/library-header";
 
 export default function Home() {
+    // Force rebuild - Dec 15, 2025
     return (
         <div className="min-h-screen bg-white">
             <LibraryHeader />
