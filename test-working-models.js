@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI('AIzaSyAWvcTh8bEAYyZMqiqPLLT0JbMvO7Ql4a8');
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+if (!apiKey) {
+  console.error('No API key found in environment variables');
+  process.exit(1);
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 const modelsToTest = [
   'models/gemini-flash-latest',

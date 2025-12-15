@@ -1,20 +1,12 @@
 // Test script to find working Gemini models
 import fs from 'fs';
 
-// Read environment variables from .env.local
-const envContent = fs.readFileSync('.env.local', 'utf8');
-const lines = envContent.split('\n');
-let apiKey = null;
-
-for (const line of lines) {
-  if (line.startsWith('GOOGLE_API_KEY=') || line.startsWith('GEMINI_API_KEY=')) {
-    apiKey = line.split('=')[1].trim();
-    break;
-  }
-}
+// Use API key from environment variables (not from .env.local to avoid committing secrets)
+const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
 if (!apiKey) {
-  console.error('No GOOGLE_API_KEY or GEMINI_API_KEY found in .env.local');
+  console.error('No GEMINI_API_KEY or GOOGLE_API_KEY found in environment variables');
+  console.error('Please set your API key as an environment variable');
   process.exit(1);
 }
 
