@@ -908,47 +908,27 @@ User Query: ${JSON.stringify(query)}
 
     let text: string;
     
-    // Try primary model first, then fallback
+    // Use multi-provider LLM system for better rate limits and availability
     try {
-      const model = genAI.getGenerativeModel({
-        model: "models/gemini-flash-latest",
-        generationConfig: {
-          temperature: 0.4,
-          topK: 40,
-          topP: 0.8,
-          maxOutputTokens: 2048,
-          responseMimeType: "application/json",
-          responseSchema: geminiArraySchema as unknown as any,
-        },
-      });
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      text = response.text();
-    } catch (primaryError: any) {
-      console.warn(`[Gemini] Primary model (models/gemini-flash-latest) failed, trying fallback:`, primaryError.message);
+      const { getAIRecommendationsWithFallback } = await import('./multi-llm-providers');
+      const aiResults = await getAIRecommendationsWithFallback(query);
       
-      try {
-        // Fallback to 2.5-flash without structured output constraints
-        const fallbackModel = genAI.getGenerativeModel({
-          model: "models/gemini-2.5-flash",
-          generationConfig: {
-            temperature: 0.4,
-            topK: 40,
-            topP: 0.8,
-            maxOutputTokens: 2048,
-          },
-        });
-
-        const fallbackResult = await fallbackModel.generateContent(prompt);
-        const fallbackResponse = await fallbackResult.response;
-        text = fallbackResponse.text();
-        console.log(`[Gemini] Successfully used fallback model: models/gemini-2.5-flash`);
-      } catch (fallbackError: any) {
-        console.warn(`[Gemini] Second attempt also failed, using fuzzy search only:`, fallbackError.message);
-        // Return empty results when all models are unavailable, fuzzy search will be used
-        return [];
+      if (aiResults && aiResults.length > 0) {
+        // Handle different response formats from different providers
+        let recommendations = aiResults;
+        if (aiResults.databases) {
+          recommendations = aiResults.databases; // Some providers wrap in "databases" field
+        }
+        
+        text = JSON.stringify(recommendations);
+        console.log(`[AI] Successfully got ${recommendations.length} recommendations from multi-provider system`);
+      } else {
+        throw new Error('No AI recommendations returned from any provider');
       }
+    } catch (aiError: any) {
+      console.warn(`[AI] Multi-provider system failed, falling back to fuzzy search:`, aiError.message);
+      // Return empty results when all providers are unavailable, fuzzy search will be used
+      return [];
     }
 
     console.log("[AI raw response]", text);
