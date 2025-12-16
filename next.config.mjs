@@ -9,9 +9,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Force complete rebuild of CSS assets
-  generateBuildId: async () => {
-    return `build-${Date.now()}`
+  // Force CSS cache invalidation
+  env: {
+    CSS_REBUILD_TIMESTAMP: Date.now().toString(),
+  },
+  experimental: {
+    optimizeCss: false,
   },
 }
 
