@@ -2,9 +2,8 @@
 // NOTE: If you see results in the terminal but not in the UI, check the API route or handler that calls this function.
 // The issue is likely in the API response or frontend handling.
 
-"use server";
+// Removed "use server" directive for static export compatibility
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { z } from "zod";
 import Fuse from "fuse.js";
 
@@ -105,12 +104,6 @@ type FormatIntent =
   | "images"
   | "language"   // foreign language learning
   | "testprep";  // test preparation / certification
-
-function getGeminiClient(apiKey?: string) {
-  const key = apiKey || process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("GEMINI_API_KEY is not available");
-  return new GoogleGenerativeAI(key);
-}
 
 /** Normalize for matching (lowercase, strip diacritics, unify punctuation). */
 function norm(s: string) {
@@ -891,9 +884,7 @@ export async function findDatabaseResources(
   const BM25 = buildBm25Index(CATALOG);
 
   try {
-    // 1) LLM proposes platforms/databases from its own knowledge.
-    const genAI = getGeminiClient(apiKey);
-    
+    // 1) LLM proposes platforms/databases from its own knowledge using multi-provider system
     const prompt = `You are an academic librarian.
 
 TASK: Recommend up to 12 LIBRARY DATABASES/PLATFORMS a university library would subscribe to that best match the user's query.
@@ -908,71 +899,30 @@ User Query: ${JSON.stringify(query)}
 
     let text: string;
     
-    // Try primary model first, then fallback
+    // Use multi-provider LLM system for better rate limits and availability
     try {
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash-lite",
-        generationConfig: {
-          temperature: 0.4,
-          topK: 40,
-          topP: 0.8,
-          maxOutputTokens: 2048,
-          responseMimeType: "application/json",
-          responseSchema: geminiArraySchema as unknown as any,
-        },
-      });
-
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      text = response.text();
-    } catch (primaryError: any) {
-      console.warn(`[Gemini] Primary model (gemini-2.0-flash-lite) failed, trying fallback:`, primaryError.message);
+      console.log('[AI] Loading multi-provider system...');
+      const { getAIRecommendationsWithFallback } = await import('./multi-llm-providers');
+      console.log('[AI] Multi-provider system loaded, making request...');
+      const aiResults = await getAIRecommendationsWithFallback(query);
       
-      try {
-        // Fallback to gemini-1.5-flash
-        const fallbackModel = genAI.getGenerativeModel({
-          model: "gemini-1.5-flash",
-          generationConfig: {
-            temperature: 0.4,
-            topK: 40,
-            topP: 0.8,
-            maxOutputTokens: 2048,
-            responseMimeType: "application/json",
-            responseSchema: geminiArraySchema as unknown as any,
-          },
-        });
-
-        const fallbackResult = await fallbackModel.generateContent(prompt);
-        const fallbackResponse = await fallbackResult.response;
-        text = fallbackResponse.text();
-        console.log(`[Gemini] Successfully used fallback model: gemini-1.5-flash`);
-      } catch (fallbackError: any) {
-        console.warn(`[Gemini] Second model (gemini-1.5-flash) also failed, trying final fallback:`, fallbackError.message);
-        
-        try {
-          // Final fallback to gemini-1.5-pro
-          const finalFallbackModel = genAI.getGenerativeModel({
-            model: "gemini-1.5-pro",
-            generationConfig: {
-              temperature: 0.4,
-              topK: 40,
-              topP: 0.8,
-              maxOutputTokens: 2048,
-              responseMimeType: "application/json",
-              responseSchema: geminiArraySchema as unknown as any,
-            },
-          });
-
-          const finalResult = await finalFallbackModel.generateContent(prompt);
-          const finalResponse = await finalResult.response;
-          text = finalResponse.text();
-          console.log(`[Gemini] Successfully used final fallback model: gemini-1.5-pro`);
-        } catch (finalError: any) {
-          console.error(`[Gemini] All three models failed. Primary: ${primaryError.message}, Second: ${fallbackError.message}, Final: ${finalError.message}`);
-          // Return empty results when all models are unavailable
-          return [];
+      if (aiResults && aiResults.length > 0) {
+        // Handle different response formats from different providers
+        let recommendations = aiResults;
+        if (aiResults.databases) {
+          recommendations = aiResults.databases; // Some providers wrap in "databases" field
         }
+        
+        text = JSON.stringify(recommendations);
+        console.log(`[AI] Successfully got ${recommendations.length} recommendations from multi-provider system`);
+      } else {
+        throw new Error('No AI recommendations returned from any provider');
       }
+    } catch (aiError: any) {
+      console.error(`[AI] Multi-provider system failed:`, aiError);
+      console.warn(`[AI] Multi-provider system failed, falling back to fuzzy search:`, aiError.message);
+      // Return empty results when all providers are unavailable, fuzzy search will be used
+      return [];
     }
 
     console.log("[AI raw response]", text);
