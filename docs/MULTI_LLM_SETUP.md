@@ -75,7 +75,7 @@ Each provider has automatic fallback to secondary models, giving you maximum upt
 
 ## 🔍 Testing
 
-Use the existing test scripts to verify each provider:
-```bash
-node test-working-models.js  # Will now test all configured providers
-```
+Test the multi-provider system by:
+1. Starting the development server: `npm run dev`
+2. Making a search query to see which provider is used
+3. Check the console logs for provider selection and fallback behavior

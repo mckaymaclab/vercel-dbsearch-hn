@@ -7,12 +7,12 @@ _AI-powered academic resource discovery platform_
 
 ## Overview
 
-The BYU-Idaho Library Resource Finder is an intelligent web application that helps students and researchers discover the most relevant academic databases and resources for their research needs using natural language queries. Built with Next.js and powered by Google's Gemini AI, this tool makes academic research more accessible and efficient.
+The BYU-Idaho Library Resource Finder is an intelligent web application that helps students and researchers discover the most relevant academic databases and resources for their research needs using natural language queries. Built with Next.js and powered by a robust multi-provider LLM system (Groq, HuggingFace, and Gemini), this tool makes academic research more accessible and efficient.
 
 ### Key Features
 
 -   **Natural Language Search**: Ask questions in plain English to find relevant academic resources
--   **AI-Powered Recommendations**: Leverages Google Gemini AI to understand query intent and match resources
+-   **Multi-Provider AI System**: Uses Groq (primary), HuggingFace (backup), and Gemini (fallback) for reliable AI-powered recommendations with automatic failover
 -   **Comprehensive Database**: Includes access to 200+ academic databases and library resources
 -   **Smart Filtering**: Filter results by content type, subject area, and access level
 -   **Relevance Scoring**: Results are ranked by relevance with explanations for why resources match your query
@@ -21,7 +21,7 @@ The BYU-Idaho Library Resource Finder is an intelligent web application that hel
 
 ### 🛠️ Tech Stack
 
--   **Frontend**: Next.js 15.3, React 18, TypeScript
+-   **Frontend**: Next.js 14.2.33, React 18, TypeScript
 -   **Styling**: Tailwind CSS with custom component library
 -   **UI Components**: Radix UI primitives with custom styling
 -   **AI Integration**: Multi-provider LLM system (Groq → HuggingFace → Gemini)
@@ -63,7 +63,7 @@ Before running this project locally, make sure you have:
 
 -   [Node.js](https://nodejs.org/) (version 18 or higher)
 -   [npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/), or [pnpm](https://pnpm.io/)
--   A Google AI API key (for Gemini integration)
+-   At least one API key from: Groq (recommended), HuggingFace, or Gemini
 
 ### Installation
 
@@ -86,18 +86,18 @@ Before running this project locally, make sure you have:
 
 3. **Set up environment variables**
 
-    Create a `.env` file in the root directory and add your Google AI API key:
+    Create a `.env.local` file in the root directory and add at least one API key:
 
     ```env
-    GEMINI_API_KEY=your_google_ai_api_key_here
+    # Recommended (most generous free tier)
+    GROQ_API_KEY=your_groq_key_here
+    
+    # Backup options
+    HF_TOKEN=your_hf_token_here
+    GEMINI_API_KEY=your_gemini_key_here
     ```
 
-    To get a Google AI API key:
-
-    - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-    - Sign in with your Google account
-    - Create a new API key
-    - Copy the key to your `.env` file
+    **See [Multi-LLM Setup Guide](docs/MULTI_LLM_SETUP.md) for detailed provider setup instructions.**
 
 4. **Run the development server**
 
@@ -122,50 +122,34 @@ npm run build
 npm run start
 ```
 
-## Project Structure
-
-```
-├── app/                    # Next.js App Router pages
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout component
-│   └── page.tsx           # Home page
-├── components/            # React components
-│   ├── ui/               # Reusable UI components (buttons, cards, etc.)
-│   ├── library-header.tsx # Header component
-│   └── resource-finder.tsx # Main search interface
-├── hooks/                # Custom React hooks
-├── lib/                  # Utility functions and data
-│   ├── resource-ai.ts    # AI integration logic
-│   ├── resource-database.ts # Resource data management
-│   └── utils.ts          # General utilities
-├── public/               # Static assets
-├── styles/               # Additional stylesheets
-└── types/                # TypeScript type definitions
-```
-
 ## Configuration
 
 ### Environment Variables
 
-| Variable         | Description              | Required |
-| ---------------- | ------------------------ | -------- |
-| `GEMINI_API_KEY` | Google Gemini AI API key | Yes      |
+| Variable              | Description                    | Required |
+| --------------------- | ------------------------------ | -------- |
+| `GROQ_API_KEY`        | Groq API key (recommended)     | Optional |
+| `HF_TOKEN`             | HuggingFace API token          | Optional |
+| `GEMINI_API_KEY`      | Google Gemini AI API key       | Optional |
+
+**Note**: At least one API key is required. See [Multi-LLM Setup Guide](docs/MULTI_LLM_SETUP.md) for details.
 
 ### Customization
 
 To customize the application:
 
-1. **Update the resource database**: Modify `lib/library-resources-database.ts` to add or update library resources
+1. **Update the resource database**: Modify `lib/resource-database.ts` to add or update library resources
 2. **Styling**: Update Tailwind configuration in `tailwind.config.ts`
 3. **UI Components**: Customize components in the `components/ui/` directory
 4. **AI Prompts**: Modify the AI prompt logic in `lib/resource-ai.ts`
 
 ## Available Scripts
 
--   `npm run dev` - Start development server with Turbopack
+-   `npm run dev` - Start development server
 -   `npm run build` - Create production build
 -   `npm run start` - Start production server
 -   `npm run lint` - Run ESLint
+-   `npm run mcp` - Start MCP server for development tools
 -   `npm run check:urls` - Validate that resource URLs in `lib/resource-database.ts` contain no spaced domain segments or malformed host patterns
 
 ### URL Integrity Check
@@ -195,7 +179,7 @@ This project is automatically deployed on Vercel. The live application is availa
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mckaymaclab/vercel-dbsearch-hn)
 
-Make sure to add your `GEMINI_API_KEY`, `GROQ_API_KEY`, and `HUGGING_FACE_API_KEY` environment variables in the Vercel dashboard.
+Make sure to add your `GROQ_API_KEY`, `HF_TOKEN`, `TOGETHER_API_KEY`, and `GEMINI_API_KEY` environment variables in the Vercel dashboard.
 
 ## Documentation
 
