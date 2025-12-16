@@ -9,6 +9,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Force fresh build for CSS issues
+  experimental: {
+    forceSwcTransforms: true,
+  },
 }
 
 export default nextConfig
