@@ -24,9 +24,36 @@ The BYU-Idaho Library Resource Finder is an intelligent web application that hel
 -   **Frontend**: Next.js 15.3, React 18, TypeScript
 -   **Styling**: Tailwind CSS with custom component library
 -   **UI Components**: Radix UI primitives with custom styling
--   **AI Integration**: Google Generative AI (Gemini)
+-   **AI Integration**: Multi-provider LLM system (Groq → HuggingFace → Gemini)
 -   **Analytics**: Vercel Analytics
 -   **Deployment**: Vercel
+
+## Project Structure
+
+```
+├── app/                    # Next.js App Router pages and API routes
+│   ├── api/search/        # Search API endpoint
+│   ├── globals.css        # Global styles
+│   └── layout.tsx         # Root layout component
+├── components/            # React components
+│   ├── ui/               # Reusable UI components (shadcn/ui)
+│   └── resource-finder.tsx # Main search interface
+├── config/               # Configuration files
+│   ├── jest.config.cjs   # Jest testing configuration
+│   └── vitest.config.ts  # Vitest configuration
+├── docs/                 # Project documentation
+│   ├── MCP_README.md     # Model Context Protocol setup
+│   └── MULTI_LLM_SETUP.md # Multi-provider LLM documentation
+├── lib/                  # Core business logic and utilities
+│   ├── aliases/         # Database name mapping and aliases
+│   ├── resource-*.ts    # Resource search and AI logic
+│   └── utils.ts         # Utility functions
+├── tests/               # Test files
+├── tools/               # Development and utility tools
+│   ├── mcp/            # Model Context Protocol server
+│   └── scripts/        # Utility scripts
+└── types/              # TypeScript type definitions
+```
 
 ## Getting Started
 
@@ -156,7 +183,7 @@ It fails (non‑zero exit) if it detects:
 - `%20` inside the hostname portion
 - `http(s)://www.` followed by a space after the dot
 
-All current URLs pass this check. Add new patterns to `scripts/check-resource-urls.cjs` if future anomalies arise.
+All current URLs pass this check. Add new patterns to `tools/scripts/check-resource-urls.cjs` if future anomalies arise.
 
 ## Deployment
 
@@ -168,7 +195,12 @@ This project is automatically deployed on Vercel. The live application is availa
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mckaymaclab/vercel-dbsearch-hn)
 
-Make sure to add your `GEMINI_API_KEY` environment variable in the Vercel dashboard.
+Make sure to add your `GEMINI_API_KEY`, `GROQ_API_KEY`, and `HUGGING_FACE_API_KEY` environment variables in the Vercel dashboard.
+
+## Documentation
+
+-   **[Multi-LLM Setup](docs/MULTI_LLM_SETUP.md)** - Configuration and setup for the multi-provider LLM system
+-   **[MCP Server](docs/MCP_README.md)** - Model Context Protocol integration for enhanced development
 
 ## License
 
