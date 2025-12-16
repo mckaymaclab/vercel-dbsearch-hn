@@ -12,7 +12,7 @@
     "test:once": "vitest run",
     "test:coverage": "vitest run --coverage",
     "mcp": "node tools/mcp/mcp-server.js",
-    "check:urls": "node scripts/check-resource-urls.cjs"
+    "check:urls": "node tools/scripts/check-resource-urls.cjs"
   },
   "dependencies": {
     "@google/generative-ai": "latest",
