@@ -9,9 +9,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Force fresh build for CSS issues
-  experimental: {
-    forceSwcTransforms: true,
+  // Force complete rebuild of CSS assets
+  generateBuildId: async () => {
+    return `build-${Date.now()}`
   },
 }
 
