@@ -21,7 +21,21 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { findDatabaseResources } from "@/lib/resource-ai";
+// API function for frontend use
+async function searchResources(query: string, searchType: "library" | "database") {
+    const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, searchType })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.results;
+}
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -67,10 +81,7 @@ export function ResourceFinder({ initialResults }: ResourceFinderProps = {}) {
         setUsingFallback(false);
 
         try {
-            const resourceResults = await findDatabaseResources(
-                query,
-                searchType
-            );
+            const resourceResults = await searchResources(query, searchType);
             console.log('Resource results received in handleSearch:', resourceResults);
 
             // Map resourceResults to ResourceResult shape if needed
